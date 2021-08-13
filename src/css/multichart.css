@@ -1,0 +1,67 @@
+.MuiAlert-message {
+  background-color: #141722;
+}
+
+.MuiAlert-action {
+  background-color: #141722;
+  margin-right: 0px !important;
+  padding-left: 90% !important;
+}
+
+.tradingview-widget-copyright {
+  color: #141722 !important;
+}
+
+.MuiBox-root {
+  padding: 0px !important;
+}
+
+.MuiTableBody-root {
+  border-color: '#000';
+}
+
+.WithStyles\(ForwardRef\(TableCell\)\)-body-55 {
+  background-color: #303030;
+  color: #fff;
+  border-color: #000;
+  border: 1px solid #000;
+}
+
+.MuiTableBody-root {
+  color: #fff;
+}
+
+.MuiAlert-root {
+  /* margin: 10px; */
+  margin-bottom: 0px !important;
+}
+
+.MuiAlert-message {
+  padding: 0px !important;
+}
+
+.MuiTab-wrapper {
+  color: #fff !important
+}
+
+.MuiTypography-colorPrimary {
+  color: #3eb8ff !important;
+}
+
+.MuiTab-textColorPrimary.Mui-selected {
+  border: 1px solid #fff;
+  background-color: #141414 !important;
+  border-radius: 0.25rem;
+}
+
+.MuiTabs-indicator {
+  background-color: #fff !important;
+}
+
+.MuiTabs-flexContainer .MuiTabs-centered {
+  border-bottom: 1px solid #262626;
+}
+
+.MuiSelect-selectMenu {
+  width: 200px !important;
+}
