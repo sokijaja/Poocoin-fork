@@ -14,8 +14,10 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       backgroundColor: 'green'
     },
+    minWidth: '25px'
   },
   Input: {
+    width: '100%',
     display: 'flex',
     borderRadius: '.25rem',
     backgroundColor: 'white',
@@ -24,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
       outline: 0,
       boxShadow: '0 0 0 .25rem rgba(62,184,255,.25)',
     },
+    '& .MuiInputBase-root': {
+      flexGrow: 1,
+    }
   },
   tokenInput: {
     fontSize: '13px',

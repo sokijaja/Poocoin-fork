@@ -7,6 +7,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { Link } from 'react-router-dom';
 import StarOutlineIcon from '@material-ui/icons/StarOutline';
 
 const StyledTableCell = withStyles((theme) => ({
@@ -16,6 +17,7 @@ const StyledTableCell = withStyles((theme) => ({
     color: theme.palette.common.white,
     padding: 0,
     paddingLeft: 10,
+    textAlignLast: 'center',
     borderColor: '#262626'
   },
   body: {
@@ -25,6 +27,7 @@ const StyledTableCell = withStyles((theme) => ({
     maxWidth: 100,
     backgroundColor: '#303030',
     color: '#fff',
+    textAlignLast: 'center',
     borderColor: '#262626'
   },
 }))(TableCell);
@@ -37,17 +40,16 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('POOCOIN', 159),
-  createData('KABOSU', 237),
-  createData('GABECOIN', 262),
-  createData('THOREUM', 305),
-];
-
+const rows = Array.from(Array(1).keys()).map(item => {
+  return {
+    name: "THOREUM",
+    othername: "Thoreum",
+    id: "0x580de58c1bd593a43dadcf0a739d504621817c05",
+    tokenMoney: "0.0000",
+    balanceMoney: "0.00",
+    calories: '0.00'
+  }
+})
 const useStyles = makeStyles({
   table: {
     minWidth: 100,
@@ -71,9 +73,20 @@ export default function CustomizedTables() {
           {rows.map((row) => (
             <StyledTableRow key={row.name}>
               <StyledTableCell component="th" scope="row">
-                {row.name}
+                {row.id
+                  ? <Link to={`/tokens/${row.id}`}>
+                    {row.name}&nbsp;
+                    <span className={'textSuccess'}>${row.tokenMoney}</span>
+                    <br />
+                    <span className={'textMuted'}>{row.othername}</span>
+                  </Link>
+                  : row.name}
               </StyledTableCell>
-              <StyledTableCell>{row.calories}</StyledTableCell>
+              <StyledTableCell>
+                <span>{row.calories}</span>
+                <br />
+                <span className={'textSuccess'}>${row.balanceMoney}</span>
+              </StyledTableCell>
               <StyledTableCell><StarOutlineIcon /></StyledTableCell>
             </StyledTableRow>
           ))}

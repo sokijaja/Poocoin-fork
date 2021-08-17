@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import '../../css/advertise.css';
 import { Alert } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardHeader, Button, OutlinedInput } from '@material-ui/core';
 import InLineLink from '../../Component/InLineLink';
+import { vettedValues } from '../../PooCoin/index.js';
+
 const useStyles = makeStyles((theme) => ({
     connect: {
         textTransform: 'none',
@@ -20,7 +22,45 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: '#6c757d',
     },
 }));
+
+function VettedTable(props) {
+    const values = props.values;
+
+    const tbody = values.map((item, index) => 
+        <tr>
+            <td align="right" style={{ verticalAlign: 'top', width: '20px' }}>{index+1}</td>
+            <td>
+                <a className={'linkText'} href={"https://poocoin.app/tokens/" + item.linkAddress}>
+                    {item.name}
+                    <br />
+                    <span className={'fs1 textMuted'}>{item.name}</span>
+                </a>
+                <br />
+                <span className={'fs1 textMuted'}>LP balance: {item.amount}
+                    <br />
+                    LP value: 
+                    <span className={'textSuccess'}> $88,453.74</span>
+                </span>
+            </td>
+        </tr>
+    );
+    return (
+        <tbody style={{ backgroundColor: '#262626' }}>{tbody}</tbody>
+    );
+}
+
 export default function Vetted() {
+
+    const [vettedData, setVettedData] = useState([]);
+
+    const setVettedValues = (data) => {
+        setVettedData(data);
+    }
+
+    useEffect(() => {
+        vettedValues(setVettedValues);
+    }, []);
+
     const classes = useStyles();
     return (
         <div>
@@ -195,7 +235,8 @@ export default function Vetted() {
                             <th>Promoted Address</th>
                         </tr>
                     </thead>
-                    <tbody style={{ backgroundColor: '#262626' }}>
+                    <VettedTable values={vettedData} />
+                    {/* <tbody style={{ backgroundColor: '#262626' }}>
                         <tr>
                             <td align="right" style={{ verticalAlign: 'top', width: '20px' }}>1</td>
                             <td>
@@ -212,7 +253,7 @@ export default function Vetted() {
                                 </span>
                             </td>
                         </tr>
-                    </tbody>
+                    </tbody> */}
                 </table>
                 <hr />
                 <p>Withdraw from V1 promotion pool.</p>

@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import '../../css/advertise.css';
 import { Alert } from '@material-ui/lab';
 import { Card, CardHeader, OutlinedInput } from '@material-ui/core';
+
 export default function UnVetted(props) {
     return (
         <div>

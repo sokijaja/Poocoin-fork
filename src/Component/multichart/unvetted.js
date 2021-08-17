@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -8,6 +8,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import StarOutlineIcon from '@material-ui/icons/StarOutline';
+import { Link } from 'react-router-dom';
+import { unvettedValues } from '../../PooCoin/index.js';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -71,7 +73,39 @@ const useStyles = makeStyles({
   }
 });
 
+function UnvettedTable(props) {
+    const values = props.values;
+    const classes = props.styleName;
+
+    const tbody = values.map((item, index) => 
+      <StyledTableRow key={index}>
+        <StyledTableCell component="th" scope="row">
+          <a href={"https://poocoin.app/tokens/" + item[0]}>
+            <span className={classes.firstName}>{item[1].split('/')[3]}</span> <span className={classes.priceValue}>$ 0.0000</span>
+            <div className={classes.otherName}>{item[1].split('/')[3]}</div>
+          </a>
+        </StyledTableCell>
+        <StyledTableCell>0.00<div className={classes.priceValue}>$0.00</div></StyledTableCell>
+        <StyledTableCell><StarOutlineIcon /></StyledTableCell>
+      </StyledTableRow>
+    );
+    return (
+        <tbody style={{ backgroundColor: '#262626' }}>{tbody}</tbody>
+    );
+}
+
 export default function CustomizedTables() {
+
+  const [unvettedData, setUnvettedData] = useState([]);
+
+  const setUnvettedValues = (data) => {
+      setUnvettedData(data);
+  }
+
+  useEffect(() => {
+      unvettedValues(setUnvettedValues);
+  }, []);
+  
   const classes = useStyles();
 
   return (
@@ -85,7 +119,8 @@ export default function CustomizedTables() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          <UnvettedTable values={unvettedData} styleName={classes}/>
+          {/* {rows.map((row) => (
             <StyledTableRow key={row.name}>
               <StyledTableCell component="th" scope="row">
                 <span className={classes.firstName}>{row.name}</span> <span className={classes.priceValue}>{row.price}</span>
@@ -94,7 +129,7 @@ export default function CustomizedTables() {
               <StyledTableCell>{row.balance}<div className={classes.priceValue}>${row.balance}</div></StyledTableCell>
               <StyledTableCell><StarOutlineIcon /></StyledTableCell>
             </StyledTableRow>
-          ))}
+          ))} */}
         </TableBody>
       </Table>
     </TableContainer>

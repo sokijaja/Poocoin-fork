@@ -96,11 +96,8 @@ function RedditTextField(props) {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  margin: {
-    margin: theme.spacing(1),
+    textAlign: 'left',
+    padding: '20px 0px 5px 30px',
   },
 }));
 
@@ -135,8 +132,8 @@ export default function CustomizedInputs() {
 
   return (
     <form className={classes.root} noValidate>
-      <FormControl className={classes.margin}>
-        <BootstrapInput defaultValue="filter..." id="filter" className={classes.input}/>
+      <FormControl className={classes.form}>
+        <BootstrapInput defaultValue="filter..." id="filter" className={classes.input} />
       </FormControl>
     </form>
   );

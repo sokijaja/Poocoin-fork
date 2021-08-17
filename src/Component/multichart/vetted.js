@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -8,6 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import StarOutlineIcon from '@material-ui/icons/StarOutline';
+import { vettedValues } from '../../PooCoin/index.js';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -24,6 +25,25 @@ const StyledTableCell = withStyles((theme) => ({
     borderColor: '#262626' 
   },
 }))(TableCell);
+
+function VettedTable(props) {
+    const values = props.values;
+    const classes = props.styleName;
+
+    const tbody = values.map((item, index) => 
+        <StyledTableRow key={index}>
+          <StyledTableCell component="th" scope="row">
+            <span className={classes.firstName}>{item.name}</span> <span className={classes.priceValue}>{item.amount}</span>
+            <div className={classes.otherName}>{item.name}</div>
+          </StyledTableCell>
+          <StyledTableCell>{item.amount}<div className={classes.priceValue}>${item.amount}</div></StyledTableCell>
+          <StyledTableCell><StarOutlineIcon /></StyledTableCell>
+        </StyledTableRow>
+    );
+    return (
+        <tbody style={{ backgroundColor: '#262626' }}>{tbody}</tbody>
+    );
+}
 
 const StyledTableRow = withStyles((theme) => ({
   root: {
@@ -71,6 +91,16 @@ const useStyles = makeStyles({
 });
 
 export default function CustomizedTables() {
+  const [vettedData, setVettedData] = useState([]);
+
+    const setVettedValues = (data) => {
+        setVettedData(data);
+    }
+
+    useEffect(() => {
+        vettedValues(setVettedValues);
+    }, []);
+
   const classes = useStyles();
 
   return (
@@ -84,7 +114,8 @@ export default function CustomizedTables() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          <VettedTable values={vettedData} styleName={classes}/>
+          {/* {rows.map((row) => (
             <StyledTableRow key={row.name}>
               <StyledTableCell component="th" scope="row">
                 <span className={classes.firstName}>{row.name}</span> <span className={classes.priceValue}>{row.price}</span>
@@ -93,7 +124,7 @@ export default function CustomizedTables() {
               <StyledTableCell>{row.balance}<div className={classes.priceValue}>${row.balance}</div></StyledTableCell>
               <StyledTableCell><StarOutlineIcon /></StyledTableCell>
             </StyledTableRow>
-          ))}
+          ))} */}
         </TableBody>
       </Table>
     </TableContainer>

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, Button, Grid, Hidden } from '@material-ui/core';
+import { useStatePersist } from 'use-state-persist';
+import { useWallet } from 'use-wallet'
 import PoocoinIcon from '../Images/poocoin512.png';
 
 const useStyles = makeStyles((theme) => ({
@@ -64,15 +66,24 @@ const useStyles = makeStyles((theme) => ({
 export default function Header() {
   const classes = useStyles();
 
-  let history = useHistory();
+  const [userDisconnected, setUserDisconnected] = useStatePersist(true);
+  const { account, connect, reset } = useWallet()
 
-  const onDashboard = () => {
-    history.push("/dashboard");
+  const connectOrDisconnect = () => {
+    if (account) {
+        setUserDisconnected(true);
+        reset();
+    } else {
+        setUserDisconnected(false);
+        connect('injected')
+    }
   }
 
-  const onStake = () => {
-    history.push("/stake");
-  }
+  useEffect(() => {
+      if (!account && !userDisconnected) {
+          connect();
+      }
+  }, [account, userDisconnected])
 
   return (
     <AppBar position="fixed" className={classes.appBarSolid}>
@@ -119,7 +130,7 @@ export default function Header() {
             </div>
           </Grid>
           <Grid item md={2} sm={12} xl={2}>
-            <Button variant="contained" className={classes.connect} onClick={onStake}>Connect</Button>
+            <Button variant="contained" className={classes.connect} onClick={connectOrDisconnect}>Connect</Button>
           </Grid>
         </Grid>
       </Toolbar>

@@ -14,7 +14,8 @@ const StyledTableCell = withStyles((theme) => ({
     color: theme.palette.common.white,
     padding: 0,
     paddingLeft: 10,
-    borderColor: '#262626'
+    textAlignLast: 'left',
+    borderColor: '#262626',
   },
   body: {
     fontSize: '0.875rem',
@@ -24,9 +25,16 @@ const StyledTableCell = withStyles((theme) => ({
     color: '#fff',
     borderColor: '#262626',
     borderBottom: '#262626',
+    textAlignLast: 'left',
     borderRadius: 0
   },
 }))(TableCell);
+
+const rows = Array.from(Array(1).keys()).map(item => {
+  return {
+    name: "THOREUM",
+  }
+})
 
 const StyledTableRow = withStyles((theme) => ({
   root: {
@@ -35,17 +43,6 @@ const StyledTableRow = withStyles((theme) => ({
     },
   },
 }))(TableRow);
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Poocoin'),
-  createData('Kabosu'),
-  createData('Gasecoin'),
-  createData('Ghoreum')
-];
 
 const useStyles = makeStyles({
   table: {

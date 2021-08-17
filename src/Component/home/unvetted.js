@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -7,8 +7,9 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import StarOutlineIcon from '@material-ui/icons/StarOutline';
+import { GradeOutlined, Grade } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
+import { unvettedValues } from '../../PooCoin/index.js';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -16,6 +17,7 @@ const StyledTableCell = withStyles((theme) => ({
     backgroundColor: '#262626',
     color: theme.palette.common.white,
     padding: '0 0 0 10px',
+    textAlignLast: 'center',
     borderColor: '#262626'
   },
   body: {
@@ -24,6 +26,7 @@ const StyledTableCell = withStyles((theme) => ({
     padding: 0,
     paddingLeft: 10,
     color: '#fff',
+    textAlignLast: 'center',
     backgroundColor: '#303030',
     borderColor: '#262626',
   },
@@ -53,10 +56,14 @@ const StyledTableRow = withStyles((theme) => ({
 
 const rows = Array.from(Array(10).keys()).map(item => {
   return {
-      name: "THOREUM",
-      id: "0x580de58c1bd593a43dadcf0a739d504621817c05",
-      calories: 159
-    }
+    name: "THOREUM",
+    othername: "Thoreum",
+    id: item,
+    tokenMoney: "0.0000",
+    balanceMoney: "0.00",
+    calories: '0.00',
+    favor: 1,
+  }
 })
 
 const useStyles = makeStyles({
@@ -65,9 +72,46 @@ const useStyles = makeStyles({
   },
 });
 
-export default function CustomizedTables() {
-  const classes = useStyles();
+function UnvettedTable(props) {
+    const values = props.values;
 
+    const tbody = values.map((item, index) => 
+      <StyledTableRow key={index}>
+        <StyledTableCell component="th" scope="row">
+          {/* <span>{item[1].split('/')[3]}</span> */}
+            <Link to={`/tokens/${item[0]}`}>
+              {item[1].split('/')[3]}&nbsp;
+              <span className={'textSuccess'}>$0.0000</span>
+              <br />
+              <span className={'textMuted'}>{item[1].split('/')[3]}</span>
+            </Link>
+        </StyledTableCell>
+        <StyledTableCell>
+          <span>0.00</span>
+          <br />
+          <span className={'textSuccess'}>$0.00</span>
+        </StyledTableCell>
+        <StyledTableCell><GradeOutlined /></StyledTableCell>
+      </StyledTableRow>
+    );
+    return (
+        <tbody style={{ backgroundColor: '#262626' }}>{tbody}</tbody>
+    );
+}
+
+export default function CustomizedTables() {
+
+  const [unvettedData, setUnvettedData] = useState([]);
+
+    const setUnvettedValues = (data) => {
+        setUnvettedData(data);
+    }
+
+    useEffect(() => {
+        unvettedValues(setUnvettedValues);
+    }, []);
+
+  const classes = useStyles();
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="customized table">
@@ -79,17 +123,27 @@ export default function CustomizedTables() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          <UnvettedTable values={unvettedData}/>
+          {/* {rows.map((row) => (
             <StyledTableRow key={row.name}>
               <StyledTableCell component="th" scope="row">
                 {row.id
-                      ? <Link to={`/tokens/${row.id}`}>{row.name}</Link>
-                      : row.name}
+                  ? <Link to={`/tokens/${row.id}`}>
+                    {row.name}&nbsp;
+                    <span className={'textSuccess'}>${row.tokenMoney}</span>
+                    <br />
+                    <span className={'textMuted'}>{row.othername}</span>
+                  </Link>
+                  : row.name}
               </StyledTableCell>
-              <StyledTableCell>{row.calories}</StyledTableCell>
-              <StyledTableCell><StarOutlineIcon /></StyledTableCell>
+              <StyledTableCell>
+                <span>{row.calories}</span>
+                <br />
+                <span className={'textSuccess'}>${row.balanceMoney}</span>
+              </StyledTableCell>
+              <StyledTableCell><i>{row.favor == 1 ? <Grade /> : <GradeOutlined />}</i></StyledTableCell>
             </StyledTableRow>
-          ))}
+          ))} */}
         </TableBody>
       </Table>
     </TableContainer>

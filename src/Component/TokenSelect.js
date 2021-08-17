@@ -9,16 +9,17 @@ import TokenInput from './TokenInput';
 const useStyles = makeStyles((theme) => ({
   formControl: {
     minWidth: 120,
-    // width: '100%',
-    flexBasis: 450,
     backgroundColor: 'white',
     fontSize: '10px',
-    // marginLeft: '24.5%'
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
+  tokenSelectParent: {
+    flexBasis: '450px'
+  },
   tokenSelect: {
+    width: '100%',
     '& .MuiInputBase-input': {
       padding: '.75rem 3rem .75rem .75rem',
       fontSize: '1rem',
@@ -40,14 +41,15 @@ const useStyles = makeStyles((theme) => ({
     },
     '& .MuiOutlinedInput-notchedOutline': {
       backgroundColor: 'white'
-    }
+    },
   },
   option: {
     marginTop: '2rem',
   },
   button: {
     marginLeft: 5,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    minWidth: '25px!important'
   }
 }));
 
@@ -91,9 +93,11 @@ export default function SimpleSelect() {
   else
     search = (<TokenInput></TokenInput>)
   return (
-    <div style={{display: 'flex', justifyContent: 'center'}}>
-      {search}
-      <Button className={classes.button} onClick={onOnlyToken}><Icon>edit</Icon></Button>
+    <div className={classes.tokenSelectParent}>
+      <div style={{ display: 'flex' }}>
+        {search}
+        <Button className={classes.button} onClick={onOnlyToken}><Icon>edit</Icon></Button>
+      </div>
     </div>
   );
 }
