@@ -24,7 +24,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set PORT=80 && react-scripts start",
     "server": "nodemon server --prefix server",
     "client": "npm start",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
