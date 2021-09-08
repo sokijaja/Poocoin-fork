@@ -2,15 +2,10 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React from "react";
 import Grid from '@material-ui/core/Grid';
-// import Chart from '../Component/basic/chart';
-// import Searchinput from '../Component/basic/searchinput_';
 import Tab from '../Component/basic/tab';
 import Input from '../Component/basic/input';
-// import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-// import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
-import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import Panel from '../Component/multichart/panel';
 import rightPoster from '../Images/moonstar3.gif';
 import leftPoster from '../Images/leftposter.gif';
@@ -36,7 +31,8 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 10
   },
   inputWidth: {
-    width: '100%'
+    width: '100%',
+    padding: '20px',
   },
   tabContainer: {
     minHeight: '700px !important'
@@ -61,9 +57,9 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     [theme.breakpoints.down("sm")]: {
       minWidth: '400px',
-      position: 'absolute',
-      right: '30px',
-      marginTop: '30px'
+      position: 'relative',
+      marginTop: '30px',
+      marginLeft: '15%',
     },
   },
   searchInput: {
@@ -83,7 +79,6 @@ const useStyles = makeStyles((theme) => ({
     float: 'left'
   },
   iconPadding: {
-    paddingTop: 10,
     float: 'right',
   },
   iconPaddingRight: {
@@ -100,6 +95,17 @@ export default function Multichart() {
   const classes = useStyles();
 
   const [showMode, setShowMode] = React.useState(1);
+  const [displayModeValue1, setDisplayModeValue1] = React.useState(1);
+  const [displayModeValue2, setDisplayModeValue2] = React.useState(0);
+  const [displayModeValue3, setDisplayModeValue3] = React.useState(0);
+  const [displayModeValue4, setDisplayModeValue4] = React.useState(0);
+  const [displayModeValue5, setDisplayModeValue5] = React.useState(0);
+  const [displayModeValue6, setDisplayModeValue6] = React.useState(0);
+  const [displayModeValue7, setDisplayModeValue7] = React.useState(0);
+  const [displayModeValue8, setDisplayModeValue8] = React.useState(0);
+  const [displayModeValue9, setDisplayModeValue9] = React.useState(0);
+  const [symbolAddress, setSymbolAddress] = React.useState(null);
+  const [symbolName, setSymbolName] = React.useState(null);
 
   // let displayMode = 9;
   // displayMode = (showMode === 0)? displayMode = 9: displayMode = 12;
@@ -112,6 +118,53 @@ export default function Multichart() {
     setShowMode(!showMode);
   };
 
+  const onClickBtn = (index) => {
+    if (index === 1) {
+      setDisplayModeValue1(0);
+    } else if (index === 2) {
+      setDisplayModeValue2(0);
+    } else if (index === 3) {
+      setDisplayModeValue3(0);
+    } else if (index === 4) {
+      setDisplayModeValue4(0);
+    } else if (index === 5) {
+      setDisplayModeValue5(0);
+    } else if (index === 6) {
+      setDisplayModeValue6(0);
+    } else if (index === 7) {
+      setDisplayModeValue7(0);
+    } else if (index === 8) {
+      setDisplayModeValue8(0);
+    } else if (index === 9) {
+      setDisplayModeValue9(0);
+    }
+  }
+
+  const onSymbol = (symbolAddress, symbolName) => {
+    setSymbolAddress(symbolAddress);
+    setSymbolName(symbolName);
+
+    if (!displayModeValue1) {
+      setDisplayModeValue1(1);
+    } else if (!displayModeValue2) {
+      setDisplayModeValue2(1);
+    } else if (!displayModeValue3) {
+      setDisplayModeValue3(1);
+    } else if (!displayModeValue4) {
+      setDisplayModeValue4(1);
+    } else if (!displayModeValue5) {
+      setDisplayModeValue5(1);
+    } else if (!displayModeValue6) {
+      setDisplayModeValue6(1);
+    } else if (!displayModeValue7) {
+      setDisplayModeValue7(1);
+    } else if (!displayModeValue8) {
+      setDisplayModeValue8(1);
+    } else if (!displayModeValue9) {
+      setDisplayModeValue9(1);
+    }
+  }
+
   let leftContainer = (
     <div className={showMode ? classes.leftSide : classes.leftSideOther}>
       <div className={'row'}>
@@ -123,7 +176,7 @@ export default function Multichart() {
       </div>
       <div style={{ display: 'flex' }}>
         <div className={classes.searchInput}>
-          <div>
+          <div style={{ maxWidth: '400px' }}>
             <SearchInput />
           </div>
         </div>
@@ -135,31 +188,31 @@ export default function Multichart() {
       </div>
       <Grid item xs={12} lg={12} container>
         <Grid item xs={4} lg={4} style={{ padding: '5px' }}>
-          <Panel />
+          <Panel displayMode={displayModeValue1} symbolAddress={symbolAddress} symbolName={symbolName} onClickBtn={onClickBtn} onClickIndex={1} />
         </Grid>
         <Grid item xs={4} style={{ padding: '5px' }}>
-          <Panel />
+          <Panel displayMode={displayModeValue2} symbolAddress={symbolAddress} symbolName={symbolName} onClickBtn={onClickBtn} onClickIndex={2} />
         </Grid>
         <Grid item xs={4} style={{ padding: '5px' }}>
-          <Panel />
+          <Panel displayMode={displayModeValue3} symbolAddress={symbolAddress} symbolName={symbolName} onClickBtn={onClickBtn} onClickIndex={3} />
         </Grid>
         <Grid item xs={4} style={{ padding: '5px' }}>
-          <Panel />
+          <Panel displayMode={displayModeValue4} symbolAddress={symbolAddress} symbolName={symbolName} onClickBtn={onClickBtn} onClickIndex={4} />
         </Grid>
         <Grid item xs={4} style={{ padding: '5px' }}>
-          <Panel />
+          <Panel displayMode={displayModeValue5} symbolAddress={symbolAddress} symbolName={symbolName} onClickBtn={onClickBtn} onClickIndex={5} />
         </Grid>
         <Grid item xs={4} style={{ padding: '5px' }}>
-          <Panel />
+          <Panel displayMode={displayModeValue6} symbolAddress={symbolAddress} symbolName={symbolName} onClickBtn={onClickBtn} onClickIndex={6} />
         </Grid>
         <Grid item xs={4} style={{ padding: '5px' }}>
-          <Panel />
+          <Panel displayMode={displayModeValue7} symbolAddress={symbolAddress} symbolName={symbolName} onClickBtn={onClickBtn} onClickIndex={7} />
         </Grid>
         <Grid item xs={4} style={{ padding: '5px' }}>
-          <Panel />
+          <Panel displayMode={displayModeValue8} symbolAddress={symbolAddress} symbolName={symbolName} onClickBtn={onClickBtn} onClickIndex={8} />
         </Grid>
         <Grid item xs={4} style={{ padding: '5px' }}>
-          <Panel />
+          <Panel displayMode={displayModeValue9} symbolAddress={symbolAddress} symbolName={symbolName} onClickBtn={onClickBtn} onClickIndex={9} />
         </Grid>
       </Grid>
     </div>
@@ -169,11 +222,11 @@ export default function Multichart() {
 
   if (showMode) {
     container = (
-      <Grid className = {classes.subContainer} container spacing={3} item xs={12}>
+      <Grid className={classes.subContainer} container spacing={3} item xs={12}>
         <Grid item xs={9} lg={9} md={8} sm={12}>
           {leftContainer}
         </Grid>
-        <Grid item xs={3} lg={3} md={4} sm={12} className={classes.rightSide}>
+        <Grid item xs={3} lg={3} md={4} sm={6} className={classes.rightSide}>
           <div className={classes.iconPaddingRight}>
             <IconButton color="primary" aria-label="upload picture" component="span" className={classes.iconBtnRight} onClick={handleChangeRight}>
               <FileCopyIcon />
@@ -185,18 +238,20 @@ export default function Multichart() {
               <img className={'img-fluid'} src={rightPoster} width="350" height="100" />
             </a>
           </div>
-          <Input className={classes.inputWidth} />
-          <Tab className={classes.tabContainer} />
+          <div className={classes.inputWidth} >
+            <Input />
+          </div>
+          <Tab className={classes.tabContainer} onSymbol={onSymbol} />
         </Grid>
       </Grid>
     )
   } else {
     container = (
-    <Grid container spacing={3} item xs={12}>
-      <Grid item xs={12}>
-        {leftContainer}
+      <Grid container spacing={3} item xs={12}>
+        <Grid item xs={12}>
+          {leftContainer}
+        </Grid>
       </Grid>
-    </Grid>
     )
   }
 

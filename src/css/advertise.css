@@ -116,6 +116,10 @@ hr {
     font-size: .75rem!important;
 }
 
+.fs6 {
+    font-size: 1.5rem!important;
+}
+
 .img-fluid {
     min-height: 1px;
 }
@@ -147,6 +151,10 @@ hr {
 
 .textSuccess {
     color: #28a745!important;
+}
+
+.textBlue {
+    color: blue!important;
 }
 
 p {
@@ -213,6 +221,7 @@ table, th, td {
 }
 
 .linkText:hover {
+    cursor: pointer;
     text-decoration:underline;
 }
 

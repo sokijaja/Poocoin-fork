@@ -3,8 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
 import Wallet from './wallet';
 import Token from './token';
@@ -41,9 +39,7 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
+        <div>{children}</div>
       )}
     </div>
   );
@@ -73,7 +69,7 @@ export default function CenteredTabs() {
         centered
         className={classes.tabName}
       >
-        <Tab label="Token tx" className={classes.tabTilteLength}/>
+        <Tab label="Token tx" className={classes.tabTilteLength} />
         <Tab label="Wallet tx" className={classes.tabTilteLength} />
       </Tabs>
       <TabPanel value={value} index={0} className={classes.tabpanel}>

@@ -12,6 +12,16 @@ import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import { green } from '@material-ui/core/colors';
 
+const useStyle = makeStyles({
+  formInput: {
+    width: '100%',
+    display: 'block',
+    '& .MuiInputBase-root': {
+      width: '100%'
+    },
+  }
+})
+
 const CssTextField = withStyles({
   root: {
     '& label.Mui-focused': {
@@ -94,13 +104,6 @@ function RedditTextField(props) {
   return <TextField InputProps={{ classes, disableUnderline: true }} {...props} />;
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    textAlign: 'left',
-    padding: '20px 0px 5px 30px',
-  },
-}));
-
 const ValidationTextField = withStyles({
   root: {
     '& input:valid + fieldset': {
@@ -128,12 +131,11 @@ const theme = createTheme({
 });
 
 export default function CustomizedInputs() {
-  const classes = useStyles();
-
+  const classes = useStyle();
   return (
-    <form className={classes.root} noValidate>
-      <FormControl className={classes.form}>
-        <BootstrapInput defaultValue="filter..." id="filter" className={classes.input} />
+    <form noValidate>
+      <FormControl className={classes.formInput}>
+        <BootstrapInput placeholder="filter..." id="filter" />
       </FormControl>
     </form>
   );

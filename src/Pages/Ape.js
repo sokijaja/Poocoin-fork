@@ -1,9 +1,13 @@
-import React from 'react';
-
+/* eslint-disable no-loop-func */
+import React, { Component, useEffect, useState } from 'react';
 import { makeStyles, createTheme, ThemeProvider } from '@material-ui/core/styles';
 import { Card, Button, FormControl, Select, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import InLineLink from '../Component/InLineLink';
 import { green } from '@material-ui/core/colors';
+import { apeLists } from '../PooCoin/index.js';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+
 const useStyles = makeStyles(theme => ({
   root: {
     textAlign: '-webkit-center',
@@ -86,6 +90,55 @@ const tokensVersion2 = [
   {token: {name1: 'BabyMNG', name2: 'BabyMNG'}, creationTime: '7:00:31 AM', duration: '1d 12:01:48', contract: 'https://bscscan.com/address/0x9477f61bafaa1a73afb95efbcca7e318b734d9b9#code', holders: 'https://bscscan.com/token/0x9477f61bafaa1a73afb95efbcca7e318b734d9b9#balances', bnbLPHolders: 'https://bscscan.com/token/0x9b44864B72C0D90Cd4942921505b254b0998B36E#balances', ape: 'https://poocoin.app/swap?outputCurrency=0xa5503ffaf57566bb1996f3885cade1f92fe84fc8'}
 ];
 
+async function getTokenName(values) {
+   
+   const data = JSON.stringify({values: values});
+
+    return await axios.get('http://localhost:5000/token/getToken/' + data);
+}
+
+function ApeTable(props) {
+  const values = props.values;
+  const classes = props.styleName;
+
+  // let items = [];
+  // getTokenName(values).then(res => {
+  //   items = res.data;
+  //   console.log(items);
+  // });
+  // console.log(items);
+  return (
+    values.map((item, index) =>
+      <TableRow key={index}>
+        <TableCell component="th" scope="row" align="center">
+          <a href={"https://poocoin.app/tokens/" + item.from} target="_blank" rel="noreferrer">
+            {item.symbol} <br></br>
+            <span style={{color: '#adb5bd'}}>{item.name}</span>
+          </a>
+        </TableCell>
+        <TableCell align="center">
+          {new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds()}<br></br>    
+          <span style={{ color: '#adb5bd', fontSize: '14px' }}>00:01:12 Since creation  </span>
+        </TableCell>
+        <TableCell style={{'width': '240px'}}>
+            <div style={{ float: 'left', display: 'inline-block' }}><InLineLink fontSize='14px' url={'https://bscscan.com/address/' + item.from + '#code'} text="Contract" target="_blank"></InLineLink></div>
+            <div style={{float: 'right'}}><InLineLink fontSize='14px'  url={'https://bscscan.com/token/' + item.from + '#balances'} text="Holders" target="_blank"></InLineLink></div><br></br>
+            <div style={{float: 'right'}}><InLineLink fontSize='14px' url={'https://bscscan.com/token/' + item.to + '#balances'} text="BNB LP Holders" target="_blank"></InLineLink></div>
+        </TableCell>
+        <TableCell align="center">
+            <ThemeProvider theme={theme}>
+              <a href={'https://poocoin.app/swap?outputCurrency=' + item.from} target="_blank" rel="noreferrer">
+                <Button style={{color: 'white'}} variant="contained" color="primary" className={classes.margin}>
+                    Ape
+                </Button>
+              </a>
+            </ThemeProvider>
+        </TableCell>
+      </TableRow>
+    )
+  );
+}
+
 export default function Ape() {
   const classes = useStyles();
   const [version, setVersion] = React.useState(1);  
@@ -94,9 +147,23 @@ export default function Ape() {
     console.log(event.target.value);
     let value = event.target.value;
     setVersion(value);
-    value == 1? setToken(tokensVersion1):setToken(tokensVersion2);
+    value === 1? setToken(tokensVersion1):setToken(tokensVersion2);
     console.log(value);
   };
+
+  const [apeArray, setApeArray] = useState([]);
+
+  const setApeArrayData = (data) => {
+    // getTokenName(data).then(res => {
+    //   setApeArray(res.data);
+    // });
+    setApeArray(data);
+  }
+
+  useEffect(() => {
+    apeLists(setApeArrayData);
+  }, []);
+
   return (
     <div className={classes.root}>
       <div style={{textAlign: '-webkit-center'}}>
@@ -143,7 +210,8 @@ export default function Ape() {
                 </TableRow>
               </TableHead>
               <TableBody>
-              {
+                <ApeTable values={apeArray} styleName={classes}/>
+              {/* {
                 token.map((token, _) =>(
                   <TableRow key={token.token.name1}>
                     <TableCell component="th" scope="row">
@@ -167,7 +235,7 @@ export default function Ape() {
                         </ThemeProvider>
                     </TableCell>
                   </TableRow>
-                ))}
+                ))} */}
               </TableBody>
             </Table>
           </TableContainer>

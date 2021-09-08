@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/alt-text */
-import React from "react";
+import React, {useState} from "react";
 import Grid from '@material-ui/core/Grid';
 import Chart from '../Component/about/chart';
 import Abouttab from '../Component/about/tab';
@@ -18,6 +18,8 @@ import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 import FormControl from '@material-ui/core/FormControl';
 import SelectBox from '../Component/about/select';
 import LanguageIcon from '@material-ui/icons/Language';
+import {tokenBalance, bnbBalance, getRate, tokenSwap, poocoinBalance} from '../PooCoin';
+
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -80,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
     width: '350px !important',
     paddingTop: '0px !important',
     marginLeft: '0px !important',
-    height: '30px',
+    height: '30px'
   },
   subContainer: {
     flexWrap: 'nowrap',
@@ -97,7 +99,6 @@ const useStyles = makeStyles((theme) => ({
   poocoinToBNB: {
     float: 'left',
     alignItems: 'center',
-    fontWeight: 700,
     minWidth: 300
   },
   website: {
@@ -108,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#303030',
     color: '#fff',
     boxShadow: 'inset 0 1px 0 hsl(0deg 0% 100% / 15%), 0 1px 1px rgb(0 0 0 / 8%)',
-    height: 30,
+    height: 38,
     marginRight: 10
   },
   linkName: {
@@ -125,18 +126,17 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 10,
     left: '-80%'
   },
-  infoBtn: {
-    backgroundColor: '#fff !important',
-    height: 35,
-    top: 10,
-    float: 'left',
-    marginRight: 10,
-    left: '-80%'
-  },
   infoBtnRight: {
     backgroundColor: '#fff !important',
     top: '46px',
-    left: '75%'
+    left: '40%',
+    zIndex: 99
+  },
+  btnchange: {
+    backgroundColor: '#fff !important',
+    top: '5px',
+    // left: '40%',
+    zIndex: 99
   },
   bscBtn: {
     color: '#fff',
@@ -214,25 +214,38 @@ export default function About() {
   const classes = useStyles();
 
   const [showMode, setShowMode] = React.useState(1);
+  const [pairRate, setPairRate] = React.useState();
 
   const handleChange = () => {
     setShowMode(!showMode);
   };
+
+
+  const setTokenRate = async (data) => {
+    console.log(data);
+    await setPairRate(data);
+  };
+
+  const tokenIn = "0xb27adaffb9fea1801459a1a81b17218288c097cc";
+  const tokenOut = "0xe9e7cea3dedca5984780bafc599bd69add087d56";
+  try {
+    getRate(tokenIn, tokenOut, setTokenRate);
+  } catch(e) {
+
+  }
   const handleChangeLeft = () => {
     setShowMode(!showMode);
   };
+
+
+
 
 
   let rightContainer = (
       <Grid className={showMode ? classes.rightSide : classes.rightSideOther}>
         <Grid item container xs={12}>
           <Grid xs={12} container className={classes.rows}>
-            <Grid xs={2} className={classes.iconPadding}>
-              <Button className={classes.infoBtn} onClick={handleChange}  >
-                <DoubleArrowIcon /> Info
-              </Button>
-            </Grid>
-            <Grid xs={6} className={classes.poocoinToBNB} container>
+            <Grid xs={8} className={classes.poocoinToBNB} container>
                 <img src={PoocoinIcon} height="30"/>
                 <Grid>
                   PooCoin (POOCOIN/BNB)
@@ -247,21 +260,16 @@ export default function About() {
                 <img src={BSC} height="20" className={classes.bscLink}/>
               </Button>
               <Grid>
-                <Button className={classes.btn}><LanguageIcon />Website</Button>
-                <Button className={classes.btn}><TelegramIcon className={classes.telegram}/>Telegram</Button> 
+                <Button className={classes.btn} href="http://localhost/about"><LanguageIcon />Website</Button>
+                <Button className={classes.btn} href="https://t.me/poocointokenchat"><TelegramIcon className={classes.telegram}/>Telegram</Button>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
         <Grid xs={12} container className={classes.rows}>
-          <Grid xs={5}>
-            <FormControl>
+          <Grid xs={6} style={{ flexBasis: 'auto' }}>
               <SearchInput className={classes.inputCss}/>
-            </FormControl>
           </Grid>
-          {/* <Grid xs={7} className={classes.position}>
-            <LanguageIcon />Website <TelegramIcon className={classes.telegram}/>Telegram
-          </Grid> */}
         </Grid>
         <Grid container xs={12} className={classes.rows}>
           <Button variant="contained" className={classes.reloadBtn}>
@@ -282,11 +290,11 @@ export default function About() {
       container = (
         <Grid container item spacing={3} xs={12}>
           <Grid item xs={4} lg={4} md={4} sm={12} className={classes.leftSide}>
-            <div className={classes.iconPaddingRight}>
+            {/* <div className={classes.iconPaddingRight}> */}
               <Button className={classes.infoBtnRight} onClick={handleChange}>
                 <DoubleArrowIcon /> Info
               </Button>
-            </div>
+            {/* </div> */}
             <Abouttab className={classes.tabContainer}/>
           </Grid>
           <Grid item xs={8} lg={8} md={8} sm={12}>
@@ -296,10 +304,48 @@ export default function About() {
       );
     } else{
       container = (
-        <Grid className={classes.subContainer} container item xs={12}>
-          <Grid item xs={12} className={classes.rightContainer}>
-            {rightContainer}
+        <Grid xs={12}>
+          <Grid item container xs={12}>
+            <Grid xs={12} container className={classes.rows}>
+              <Grid xs={8} className={classes.poocoinToBNB} container>
+                    <Button className={classes.btnchange} onClick={handleChange}>
+                      <DoubleArrowIcon /> Info
+                    </Button>
+                  <img src={PoocoinIcon} style={{marginLeft: 10}} height="30"/>
+                  <Grid>
+                    PooCoin (POOCOIN/BNB)
+                    <div className={classes.priceValue}>
+                      $2.4498
+                    </div>
+                  </Grid>
+                  <StarOutlineIcon />
+              </Grid>
+              <Grid xs={4} className={classes.position}>
+                <Button className={classes.bscBtn}>
+                  <img src={BSC} height="20" className={classes.bscLink}/>
+                </Button>
+                <Grid>
+                  <Button className={classes.btn}><LanguageIcon />Website</Button>
+                  <Button className={classes.btn}><TelegramIcon className={classes.telegram}/>Telegram</Button> 
+                </Grid>
+              </Grid>
+            </Grid>
           </Grid>
+          <Grid xs={12} container className={classes.rows}>
+            <Grid xs={6} style={{ flexBasis: 'auto' }}>
+                <SearchInput className={classes.inputCss}/>
+            </Grid>
+          </Grid>
+          <Grid container xs={12} className={classes.rows}>
+            <Button variant="contained" className={classes.reloadBtn}>
+              Reload
+            </Button>
+            {/* <SearchInput className={classes.inputCss}/> */}
+            <SelectBox className={classes.selectBox} />
+            <Switch />
+          </Grid>
+          <Chart/>
+          <TableTab />
         </Grid>
       );
     } 
@@ -310,7 +356,7 @@ export default function About() {
         <Grid item xs={12}>
           <div className={classes.title}>
             PooCoin 
-            <Button variant="contained" className={classes.buyBtn}>Buy</Button>
+            <Button variant="contained" className={classes.buyBtn} href="/swap?outputCurrency=0xB27ADAfFB9fEa1801459a1a81B17218288c097cc">Buy</Button>
           </div>
           <div className={classes.subDesc}>Set slippage to 9% on pancakeswap.</div>
           <div className={classes.subDesc}>
@@ -328,11 +374,11 @@ export default function About() {
           <div className={classes.desc}>Reflect token on the Binance Smart Chain.</div>
           <div className={classes.desc}>A 8% fee is charged on each transaction. 4% is distributed to other token holders and 4% is burned.</div>
           <div className={classes.desc}>Initial supply: 10,000,000. No more than 100,000 can be traded in 1 transaction.</div>
-          <div className={classes.link}><Link to="#" className={classes.linkName}>Medium</Link></div>
-          <div className={classes.link}><Link to="#" className={classes.linkName}>Twitter</Link></div>
-          <div className={classes.link}><Link to="#" className={classes.linkName}>Telegram</Link></div>
-          <div className={classes.link}><Link to="#" className={classes.linkName}>Reddit</Link></div>
-          <div className={classes.link}><Link to="#" className={classes.linkName}>Discord</Link></div>
+          <div className={classes.link}><Link href="https://poocoin.medium.com/" className={classes.linkName}>Medium</Link></div>
+          <div className={classes.link}><Link href="https://twitter.com/poocoin_token" className={classes.linkName}>Twitter</Link></div>
+          <div className={classes.link}><Link href="https://t.me/poocointokenchat" className={classes.linkName}>Telegram</Link></div>
+          <div className={classes.link}><Link href="https://www.reddit.com/r/PooCoin/" className={classes.linkName}>Reddit</Link></div>
+          <div className={classes.link}><Link href="https://discord.gg/8NhHZNWhVf" className={classes.linkName}>Discord</Link></div>
         </Grid>
         {container}
       </Grid>

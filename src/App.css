@@ -1,8 +1,8 @@
 .App {
   text-align: center;
-  background-color: #262626;
-  min-height: calc(100vh);
-  color: 'white';
+  background-color: #e9ecef !important;
+  /* min-height: calc(100vh); */
+  color: "white";
 }
 
 .App-logo {

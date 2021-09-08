@@ -65,3 +65,27 @@
 .MuiSelect-selectMenu {
   width: 200px !important;
 }
+
+.App > .chart-container {
+  height: 285px;
+}
+
+.tv-lightweight-charts > table {
+  background-color: #141722;
+}
+
+#scrollable-auto-tabpanel-0 > div > p > div > table > tbody > tr > th {
+  cursor: pointer;
+}
+
+#scrollable-auto-tabpanel-0 > div > p > div > table > tbody > tr > th:hover {
+  text-decoration: underline;
+}
+
+#scrollable-auto-tabpanel-1 > div > p > div > table > tbody > tr > th {
+  cursor: pointer;
+}
+
+#scrollable-auto-tabpanel-1 > div > p > div > table > tbody > tr > th:hover {
+  text-decoration: underline;
+}

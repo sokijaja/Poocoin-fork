@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
       marginTop: theme.spacing(2),
     },
     height: '310px',
-    backgroundColor: '#141722!important'
+    backgroundColor: '#141722!important',
   },
   MulAlertPadding: {
     padding: '0px !important',
@@ -29,18 +29,29 @@ const useStyles = makeStyles((theme) => ({
     color: '#fff'
   },
   chart: {
-    zIndex: 100000
+    // zIndex: 1
   },
   chartPan: {
     '& .tradingview-widget-copyright': {
       display: 'none',
-    }
+    },
+    color: '#fff'
+  },
+  chartContainer: {
+    height: 285
   }
 }));
 
-export default function TransitionAlerts() {
+export default function TransitionAlerts({ displayMode, symbolAddress, symbolName, onClickBtn, onClickIndex }) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
+
+  let chart;
+  if (displayMode) {
+    chart = (
+      <Chart className={classes.chart} symbolAddress={symbolAddress} symbolName={symbolName} />
+    );
+  }
 
   return (
     <div className={classes.root}>
@@ -50,12 +61,14 @@ export default function TransitionAlerts() {
           icon={false}
           action={
             <IconButton
+              onClick={() => {
+                setOpen(false);
+                setOpen(true);
+                onClickBtn(onClickIndex);
+              }}
               aria-label="close"
               color="inherit"
               size="small"
-              onClick={() => {
-                setOpen(false);
-              }}
             >
               <CloseIcon className={classes.closeIcon} fontSize="inherit" />
             </IconButton>
@@ -63,9 +76,9 @@ export default function TransitionAlerts() {
         >
         </Alert>
         <div className={classes.chartPan}>
-          <Chart className={classes.chart} />
+          {chart}
         </div>
       </Collapse>
-    </div>
+    </div >
   );
 }

@@ -3,8 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
 import VettedTable from './vetted';
 import UnvettedTable from './unvetted';
@@ -40,9 +38,7 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
+        <div>{children}</div>
       )}
     </div>
   );
@@ -63,7 +59,7 @@ export default function CenteredTabs() {
   };
 
   return (
-    <Paper className={classes.root}>
+    <div className={classes.root}>
       <Tabs
         value={value}
         onChange={handleChange}
@@ -71,7 +67,7 @@ export default function CenteredTabs() {
         textColor="primary"
         centered
       >
-        <Tab label="Vetted" className={classes.tabTilteLength}/>
+        <Tab label="Vetted" className={classes.tabTilteLength} />
         <Tab label="Un-Vetted" className={classes.tabTilteLength} />
       </Tabs>
       <TabPanel value={value} index={0} className={classes.tabpanel}>
@@ -80,6 +76,6 @@ export default function CenteredTabs() {
       <TabPanel value={value} index={1}>
         <UnvettedTable />
       </TabPanel>
-    </Paper>
+    </div>
   );
 }

@@ -1,73 +1,87 @@
-import React from 'react';
-import Tab from '../Component/basic/hometab';
-import Input from '../Component/basic/input';
-import TokenSelect from '../Component/TokenSelect';
-import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
+import React from "react";
+import Tab from "../Component/basic/hometab";
+import Input from "../Component/basic/input";
+import TokenSelect from "../Component/TokenSelect";
+import { makeStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
 
 const useStyles = makeStyles({
   root: {
-    textAlign: 'center',
-
+    textAlign: "center",
+    color: "black",
   },
   title: {
-    color: 'white',
-    fontSize: '2.5em',
+    fontSize: "2.5em",
     fontWeight: 700,
   },
   tokenSelect: {
-    marginTop: '1em',
-    display: 'flex',
-    justifyContent: 'center'
+    marginTop: "1em",
+    display: "flex",
+    justifyContent: "center",
   },
   centerText: {
     fontSize: 30,
-    color: 'white',
-    marginTop: 10
+    marginTop: 10,
   },
   bottomText: {
-    fontSize: 25,
-    color: 'white',
-    marginTop: 10
+    fontSize: '20px !important',
+    marginTop: 10,
   },
   inputWidth: {
-    width: '100%',
-
+    width: "100%",
+    padding: "1em 0em 1em 1em",
   },
   tabContainer: {
-    minHeight: '700px !important'
+    minHeight: "700px !important",
   },
   rightSide: {
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginTop: 17,
-    backgroundColor: '#303030',
+    margin: '17px auto 20px auto',
+    backgroundColor: "#303030",
     maxWidth: 800,
-    minWidth: 500
+    minWidth: 500,
+    borderRadius: '8px',
+    padding: '10px',
   },
   topSide: {
-    marginLeft: '19%',
+    marginLeft: "19%",
     marginTop: 20,
-    color: 'white'
+    color: "white",
   },
+  pageHeader: {
+    backgroundColor: "#ffc107",
+    height: "auto",
+    padding: '20px',
+    color: 'black',
+  }
 });
 
 export default function Home() {
   const classes = useStyles();
 
   return (
-    <div className={classes.root} >
-      <h1 className={classes.title}>BSC Charts</h1>
-      <div className={classes.centerText}>View price charts for any token in your wallet (binance smart chain)</div>
-      <div className={classes.bottomText}>Telegram public chat:<a href="/" style={{ color: '#74aef7', fontSize: 25 }}> http://t.me/poocointokenchat </a></div>
+    <div className={classes.root}>
+      <div className={classes.pageHeader}>
+        <h1 className={classes.title}>BSC Charts</h1>
+        <div className={classes.centerText}>
+          View price charts for any token in your wallet (binance smart chain)
+        </div>
+        <div className={classes.bottomText}>
+          Telegram public chat:
+          <a className={'textBlue fs5 linkText'}>
+            {" "}
+            http://t.me/poocointokenchat{" "}
+          </a>
+        </div>
+      </div>
       <div className={classes.tokenSelect}>
         <TokenSelect />
       </div>
       <div className={classes.rightSide}>
-        <Input className={classes.inputWidth} />
+        <div className={classes.inputWidth}>
+          <Input />
+        </div>
         <Tab className={classes.tabContainer} />
       </div>
-
     </div>
-  )
+  );
 }

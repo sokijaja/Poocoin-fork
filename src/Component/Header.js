@@ -1,10 +1,18 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable jsx-a11y/alt-text */
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, Button, Grid, Hidden } from '@material-ui/core';
-import { useStatePersist } from 'use-state-persist';
+import { AppBar, Toolbar, Button, Grid, Hidden, NativeSelect, Modal, Fade } from '@material-ui/core';
 import { useWallet } from 'use-wallet'
 import PoocoinIcon from '../Images/poocoin512.png';
+import BNBIcon from '../Images/bnb1.png';
+import TelegramIcon from '../Images/telegram.svg';
+import { poocoinBalance } from '../PooCoin/index.js';
+import { connectType, networkValue } from '../constants';
+import { connectWalletStatus } from '../constants';
+import Web3 from 'web3'
+import { switchNetwork } from '../PooCoin/util';
 
 const useStyles = makeStyles((theme) => ({
   appBarSolid: {
@@ -15,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: '3px solid #484e53',
     position: 'initial'
   },
+  Toolbar: {
+    padding: "0px 50px 0px 50px",
+  },
   linkGroup: {
     textAlign: 'center',
     display: 'content'
@@ -24,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
     margin: 12,
     textDecoration: 'blink',
     color: 'white',
-    // fontWeight:'bold',
     '&:hover': {
       textDecoration: 'underline',
     },
@@ -34,10 +44,22 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     marginRight: 15
   },
-  chainLink: {
-    fontSize: 12,
+  chainLinkInput: {
     color: '#3eb8ff',
-    textDecoration: 'blink'
+    '&:before': {
+      display: 'none'
+    },
+    '&:after': {
+      display: 'none'
+    },
+    '& svg': {
+      display: 'none'
+    }
+  },
+  chainLink: {
+    fontSize: 15,
+    backgroundColor: '#262626!important',
+    color: 'white',
   },
   iconLink: {
     display: 'flex',
@@ -61,79 +83,250 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.common.white,
     backgroundColor: '#53CA42',
   },
+  coinAmount: {
+    color: '#adb5bd',
+    textAlign: 'left',
+    fontSize: 14
+  },
+  amountColor: {
+    color: '#28a745'
+  },
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paper: {
+    backgroundColor: '#e9ecef',
+    border: 'none',
+    boxShadow: theme.shadows[5],
+    padding: '40px 30px 30px 30px',
+    display: 'grid',
+    borderRadius: '8px',
+  },
+  connectBtn: {
+    borderRadius: '4px',
+    color: 'white',
+    backgroundColor: '#262626',
+    marginBottom: '.5rem',
+    padding: '5px',
+  },
+  connectBtnDisable: {
+    borderRadius: '4px',
+    color: 'white',
+    backgroundColor: '#262626',
+    marginBottom: '.5rem',
+    padding: '5px',
+    cursor: 'not-allowed!important'
+  },
 }));
 
-export default function Header() {
+export default function Header(props) {
+  const web3 = new Web3(window.ethereum);
   const classes = useStyles();
+  const { connectControl, changeNetwork, networkChainId } = props;
+  const history = useHistory();
 
-  const [userDisconnected, setUserDisconnected] = useStatePersist(true);
-  const { account, connect, reset } = useWallet()
+  let connectStatus = localStorage.getItem('PoocoinConnectStatus'); //status connect to metamask
+  if (connectStatus == null) {
+    connectStatus = connectWalletStatus.disconnect;
+    localStorage.setItem('PoocoinConnectStatus', connectWalletStatus.disconnect);
+  }
 
-  const connectOrDisconnect = () => {
-    if (account) {
-        setUserDisconnected(true);
-        reset();
-    } else {
-        setUserDisconnected(false);
-        connect('injected')
+  let [userDisconnected, setUserDisconnected] = useState(connectStatus);
+
+  const { account, connect, reset, status } = useWallet()
+  const [poocoinBalanceData, setPoocoinBalanceData] = useState([]);
+  const [priceData, setPriceData] = useState([]);
+  const [network, setNetwork] = useState(localStorage.getItem('PoocoinChainId'));
+  console.log(useWallet());
+
+  const handleNetworkChange = (event) => {                         //select network chain
+    if (event.target.value == networkValue.Binance) {
+      history.push('/')
+    } else if (event.target.value == networkValue.Polygon) {
+      history.push('/polygon')
+    } else if (event.target.value == networkValue.Kuchain) {
+      history.push('/kuchain')
+    }
+    setNetwork(event.target.value);
+    changeNetwork(event.target.value);
+    reset()
+    setUserDisconnected(connectWalletStatus.disconnect);
+    localStorage.setItem('PoocoinConnectStatus', connectWalletStatus.disconnect);
+  }
+
+  const connectOrDisconnect = () => {                               //connect and disconnect button event
+    if (userDisconnected == connectWalletStatus.connect) {
+      setUserDisconnected(connectWalletStatus.disconnect);
+      localStorage.setItem('PoocoinConnectStatus', connectWalletStatus.disconnect);
+      reset();
+      poocoinBalance(account, poocoinBalanceValues);
+    } else {                              //success connect
+      setModalOpen(true)
     }
   }
 
+  const poocoinBalanceValues = (data) => {
+    setPoocoinBalanceData(data);
+  }
+
+  const connectMethod = value => async () => {
+    await connectControl(value);                                //metamask, walletconnect, binance-chain
+    let currentChainId = parseInt(localStorage.getItem("PoocoinChainId"));
+    let metamaskChainId = parseInt(web3.currentProvider.chainId, 16);
+    if (currentChainId != metamaskChainId) {
+      await switchNetwork(currentChainId);                       //switch network in metamask
+    } else {
+      connect('injected');
+      setUserDisconnected(connectWalletStatus.connect);          //connect btn
+      localStorage.setItem('PoocoinConnectStatus', 1);
+    }
+    setModalOpen(false);
+  }
+
   useEffect(() => {
-      if (!account && !userDisconnected) {
-          connect();
-      }
+    if (!account && userDisconnected == connectWalletStatus.connect) {
+      connect();
+    }
+    fetch('https://api.coingecko.com/api/v3/simple/price?ids=poocoin&vs_currencies=usd')
+      .then(res => res.json())
+      .then(data => {
+        setPriceData(data.poocoin.usd);
+      })
+      .catch(err => {
+
+      })
   }, [account, userDisconnected])
+
+  let coinAmount = '';
+  let connectLabel = 'Connect';
+  if (account && userDisconnected == connectWalletStatus.connect) {
+    coinAmount = (
+      <div>
+        <div>Your <img src={PoocoinIcon} height="18" /> : {poocoinBalanceData} <span className={classes.amountColor}>$0.00</span></div>
+        <div>Your <img src={PoocoinIcon} height="18" /><img src={BNBIcon} height="15" /> LP V1: 0.00 <span className={classes.amountColor}>$0.00</span></div>
+        <div>Your <img src={PoocoinIcon} height="18" /><img src={BNBIcon} height="15" /> LP V2: 0.00 <span className={classes.amountColor}>$0.00</span></div>
+      </div>
+    );
+    connectLabel = (
+      <span>Logout</span>
+    );
+  }
+
+  const [open, setModalOpen] = React.useState(false);
+
+  const modalClose = () => {
+    setModalOpen(false);
+  };
 
   return (
     <AppBar position="fixed" className={classes.appBarSolid}>
-      <Toolbar>
-        <Grid container direction="row" alignItems="center" justifyContent="center">
+      <Toolbar className={classes.Toolbar}>
+        <Grid container direction="row" alignItems="center">
           <Grid item md={4} sm={12} xl={4}>
-            <Grid container alignItems="center" justifyContent="center">
+            <Grid container alignItems="center">
               <Grid item>
                 <a href="/" className={classes.iconLink}>
                   <img src={PoocoinIcon} className={classes.icon}></img>
                   <span>
-                    PooCoin <br/>Charts
+                    PooCoin <br />Charts
                   </span>
                 </a>
               </Grid>
               <Grid item className={classes.chainLinkGroup}>
-                <a href="/" className={classes.chainLink} style={{ color: 'white' }}>
-                  Binance (BSC)
-                </a>
-                <a href="/" className={classes.chainLink}>
-                  Polygon (Matic)
-                </a>
-                <a href="/" className={classes.chainLink}>
-                  KuChain (KCC)
-                </a>
+                <NativeSelect
+                  value={network}
+                  name="age"
+                  onChange={handleNetworkChange}
+                  className={classes.chainLinkInput}
+                  inputProps={{ 'aria-label': 'age' }}
+                >
+                  <option className={classes.chainLink} value={networkValue.Binance}>
+                    Binance (BSC)
+                  </option>
+                  <option className={classes.chainLink} value={networkValue.Polygon}>
+                    Polygon (Matic)
+                  </option>
+                  <option className={classes.chainLink} value={networkValue.Kuchain}>
+                    KuChain (KCC)
+                  </option>
+                </NativeSelect>
               </Grid>
-              <Grid item>
-                <span style={{ borderRadius: '999px', backgroundColor: 'white'}}>
-                  <img src={PoocoinIcon} height="18"/>
-                </span>
-              </Grid>
+              {
+                networkChainId == networkValue.Binance
+                  ?
+                  <Grid item>
+                    <span style={{ borderRadius: '999px', backgroundColor: 'white', padding: '5px' }}>
+                      <img src={PoocoinIcon} height="18" />
+                    </span>
+                    <span className={classes.amountColor}> ${priceData} </span>
+                    <a href="telegram.com">
+                      <img src={TelegramIcon} height='25' />
+                    </a>
+                  </Grid>
+                  :
+                  <Grid item>
+                    <a href="telegram.com">
+                      <img src={TelegramIcon} height='25' />
+                    </a>
+                  </Grid>
+              }
             </Grid>
           </Grid>
-          <Grid item md={6} sm={6} xl={6}  container justifyContent={'center'} >
-            <div className={classes.linkGroup}>
-              <a className={classes.link} href="/">Charts</a>
-              <a className={classes.link} href="/swap">Trade</a>
-              <a className={classes.link} href="/multichart">Multi&nbsp;Chart</a>
-              <a className={classes.link} href="/about">About</a>
-              <a className={classes.link} href="/tools">Tools</a><br />
-              <a className={classes.link} href="/premium">Premium</a>
-              <a className={classes.link} href="/promote">Advertise</a>
-              <a className={classes.link} href="https://t.me/Poocoin_Pricebot">Free&nbsp;Price&nbsp;Bot</a>
-            </div>
+          {
+            networkChainId == networkValue.Binance &&
+            <Grid item md={5} sm={5} xl={5} container justifyContent={'center'} >
+              <div className={classes.linkGroup}>
+                <Link className={classes.link} to="/">Charts</Link>
+                <Link className={classes.link} to="/swap">Trade</Link>
+                <Link className={classes.link} to="/multichart">Multi&nbsp;Chart</Link>
+                {/* <a className={classes.link} href="/about">About</a>
+                <a className={classes.link} href="/tools">Tools</a><br />
+                <a className={classes.link} href="/premium">Premium</a>
+                <a className={classes.link} href="/promote">Advertise</a>
+                <a className={classes.link} href="https://t.me/Poocoin_Pricebot">Free&nbsp;Price&nbsp;Bot</a> */}
+              </div>
+            </Grid>
+          }
+          {
+            networkChainId == networkValue.Polygon &&
+            <Grid item md={5} sm={5} xl={5} container justifyContent={'center'} >
+              <div className={classes.linkGroup}>
+                <Link className={classes.link} to="/polygon">Charts</Link>
+                <Link className={classes.link} to="/polygonpromote">Advertise</Link>
+              </div>
+            </Grid>
+          }
+          {
+            networkChainId == networkValue.Kuchain &&
+            <Grid item md={5} sm={5} xl={5} container justifyContent={'center'} >
+              <div className={classes.linkGroup}>
+                <Link className={classes.link} to="/kuchain">Charts</Link>
+                <Link className={classes.link} to="/kuchainpromote">Advertise</Link>
+              </div>
+            </Grid>
+          }
+          <Grid item md={2} sm={12} xl={2} container className={classes.coinAmount}>
+            {coinAmount}
           </Grid>
-          <Grid item md={2} sm={12} xl={2}>
-            <Button variant="contained" className={classes.connect} onClick={connectOrDisconnect}>Connect</Button>
+          <Grid item md={1} sm={12} xl={1} container justifyContent={'center'}>
+            <Button variant="contained" className={classes.connect} onClick={connectOrDisconnect}>{connectLabel}</Button>
           </Grid>
         </Grid>
       </Toolbar>
-    </AppBar>
+      <Modal
+        className={classes.modal}
+        open={open}
+        onClose={modalClose}
+      >
+        <div className={classes.paper}>
+          <button className={classes.connectBtn} onClick={connectMethod(connectType.metamask)}>Metamask/TrustWallet</button>
+          <button className={classes.connectBtnDisable}>WalletConnect</button>
+          {network == networkValue.Binance && <button className={classes.connectBtnDisable} >Binance Chain Wallet</button>}
+          <button className={classes.connectBtn} onClick={modalClose}>Close</button>
+        </div>
+      </Modal>
+    </AppBar >
   );
 }

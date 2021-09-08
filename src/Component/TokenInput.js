@@ -35,6 +35,9 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiOutlinedInput-input': {
       padding: '.75rem 0rem .75rem .75rem',
     },
+    '& fieldset': {
+      top: 0,
+    }
   }
 }));
 
