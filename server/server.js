@@ -6,7 +6,7 @@ let bodyParser = require('body-parser');
 // Express Route
 const tokenRoute = require('./routes/token.route')
 const lpaddrRoute = require('./routes/address.route')
-var url = "mongodb://localhost:27017/poocoin";
+var url = "mongodb://192.168.112.98:27017/poocoin";
 
 // Connecting mongoDB Database
 mongoose.Promise = global.Promise;

@@ -26,20 +26,20 @@ const useStyles = makeStyles(theme => ({
     maxWidth: '1116px',
     backgroundColor: '#303032',
     padding: '0 10px',
-    
+
     color: 'white',
-    [theme.breakpoints.down("lg")] : {
+    [theme.breakpoints.down("lg")]: {
       maxWidth: '936px'
-      },
-    [theme.breakpoints.down("md")] : {
+    },
+    [theme.breakpoints.down("md")]: {
       maxWidth: '696px'
-      },
-    [theme.breakpoints.down("sm")] : {
+    },
+    [theme.breakpoints.down("sm")]: {
       maxWidth: '516px'
-      },
-    [theme.breakpoints.down("xs")] : {
+    },
+    [theme.breakpoints.down("xs")]: {
       maxWidth: '476px'
-      },          
+    },
   },
   childCard: {
     maxWidth: '95%',
@@ -47,18 +47,18 @@ const useStyles = makeStyles(theme => ({
     padding: '0 10px',
     marginBottom: '10px',
     color: 'white',
-    [theme.breakpoints.down("lg")] : {
+    [theme.breakpoints.down("lg")]: {
       maxWidth: '95%'
-      },
-    [theme.breakpoints.down("md")] : {
+    },
+    [theme.breakpoints.down("md")]: {
       maxWidth: '95%'
-      },
-    [theme.breakpoints.down("sm")] : {
+    },
+    [theme.breakpoints.down("sm")]: {
       maxWidth: '95%'
-      },
-    [theme.breakpoints.down("xs")] : {
+    },
+    [theme.breakpoints.down("xs")]: {
       maxWidth: '85%'
-      },          
+    },
   },
 }));
 
@@ -66,58 +66,57 @@ const bscToolImageList = [Gemit, Slothi, Notsafemoon, Waterfall, GemProtocol, Ac
 const bscToolTitleList = ['Gemit', 'Slothi', 'Notsafemoon', 'Waterfall', 'GemProtocol', 'Ach', 'Moonlight', 'Pogged', 'Moonarcht'];
 const bscToolLinkList = ['https://waterfallbot.info/', 'https://waterfallbot.info/', 'https://waterfallbot.info/', 'https://waterfallbot.info/', 'https://waterfallbot.info/', 'https://waterfallbot.info/', 'https://waterfallbot.info/', 'https://waterfallbot.info/', 'https://waterfallbot.info/'];
 const bscToolDescList = [
-                      'Telegram bot for multi-chain Ethereum, BSC, Polygon, Solana, Fantom, Avalanche, TomoChain. Provides realtime trades, price, circulating, marketcap and much more ...',
-                      'Telegram bot for multi-chain Ethereum, BSC, Polygon, Solana, Fantom, Avalanche, TomoChain. Provides realtime trades, price, circulating, marketcap and much more ...',
-                      'Telegram bot for multi-chain Ethereum, BSC, Polygon, Solana, Fantom, Avalanche, TomoChain. Provides realtime trades, price, circulating, marketcap and much more ...',
-                      'Telegram bot for multi-chain Ethereum, BSC, Polygon, Solana, Fantom, Avalanche, TomoChain. Provides realtime trades, price, circulating, marketcap and much more ...',
-                      'Telegram bot for multi-chain Ethereum, BSC, Polygon, Solana, Fantom, Avalanche, TomoChain. Provides realtime trades, price, circulating, marketcap and much more ...',
-                      'Telegram bot for multi-chain Ethereum, BSC, Polygon, Solana, Fantom, Avalanche, TomoChain. Provides realtime trades, price, circulating, marketcap and much more ...',
-                      'Telegram bot for multi-chain Ethereum, BSC, Polygon, Solana, Fantom, Avalanche, TomoChain. Provides realtime trades, price, circulating, marketcap and much more ...',
-                      'Telegram bot for multi-chain Ethereum, BSC, Polygon, Solana, Fantom, Avalanche, TomoChain. Provides realtime trades, price, circulating, marketcap and much more ...',
-                      'Telegram bot for multi-chain Ethereum, BSC, Polygon, Solana, Fantom, Avalanche, TomoChain. Provides realtime trades, price, circulating, marketcap and much more ...',
-                    ];
+  'Telegram bot for multi-chain Ethereum, BSC, Polygon, Solana, Fantom, Avalanche, TomoChain. Provides realtime trades, price, circulating, marketcap and much more ...',
+  'Telegram bot for multi-chain Ethereum, BSC, Polygon, Solana, Fantom, Avalanche, TomoChain. Provides realtime trades, price, circulating, marketcap and much more ...',
+  'Telegram bot for multi-chain Ethereum, BSC, Polygon, Solana, Fantom, Avalanche, TomoChain. Provides realtime trades, price, circulating, marketcap and much more ...',
+  'Telegram bot for multi-chain Ethereum, BSC, Polygon, Solana, Fantom, Avalanche, TomoChain. Provides realtime trades, price, circulating, marketcap and much more ...',
+  'Telegram bot for multi-chain Ethereum, BSC, Polygon, Solana, Fantom, Avalanche, TomoChain. Provides realtime trades, price, circulating, marketcap and much more ...',
+  'Telegram bot for multi-chain Ethereum, BSC, Polygon, Solana, Fantom, Avalanche, TomoChain. Provides realtime trades, price, circulating, marketcap and much more ...',
+  'Telegram bot for multi-chain Ethereum, BSC, Polygon, Solana, Fantom, Avalanche, TomoChain. Provides realtime trades, price, circulating, marketcap and much more ...',
+  'Telegram bot for multi-chain Ethereum, BSC, Polygon, Solana, Fantom, Avalanche, TomoChain. Provides realtime trades, price, circulating, marketcap and much more ...',
+  'Telegram bot for multi-chain Ethereum, BSC, Polygon, Solana, Fantom, Avalanche, TomoChain. Provides realtime trades, price, circulating, marketcap and much more ...',
+];
 const IndexList = [...Array(bscToolTitleList.length).keys()];
-console.log(IndexList);
 
-export default function ExternalTools () {
+export default function ExternalTools() {
   const classes = useStyles();
   const theme = useTheme();
   return (
-      <div className={classes.root} >
-        <h1>External Tools</h1>
-        <Card className={classes.card}>
-          <CardContent>
-              <h1>Other websites with useful BSC Tools</h1>
-              <p style={{textAlign:'-webkit-left', marginLeft: '30px'}}>
-                Apply to list your website. Send an email to
-                <InLineLink 
-                url="mailto://promotions@poocoin.app"
-                text="promotions@poocoin.app"
-                ></InLineLink>  
-              </p>
-              {
-              IndexList.map((Index, ind) =>(
-                  <Card className={classes.childCard}>
-                    <CardContent>
-                        <Container style={{padding:'10px'}}>
-                            <Grid container>
-                                <Grid item sm={3} xs={3}>
-                                    <img src={bscToolImageList[Index]} style={{width: '90%'}}></img>
-                                </Grid>
-                                <Grid item sm={9} xs={12}>
-                                    <div style={{textAlign: '-webkit-left'}}>
-                                      <h3 style={{display:'inline-block'}}>{bscToolTitleList[Index]} </h3>&nbsp;
-                                      <InLineLink text={bscToolLinkList[Index]} url='https://www.gemit.app/'></InLineLink><br></br>
-                                      <p>{bscToolDescList[Index]}</p>
-                                    </div>                            
-                                </Grid>
-                            </Grid>
-                        </Container>
-                    </CardContent>
-                </Card>      
-              ))}
-          </CardContent>
-        </Card>
-      </div>
+    <div className={classes.root} >
+      <h1>External Tools</h1>
+      <Card className={classes.card}>
+        <CardContent>
+          <h1>Other websites with useful BSC Tools</h1>
+          <p style={{ textAlign: '-webkit-left', marginLeft: '30px' }}>
+            Apply to list your website. Send an email to
+            <InLineLink
+              url="mailto://promotions@poocoin.app"
+              text="promotions@poocoin.app"
+            ></InLineLink>
+          </p>
+          {
+            IndexList.map((Index, ind) => (
+              <Card className={classes.childCard}>
+                <CardContent>
+                  <Container style={{ padding: '10px' }}>
+                    <Grid container>
+                      <Grid item sm={3} xs={3}>
+                        <img src={bscToolImageList[Index]} style={{ width: '90%' }}></img>
+                      </Grid>
+                      <Grid item sm={9} xs={12}>
+                        <div style={{ textAlign: '-webkit-left' }}>
+                          <h3 style={{ display: 'inline-block' }}>{bscToolTitleList[Index]} </h3>&nbsp;
+                          <InLineLink text={bscToolLinkList[Index]} url='https://www.gemit.app/'></InLineLink><br></br>
+                          <p>{bscToolDescList[Index]}</p>
+                        </div>
+                      </Grid>
+                    </Grid>
+                  </Container>
+                </CardContent>
+              </Card>
+            ))}
+        </CardContent>
+      </Card>
+    </div>
   )
 }

@@ -14,3 +14,8 @@ export const connectWalletStatus = {
   connect: '1',
   disconnect: '2',
 };
+
+export const coin = {
+  USD: 'USD',
+  BNB: 'BNB'
+}

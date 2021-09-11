@@ -27,8 +27,10 @@ import TableTab from "../Component/home/centercontain/tabletab";
 import TokenSelect from "../Component/home/tokenSelect";
 import Select from "react-select";
 import { getReserve } from "../PooCoin";
-
+import { useHistory, useParams } from "react-router";
+import { getLpinfo } from "../actions";
 import { useLocation } from "react-router-dom";
+import { getLpOtherTokensName } from "../actions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
       padding: 0,
     },
+    backgroundColor: '#303032!important'
   },
   input: {
     display: "none",
@@ -97,8 +100,9 @@ export default function Tokens() {
   const [showMode, setShowMode] = useState(1);
   const [priceData, setPriceData] = useState([]);
   const [tokenLp, setToken] = useState([]);
-
-  const lpDatas = [];
+  const history = useHistory();
+  let lpDatas = [];
+  let lpOtherTokensAddress = [];
 
   const tokenName = [];
   const { state } = useLocation();
@@ -108,30 +112,72 @@ export default function Tokens() {
     // setReserveData(data);
   };
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/token/getTokenProps", {
-        params: { foo: state },
-      })
-      .then((res) => {
-        for (var idx in res.data) {
-          let combined_json = {};
-          combined_json["name"] = res.data[idx]["type"];
-          combined_json["token0"] = res.data[idx]["token0"];
-          combined_json["token1"] = res.data[idx]["token1"];
-          combined_json["lp_address"] = res.data[idx]["lp_address"];
-          lpDatas.push(combined_json);
-        }
-      });
+  const tokenId = useParams().id;
 
-    axios
-      .get("http://localhost:5000/token/getName", {
-        params: { foo: state },
-      })
-      .then((res) => {
-        tokenName.push(res.data);
-      });
-  }, []);
+  getLpinfo(tokenId)
+    .then(lpInfos => {
+      for (var idx in lpInfos) {
+        if (lpInfos[idx].token0 == tokenId) {
+          lpOtherTokensAddress.push(lpInfos[idx].token1);
+        } else {
+          lpOtherTokensAddress.push(lpInfos[idx].token0);
+        }
+      }
+    })
+
+  // axios
+  //   .get("http://localhost:5000/token/getTokenProps", {
+  //     params: { foo: tokenId },
+  //   })
+  //   .then((res) => {
+  //     for (var idx in res.data) {
+  //       let combined_json = {};
+  //       combined_json["name"] = res.data[idx]["type"];
+  //       combined_json["token0"] = res.data[idx]["token0"];
+  //       combined_json["token1"] = res.data[idx]["token1"];
+  //       combined_json["lp_address"] = res.data[idx]["lp_address"];
+  //       lpDatas.push(combined_json);
+
+  //       let tokens = [];
+  // for (var idx in lpDatas) {
+  //   let combined_json = {};
+  //   console.log(lpDatas[idx]);
+  //   console.log('***');
+  //   if (lpDatas[idx].token0 == tokenId) {
+  //     axios
+  //       .get("http://localhost:5000/token/getName", {
+  //         params: { foo: lpDatas[idx].token1 },
+  //       })
+  //       .then((res) => {
+  //         combined_json["label"] = res.data.name;
+  //         combined_json["value"] = res.data.name;
+  //         tokens.push(combined_json);
+  //       });
+  //   } else {
+  //     axios
+  //       .get("http://localhost:5000/token/getName", {
+  //         params: { foo: lpDatas[idx].token0 },
+  //       })
+  //       .then((res) => {
+  //         combined_json["label"] = res.data.name;
+  //         combined_json["value"] = res.data.name;
+  //         tokens.push(combined_json);
+  //       });
+  //   }
+  // }
+  // setToken(tokens);
+  //   }
+  // });
+  // useEffect(() => {
+
+  //   axios
+  //     .get("http://localhost:5000/token/getName", {
+  //       params: { foo: tokenId },
+  //     })
+  //     .then((res) => {
+  //       tokenName.push(res.data);
+  //     });
+  // }, []);
 
   const handleChange = () => {
     setShowMode(!showMode);
@@ -140,18 +186,19 @@ export default function Tokens() {
     setShowMode(!showMode);
   };
 
-  const handleTokenPropsChange = (props) => {
-    let tokens = [];
-    for (var idx in props) {
-      let combined_json = {};
-      combined_json["label"] = props[idx]["type"];
-      combined_json["value"] = props[idx]["token0"];
-      tokens.push(combined_json);
-    }
-    setToken(tokens);
+  const handleTokenPropsChange = (tokenAddress) => {
+    // let tokens = [];
+    // for (var idx in props) {
+    //   let combined_json = {};
+    //   combined_json["label"] = props[idx]["type"];
+    //   combined_json["value"] = props[idx]["token0"];
+    //   tokens.push(combined_json);
+    // }
+    // setToken(tokens);
+    history.push(`/tokens/${tokenAddress}`);
   };
 
-  const tokenSelect = (e) => {};
+  const tokenSelect = (e) => { };
 
   let centerContainer = (
     <Grid>
@@ -210,11 +257,11 @@ export default function Tokens() {
         <Button className={classes.button}>Reload</Button>
         <div className={classes.selectBox}>
           <Select
-            defaultValue={tokenLp[0]}
-            options={tokenLp}
+            // defaultValue={tokenLp[0]}
+            // options={''}
             // input={false}
             onChange={tokenSelect}
-            // onInputChange={tokenInputChange}
+          // onInputChange={tokenInputChange}
           ></Select>
         </div>
         <Switch />
@@ -230,7 +277,7 @@ export default function Tokens() {
 
   if (showMode) {
     container = (
-      <Grid container spacing={1} item xs={12}>
+      <Grid container>
         <Grid item xs={3}>
           <Lefttab lpdata={lpDatas} name={tokenName} />
         </Grid>
@@ -246,7 +293,7 @@ export default function Tokens() {
               rel="noreferrer"
             >
               <img
-                class="img-fluid"
+                className={"img-fluid"}
                 src={rightPoster}
                 width="350"
                 height="100"
@@ -271,5 +318,5 @@ export default function Tokens() {
     );
   }
 
-  return <Grid>{container}</Grid>;
+  return <Grid className={classes.root}>{container}</Grid>;
 }

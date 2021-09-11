@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/alt-text */
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Grid from '@material-ui/core/Grid';
 import Chart from '../Component/about/chart';
 import Abouttab from '../Component/about/tab';
@@ -18,7 +18,7 @@ import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 import FormControl from '@material-ui/core/FormControl';
 import SelectBox from '../Component/about/select';
 import LanguageIcon from '@material-ui/icons/Language';
-import {tokenBalance, bnbBalance, getRate, tokenSwap, poocoinBalance} from '../PooCoin';
+import { tokenBalance, bnbBalance, getRate, tokenSwap, poocoinBalance } from '../PooCoin';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -210,7 +210,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function About() {
 
-  
+
   const classes = useStyles();
 
   const [showMode, setShowMode] = React.useState(1);
@@ -222,7 +222,6 @@ export default function About() {
 
 
   const setTokenRate = async (data) => {
-    console.log(data);
     await setPairRate(data);
   };
 
@@ -230,7 +229,7 @@ export default function About() {
   const tokenOut = "0xe9e7cea3dedca5984780bafc599bd69add087d56";
   try {
     getRate(tokenIn, tokenOut, setTokenRate);
-  } catch(e) {
+  } catch (e) {
 
   }
   const handleChangeLeft = () => {
@@ -242,33 +241,98 @@ export default function About() {
 
 
   let rightContainer = (
-      <Grid className={showMode ? classes.rightSide : classes.rightSideOther}>
+    <Grid className={showMode ? classes.rightSide : classes.rightSideOther}>
+      <Grid item container xs={12}>
+        <Grid xs={12} container className={classes.rows}>
+          <Grid xs={8} className={classes.poocoinToBNB} container>
+            <img src={PoocoinIcon} height="30" />
+            <Grid>
+              PooCoin (POOCOIN/BNB)
+              <div className={classes.priceValue}>
+                $2.4498
+              </div>
+            </Grid>
+            <StarOutlineIcon />
+          </Grid>
+          <Grid xs={4} className={classes.position}>
+            <Button className={classes.bscBtn}>
+              <img src={BSC} height="20" className={classes.bscLink} />
+            </Button>
+            <Grid>
+              <Button className={classes.btn} href="http://localhost/about"><LanguageIcon />Website</Button>
+              <Button className={classes.btn} href="https://t.me/poocointokenchat"><TelegramIcon className={classes.telegram} />Telegram</Button>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid xs={12} container className={classes.rows}>
+        <Grid xs={6} style={{ flexBasis: 'auto' }}>
+          <SearchInput className={classes.inputCss} />
+        </Grid>
+      </Grid>
+      <Grid container xs={12} className={classes.rows}>
+        <Button variant="contained" className={classes.reloadBtn}>
+          Reload
+        </Button>
+        {/* <SearchInput className={classes.inputCss}/> */}
+        <SelectBox className={classes.selectBox} />
+        <Switch />
+      </Grid>
+      <Chart />
+      <TableTab />
+    </Grid>
+  );
+
+  let container;
+
+  if (showMode) {
+    container = (
+      <Grid container item spacing={3} xs={12}>
+        <Grid item xs={4} lg={4} md={4} sm={12} className={classes.leftSide}>
+          {/* <div className={classes.iconPaddingRight}> */}
+          <Button className={classes.infoBtnRight} onClick={handleChange}>
+            <DoubleArrowIcon /> Info
+          </Button>
+          {/* </div> */}
+          <Abouttab className={classes.tabContainer} />
+        </Grid>
+        <Grid item xs={8} lg={8} md={8} sm={12}>
+          {rightContainer}
+        </Grid>
+      </Grid>
+    );
+  } else {
+    container = (
+      <Grid xs={12}>
         <Grid item container xs={12}>
           <Grid xs={12} container className={classes.rows}>
             <Grid xs={8} className={classes.poocoinToBNB} container>
-                <img src={PoocoinIcon} height="30"/>
-                <Grid>
-                  PooCoin (POOCOIN/BNB)
-                  <div className={classes.priceValue}>
-                    $2.4498
-                  </div>
-                </Grid>
-                <StarOutlineIcon />
+              <Button className={classes.btnchange} onClick={handleChange}>
+                <DoubleArrowIcon /> Info
+              </Button>
+              <img src={PoocoinIcon} style={{ marginLeft: 10 }} height="30" />
+              <Grid>
+                PooCoin (POOCOIN/BNB)
+                <div className={classes.priceValue}>
+                  $2.4498
+                </div>
+              </Grid>
+              <StarOutlineIcon />
             </Grid>
             <Grid xs={4} className={classes.position}>
               <Button className={classes.bscBtn}>
-                <img src={BSC} height="20" className={classes.bscLink}/>
+                <img src={BSC} height="20" className={classes.bscLink} />
               </Button>
               <Grid>
-                <Button className={classes.btn} href="http://localhost/about"><LanguageIcon />Website</Button>
-                <Button className={classes.btn} href="https://t.me/poocointokenchat"><TelegramIcon className={classes.telegram}/>Telegram</Button>
+                <Button className={classes.btn}><LanguageIcon />Website</Button>
+                <Button className={classes.btn}><TelegramIcon className={classes.telegram} />Telegram</Button>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
         <Grid xs={12} container className={classes.rows}>
           <Grid xs={6} style={{ flexBasis: 'auto' }}>
-              <SearchInput className={classes.inputCss}/>
+            <SearchInput className={classes.inputCss} />
           </Grid>
         </Grid>
         <Grid container xs={12} className={classes.rows}>
@@ -279,97 +343,32 @@ export default function About() {
           <SelectBox className={classes.selectBox} />
           <Switch />
         </Grid>
-        <Chart/>
+        <Chart />
         <TableTab />
       </Grid>
-  );
-
-  let container;
-
-    if(showMode) {
-      container = (
-        <Grid container item spacing={3} xs={12}>
-          <Grid item xs={4} lg={4} md={4} sm={12} className={classes.leftSide}>
-            {/* <div className={classes.iconPaddingRight}> */}
-              <Button className={classes.infoBtnRight} onClick={handleChange}>
-                <DoubleArrowIcon /> Info
-              </Button>
-            {/* </div> */}
-            <Abouttab className={classes.tabContainer}/>
-          </Grid>
-          <Grid item xs={8} lg={8} md={8} sm={12}>
-            {rightContainer}
-          </Grid>
-        </Grid>
-      );
-    } else{
-      container = (
-        <Grid xs={12}>
-          <Grid item container xs={12}>
-            <Grid xs={12} container className={classes.rows}>
-              <Grid xs={8} className={classes.poocoinToBNB} container>
-                    <Button className={classes.btnchange} onClick={handleChange}>
-                      <DoubleArrowIcon /> Info
-                    </Button>
-                  <img src={PoocoinIcon} style={{marginLeft: 10}} height="30"/>
-                  <Grid>
-                    PooCoin (POOCOIN/BNB)
-                    <div className={classes.priceValue}>
-                      $2.4498
-                    </div>
-                  </Grid>
-                  <StarOutlineIcon />
-              </Grid>
-              <Grid xs={4} className={classes.position}>
-                <Button className={classes.bscBtn}>
-                  <img src={BSC} height="20" className={classes.bscLink}/>
-                </Button>
-                <Grid>
-                  <Button className={classes.btn}><LanguageIcon />Website</Button>
-                  <Button className={classes.btn}><TelegramIcon className={classes.telegram}/>Telegram</Button> 
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid xs={12} container className={classes.rows}>
-            <Grid xs={6} style={{ flexBasis: 'auto' }}>
-                <SearchInput className={classes.inputCss}/>
-            </Grid>
-          </Grid>
-          <Grid container xs={12} className={classes.rows}>
-            <Button variant="contained" className={classes.reloadBtn}>
-              Reload
-            </Button>
-            {/* <SearchInput className={classes.inputCss}/> */}
-            <SelectBox className={classes.selectBox} />
-            <Switch />
-          </Grid>
-          <Chart/>
-          <TableTab />
-        </Grid>
-      );
-    } 
+    );
+  }
 
   return (
     <div>
       <Grid container item className={classes.container}>
         <Grid item xs={12}>
           <div className={classes.title}>
-            PooCoin 
+            PooCoin
             <Button variant="contained" className={classes.buyBtn} href="/swap?outputCurrency=0xB27ADAfFB9fEa1801459a1a81B17218288c097cc">Buy</Button>
           </div>
           <div className={classes.subDesc}>Set slippage to 9% on pancakeswap.</div>
           <div className={classes.subDesc}>
-            
+
             <div className={classes.border} container>
               <Grid container>
-                <span style={{ borderRadius: '999px', backgroundColor: 'white', margin: '15px 10px 15px 10px'}}>
-                  <img src={PoocoinIcon} height="70" className={classes.poocoinImg}/> 
+                <span style={{ borderRadius: '999px', backgroundColor: 'white', margin: '15px 10px 15px 10px' }}>
+                  <img src={PoocoinIcon} height="70" className={classes.poocoinImg} />
                 </span>
                 <span className={classes.value}> $3.2345235</span>
               </Grid>
             </div>
-            
+
           </div>
           <div className={classes.desc}>Reflect token on the Binance Smart Chain.</div>
           <div className={classes.desc}>A 8% fee is charged on each transaction. 4% is distributed to other token holders and 4% is burned.</div>

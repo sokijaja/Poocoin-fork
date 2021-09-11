@@ -143,7 +143,6 @@ export default function Multichart() {
   const onSymbol = (symbolAddress, symbolName) => {
     setSymbolAddress(symbolAddress);
     setSymbolName(symbolName);
-
     if (!displayModeValue1) {
       setDisplayModeValue1(1);
     } else if (!displayModeValue2) {

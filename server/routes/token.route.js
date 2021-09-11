@@ -29,7 +29,6 @@ router.get("/getTokenName", async (req, res) => {
         })
         .limit(50);
       res.json(tokenName);
-      console.log(tokenName);
     }
   } catch (err) {
     // res.json(err);
@@ -58,7 +57,33 @@ router.get("/getName", async (req, res) => {
 router.get("/getTokenProps", async (req, res) => {
   try {
     let token_address = req.query.foo;
-    tokenProps = await lpSchema.find({
+    tokenProps = lpSchema.find({
+      $and: [
+        { $or: [{ token0: token_address }, { token1: token_address }] },
+        {
+          $or: [
+            { token0: "0x2170ed0880ac9a755fd29b2688956bd959f933f8" },
+            { token0: "0xe9e7cea3dedca5984780bafc599bd69add087d56" },
+            { token0: "0x55d398326f99059ff775485246999027b3197955" },
+            { token0: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c" },
+            { token0: "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c" },
+            { token1: "0x2170ed0880ac9a755fd29b2688956bd959f933f8" },
+            { token1: "0xe9e7cea3dedca5984780bafc599bd69add087d56" },
+            { token1: "0x55d398326f99059ff775485246999027b3197955" },
+            { token1: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c" },
+            { token1: "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c" },
+          ],
+        },
+      ],
+    });
+    res.json(tokenProps);
+  } catch (err) { }
+});
+
+router.get("/getLpinfo", async (req, res) => {
+  try {
+    let token_address = req.query.foo;
+    let lpInfos = await lpSchema.find({
       $and: [
         { $or: [{ token0: token_address }, { token1: token_address }] },
         {
@@ -78,8 +103,23 @@ router.get("/getTokenProps", async (req, res) => {
       ],
     });
 
-    res.json(tokenProps);
-  } catch (err) {}
+    let ret_arr = [];
+    for (let index = 0; index < lpInfos.length; index++) {
+      tokenName0 = await tokenSchema
+        .find({
+          token: lpInfos[index].token0,
+        })
+        .select("name")
+      tokenName1 = await tokenSchema
+        .find({
+          token: lpInfos[index].token0,
+        })
+        .select("name")
+      const item = { token0: lpInfos[index].token0, token1: lpInfos[index].token1, lp_address: lpInfos[index].lp_address, type: lpInfos[index].type, tokenName0: tokenName0[0].name, tokenName1: tokenName1[0].name }
+      ret_arr.push(item);
+    }
+    res.json(ret_arr);
+  } catch (err) { }
 });
 
 // router.route("/postTokenURL").post((req, res, next) => {

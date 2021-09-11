@@ -7,6 +7,7 @@ import FormControl from "@material-ui/core/FormControl";
 import { Button, Icon } from "@material-ui/core";
 import TokenInput from "./TokenInput";
 import Select from "react-select";
+import { getSearchTokenName } from "../../actions";
 // import { Field } from 'react-final-form'
 
 const useStyles = makeStyles((theme) => ({
@@ -69,14 +70,15 @@ export default function SimpleSelect({ tokenProps }) {
         .then((res) => {
           for (var idx in res.data) {
             let combined_json = {};
-            combined_json["label"] = res.data[idx]["name"];
+            combined_json["label"] = `${res.data[idx]["name"]} (${res.data[idx]["symbol"]}) ${res.data[idx]["token"]}`;
             combined_json["value"] = res.data[idx]["token"];
             tokens.push(combined_json);
           }
           setTokenArray(tokens);
         });
+      // setTokenArray(getSearchTokenName(inputText));
     }
-  });
+  }, [inputText]);
 
   const classes = useStyles();
   const [isToken, setIsToken] = React.useState(1);
@@ -86,18 +88,20 @@ export default function SimpleSelect({ tokenProps }) {
   };
 
   const tokenSelect = (e) => {
-    const url = e.value;
-    axios
-      .get("http://localhost:5000/token/getTokenProps", {
-        params: { foo: url },
-      })
-      .then((res) => {
-        tokenProps(res.data);
-      });
+    const tokenAddress = e.value;
+    tokenProps(tokenAddress);
+    // axios
+    //   .get("http://localhost:5000/token/getTokenProps", {
+    //     params: { foo: url },
+    //   })
+    //   .then((res) => {
+    //     console.log(res.data);
+    //   });
   };
 
   const tokenInputChange = (inputValue) => {
     // if (inputValue.length > 1) {
+
     setInputText(inputValue);
     // }
   };

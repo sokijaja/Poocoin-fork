@@ -1,5 +1,7 @@
-import TradingViewWidget, { Themes } from './chart_component';
 import { makeStyles } from '@material-ui/core/styles';
+import { useState } from 'react';
+import { TVChartContainer } from './TVChartContainer';
+import { coin } from '../../constants';
 
 const useStyles = makeStyles({
   root: {
@@ -8,19 +10,45 @@ const useStyles = makeStyles({
     boxShadow: 'inherit',
   },
   TradingView: {
+    position: 'relative',
     height: '275px'
+  },
+  coinSelect: {
+    position: 'absolute',
+    top: '70px',
+    right: '10px',
+    fontSize: '14px',
+    backgroundColor: '#16171b',
+    borderRadius: '4px!important',
+    color: 'white',
+  },
+  coinOption: {
+    backgroundColor: '#16171b',
   }
 });
-export default function Chart() {
+export default function Chart(props) {
+  let { tokenName } = props;
+  if (tokenName == undefined) {
+    tokenName = "Poocoin"
+  }
   const classes = useStyles();
+  const [chartTokenName, setChartTokenName] = useState(tokenName);
+  const [coinName, setCoinName] = useState(coin.USD);
+
+  const handleChangeCoinName = (event) => {
+    setCoinName(event.target.value);
+  }
+
   return (
-    <div id="root" className={classes.TradingView}>
-      <TradingViewWidget
-        symbol="NASDAQ:AAPL"
-        theme={Themes.DARK}
-        locale="en"
-        autosize
-      />
+    <div className={classes.TradingView}>
+      <TVChartContainer tokenName={chartTokenName} coinName={coinName} />
+      <select
+        value={coinName}
+        onChange={handleChangeCoinName}
+        className={classes.coinSelect}>
+        <option className={classes.coinOption} value={coin.USD}>USD</option>
+        <option className={classes.coinOption} value={coin.BNB}>BNB</option>
+      </select>
     </div>
   );
 }

@@ -15,7 +15,6 @@ const StyledTableCell = withStyles((theme) => ({
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
     borderColor: '#262626',
-    cursor: 'pointer'
   },
   body: {
     fontSize: 12,
@@ -81,6 +80,9 @@ const useStyles = makeStyles({
     color: "#b2b5be",
     marginTop: '20px'
   },
+  symbol: {
+    cursor: 'pointer  '
+  }
 });
 
 export default function CustomizedTables(props) {
