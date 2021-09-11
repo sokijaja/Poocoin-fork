@@ -1,23 +1,5 @@
 import axios from 'axios';
 
-// Register User
-export const getSearchTokenName = (tokenName) => {
-    let tokens = [];
-    axios
-        .get("http://localhost:5000/token/getTokenName", {
-            params: { foo: tokenName },
-        })
-        .then((res) => {
-            for (var idx in res.data) {
-                let combined_json = {};
-                combined_json["label"] = res.data[idx]["name"];
-                combined_json["value"] = res.data[idx]["token"];
-                tokens.push(combined_json);
-            }
-        });
-    return tokens;
-};
-
 export const getLpinfo = async (tokenId) => {
     let lpDatas = []
     await axios
@@ -37,25 +19,4 @@ export const getLpinfo = async (tokenId) => {
             }
         });
     return lpDatas;
-}
-
-export const getLpOtherTokensName = async (lpTokenAddress) => {
-    let lpTokenNames = [];
-    console.log(lpTokenAddress);
-    for (var idx in lpTokenAddress) {
-        console.log(lpTokenAddress[idx]);
-        await axios
-            .get("http://localhost:5000/token/getName", {
-                params: { foo: lpTokenAddress[idx] },
-            })
-            .then((res) => {
-                let combined_json = {};
-                combined_json["label"] = res.data.name;
-                combined_json["value"] = res.data.name;
-                lpTokenNames.push(combined_json);
-            })
-            .catch(() => {
-                console.log('catch');
-            });
-    };
 }

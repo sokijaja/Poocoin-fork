@@ -95,15 +95,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Tokens() {
+export default function Tokens(props) {
   const classes = useStyles();
   const [showMode, setShowMode] = useState(1);
   const [priceData, setPriceData] = useState([]);
   const [tokenLp, setToken] = useState([]);
   const history = useHistory();
-  let lpDatas = [];
-  let lpOtherTokensAddress = [];
-
+  const [lpDatas, setLpDatas] = useState([]);
   const tokenName = [];
   const { state } = useLocation();
 
@@ -111,73 +109,27 @@ export default function Tokens() {
   const setReserve = (data) => {
     // setReserveData(data);
   };
-
-  const tokenId = useParams().id;
-
-  getLpinfo(tokenId)
-    .then(lpInfos => {
-      for (var idx in lpInfos) {
-        if (lpInfos[idx].token0 == tokenId) {
-          lpOtherTokensAddress.push(lpInfos[idx].token1);
-        } else {
-          lpOtherTokensAddress.push(lpInfos[idx].token0);
+  const [tokenAddress, setTokenAddress] = useState(props.match.params.id);
+  useEffect(() => {
+    getLpinfo(tokenAddress)
+      .then(lpInfos => {
+        const tokens = [];
+        for (var idx in lpInfos) {
+          if (lpInfos[idx].token0 == tokenAddress) {
+            let combined_json = {};
+            combined_json["label"] = lpInfos[idx].tokenName1;
+            combined_json["value"] = lpInfos[idx].tokenName1;
+            tokens.push(combined_json);
+          } else {
+            let combined_json = {};
+            combined_json["label"] = lpInfos[idx].tokenName0;
+            combined_json["value"] = lpInfos[idx].tokenName0;
+            tokens.push(combined_json);
+          }
         }
-      }
-    })
-
-  // axios
-  //   .get("http://localhost:5000/token/getTokenProps", {
-  //     params: { foo: tokenId },
-  //   })
-  //   .then((res) => {
-  //     for (var idx in res.data) {
-  //       let combined_json = {};
-  //       combined_json["name"] = res.data[idx]["type"];
-  //       combined_json["token0"] = res.data[idx]["token0"];
-  //       combined_json["token1"] = res.data[idx]["token1"];
-  //       combined_json["lp_address"] = res.data[idx]["lp_address"];
-  //       lpDatas.push(combined_json);
-
-  //       let tokens = [];
-  // for (var idx in lpDatas) {
-  //   let combined_json = {};
-  //   console.log(lpDatas[idx]);
-  //   console.log('***');
-  //   if (lpDatas[idx].token0 == tokenId) {
-  //     axios
-  //       .get("http://localhost:5000/token/getName", {
-  //         params: { foo: lpDatas[idx].token1 },
-  //       })
-  //       .then((res) => {
-  //         combined_json["label"] = res.data.name;
-  //         combined_json["value"] = res.data.name;
-  //         tokens.push(combined_json);
-  //       });
-  //   } else {
-  //     axios
-  //       .get("http://localhost:5000/token/getName", {
-  //         params: { foo: lpDatas[idx].token0 },
-  //       })
-  //       .then((res) => {
-  //         combined_json["label"] = res.data.name;
-  //         combined_json["value"] = res.data.name;
-  //         tokens.push(combined_json);
-  //       });
-  //   }
-  // }
-  // setToken(tokens);
-  //   }
-  // });
-  // useEffect(() => {
-
-  //   axios
-  //     .get("http://localhost:5000/token/getName", {
-  //       params: { foo: tokenId },
-  //     })
-  //     .then((res) => {
-  //       tokenName.push(res.data);
-  //     });
-  // }, []);
+        setLpDatas(tokens);
+      })
+  }, [tokenAddress])
 
   const handleChange = () => {
     setShowMode(!showMode);
@@ -196,6 +148,7 @@ export default function Tokens() {
     // }
     // setToken(tokens);
     history.push(`/tokens/${tokenAddress}`);
+    setTokenAddress(tokenAddress)
   };
 
   const tokenSelect = (e) => { };
@@ -258,7 +211,7 @@ export default function Tokens() {
         <div className={classes.selectBox}>
           <Select
             // defaultValue={tokenLp[0]}
-            // options={''}
+            options={lpDatas}
             // input={false}
             onChange={tokenSelect}
           // onInputChange={tokenInputChange}
