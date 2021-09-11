@@ -139,7 +139,6 @@ export default function Header(props) {
   const [poocoinBalanceData, setPoocoinBalanceData] = useState([]);
   const [priceData, setPriceData] = useState([]);
   const [network, setNetwork] = useState(localStorage.getItem('PoocoinChainId'));
-  console.log(useWallet());
 
   const handleNetworkChange = (event) => {                         //select network chain
     if (event.target.value == networkValue.Binance) {

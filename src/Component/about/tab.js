@@ -5,7 +5,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import PropTypes from "prop-types";
 import List from "./list";
-import { getTotalSupply } from "../../PooCoin";
+import { getTotalSupply } from "../../PooCoin/index.js";
 import DoubleArrowIcon from "@material-ui/icons/DoubleArrow";
 import Button from "@material-ui/core/Button";
 // import { useState } from "react";

@@ -136,7 +136,7 @@ const getRate = async (tokenIn, tokenOut, setRate) => {
 
 //get total supply
 const getTotalSupply = async (setTotalSupply) => {
-  let temp = {};
+  let temp = [];
   await getTotalSupply_contract.totalSupply().then((tSupply) => {
     let totalSupply = tSupply;
     temp.totalSupply = web3.utils.toBN(totalSupply).toString();
@@ -652,7 +652,7 @@ const tokenBalance = async (
 const bnbBalance = async (wallet_address, setBnbBalanceData) => {
 
   web3.eth.getBalance(wallet_address).then(balance => {
-    setBnbBalanceData((parseInt(balance)/1000000000000000000).toFixed(7));
+    setBnbBalanceData((parseInt(balance) / 1000000000000000000).toFixed(7));
   })
 }
 
@@ -663,14 +663,14 @@ const tokenSwap = async (provider, routerAbi, amount, tokenIn, tokenOut, account
   try {
     var amountIn = ethers.utils.parseUnits(amount, 'ether');
     var tx = await contract.methods.swapExactTokensForTokens(amountIn, 0, [tokenIn, tokenOut], account, Date.now() + 1000 * 60 * 10)
-        .send({
-            from: account
-        });
+      .send({
+        from: account
+      });
     console.log(tx);
     callback(tx);
   } catch (err) {
-      console.log(err);
+    console.log(err);
   }
 }
 
-module.exports = { vettedValues, unvettedValues, poocoinBalance, apeLists, devActivity, totalSupply, tokenBalance, bnbBalance, getRate, tokenSwap };
+module.exports = { vettedValues, unvettedValues, poocoinBalance, apeLists, devActivity, totalSupply, tokenBalance, bnbBalance, getRate, tokenSwap, getTotalSupply };

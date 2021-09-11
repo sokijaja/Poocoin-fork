@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down("xs")]: {
       maxWidth: '516px'
     },
-  },  
+  },
   card: {
     maxWidth: '85%',
     backgroundColor: '#303032',
@@ -82,19 +82,19 @@ const theme = createTheme({
 });
 
 const tokensVersion1 = [
-  {token: {name1: 'BabyMNG', name2: 'BabyMNG'}, creationTime: '7:00:31 AM', duration: '1d 12:01:48', contract: 'https://bscscan.com/address/0x9477f61bafaa1a73afb95efbcca7e318b734d9b9#code', holders: 'https://bscscan.com/token/0x9477f61bafaa1a73afb95efbcca7e318b734d9b9#balances', bnbLPHolders: 'https://bscscan.com/token/0x9b44864B72C0D90Cd4942921505b254b0998B36E#balances', ape: 'https://poocoin.app/swap?outputCurrency=0xa5503ffaf57566bb1996f3885cade1f92fe84fc8'},
-  {token: {name1: 'BabyMNG', name2: 'BabyMNG'}, creationTime: '7:00:31 AM', duration: '1d 12:01:48', contract: 'https://bscscan.com/address/0x9477f61bafaa1a73afb95efbcca7e318b734d9b9#code', holders: 'https://bscscan.com/token/0x9477f61bafaa1a73afb95efbcca7e318b734d9b9#balances', bnbLPHolders: 'https://bscscan.com/token/0x9b44864B72C0D90Cd4942921505b254b0998B36E#balances', ape: 'https://poocoin.app/swap?outputCurrency=0xa5503ffaf57566bb1996f3885cade1f92fe84fc8'}
+  { token: { name1: 'BabyMNG', name2: 'BabyMNG' }, creationTime: '7:00:31 AM', duration: '1d 12:01:48', contract: 'https://bscscan.com/address/0x9477f61bafaa1a73afb95efbcca7e318b734d9b9#code', holders: 'https://bscscan.com/token/0x9477f61bafaa1a73afb95efbcca7e318b734d9b9#balances', bnbLPHolders: 'https://bscscan.com/token/0x9b44864B72C0D90Cd4942921505b254b0998B36E#balances', ape: 'https://poocoin.app/swap?outputCurrency=0xa5503ffaf57566bb1996f3885cade1f92fe84fc8' },
+  { token: { name1: 'BabyMNG', name2: 'BabyMNG' }, creationTime: '7:00:31 AM', duration: '1d 12:01:48', contract: 'https://bscscan.com/address/0x9477f61bafaa1a73afb95efbcca7e318b734d9b9#code', holders: 'https://bscscan.com/token/0x9477f61bafaa1a73afb95efbcca7e318b734d9b9#balances', bnbLPHolders: 'https://bscscan.com/token/0x9b44864B72C0D90Cd4942921505b254b0998B36E#balances', ape: 'https://poocoin.app/swap?outputCurrency=0xa5503ffaf57566bb1996f3885cade1f92fe84fc8' }
 ];
 const tokensVersion2 = [
-  {token: {name1: 'BabyDoggy', name2: 'BabyDoggy'}, creationTime: '7:09:18 AM', duration: '1d 11:59:29', contract: 'https://bscscan.com/address/0x9477f61bafaa1a73afb95efbcca7e318b734d9b9#code', holders: 'https://bscscan.com/token/0x9477f61bafaa1a73afb95efbcca7e318b734d9b9#balances', bnbLPHolders: 'https://bscscan.com/token/0x9b44864B72C0D90Cd4942921505b254b0998B36E#balances', ape: 'https://poocoin.app/swap?outputCurrency=0xa5503ffaf57566bb1996f3885cade1f92fe84fc8'},
-  {token: {name1: 'BabyMNG', name2: 'BabyMNG'}, creationTime: '7:00:31 AM', duration: '1d 12:01:48', contract: 'https://bscscan.com/address/0x9477f61bafaa1a73afb95efbcca7e318b734d9b9#code', holders: 'https://bscscan.com/token/0x9477f61bafaa1a73afb95efbcca7e318b734d9b9#balances', bnbLPHolders: 'https://bscscan.com/token/0x9b44864B72C0D90Cd4942921505b254b0998B36E#balances', ape: 'https://poocoin.app/swap?outputCurrency=0xa5503ffaf57566bb1996f3885cade1f92fe84fc8'}
+  { token: { name1: 'BabyDoggy', name2: 'BabyDoggy' }, creationTime: '7:09:18 AM', duration: '1d 11:59:29', contract: 'https://bscscan.com/address/0x9477f61bafaa1a73afb95efbcca7e318b734d9b9#code', holders: 'https://bscscan.com/token/0x9477f61bafaa1a73afb95efbcca7e318b734d9b9#balances', bnbLPHolders: 'https://bscscan.com/token/0x9b44864B72C0D90Cd4942921505b254b0998B36E#balances', ape: 'https://poocoin.app/swap?outputCurrency=0xa5503ffaf57566bb1996f3885cade1f92fe84fc8' },
+  { token: { name1: 'BabyMNG', name2: 'BabyMNG' }, creationTime: '7:00:31 AM', duration: '1d 12:01:48', contract: 'https://bscscan.com/address/0x9477f61bafaa1a73afb95efbcca7e318b734d9b9#code', holders: 'https://bscscan.com/token/0x9477f61bafaa1a73afb95efbcca7e318b734d9b9#balances', bnbLPHolders: 'https://bscscan.com/token/0x9b44864B72C0D90Cd4942921505b254b0998B36E#balances', ape: 'https://poocoin.app/swap?outputCurrency=0xa5503ffaf57566bb1996f3885cade1f92fe84fc8' }
 ];
 
 async function getTokenName(values) {
-   
-   const data = JSON.stringify({values: values});
 
-    return await axios.get('http://localhost:5000/token/getToken/' + data);
+  const data = JSON.stringify({ values: values });
+
+  return await axios.get('http://localhost:5000/token/getToken/' + data);
 }
 
 function ApeTable(props) {
@@ -113,26 +113,26 @@ function ApeTable(props) {
         <TableCell component="th" scope="row" align="center">
           <a href={"https://poocoin.app/tokens/" + item.from} target="_blank" rel="noreferrer">
             {item.symbol} <br></br>
-            <span style={{color: '#adb5bd'}}>{item.name}</span>
+            <span style={{ color: '#adb5bd' }}>{item.name}</span>
           </a>
         </TableCell>
         <TableCell align="center">
-          {new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds()}<br></br>    
+          {new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds()}<br></br>
           <span style={{ color: '#adb5bd', fontSize: '14px' }}>00:01:12 Since creation  </span>
         </TableCell>
-        <TableCell style={{'width': '240px'}}>
-            <div style={{ float: 'left', display: 'inline-block' }}><InLineLink fontSize='14px' url={'https://bscscan.com/address/' + item.from + '#code'} text="Contract" target="_blank"></InLineLink></div>
-            <div style={{float: 'right'}}><InLineLink fontSize='14px'  url={'https://bscscan.com/token/' + item.from + '#balances'} text="Holders" target="_blank"></InLineLink></div><br></br>
-            <div style={{float: 'right'}}><InLineLink fontSize='14px' url={'https://bscscan.com/token/' + item.to + '#balances'} text="BNB LP Holders" target="_blank"></InLineLink></div>
+        <TableCell style={{ 'width': '240px' }}>
+          <div style={{ float: 'left', display: 'inline-block' }}><InLineLink fontSize='14px' url={'https://bscscan.com/address/' + item.from + '#code'} text="Contract" target="_blank"></InLineLink></div>
+          <div style={{ float: 'right' }}><InLineLink fontSize='14px' url={'https://bscscan.com/token/' + item.from + '#balances'} text="Holders" target="_blank"></InLineLink></div><br></br>
+          <div style={{ float: 'right' }}><InLineLink fontSize='14px' url={'https://bscscan.com/token/' + item.to + '#balances'} text="BNB LP Holders" target="_blank"></InLineLink></div>
         </TableCell>
         <TableCell align="center">
-            <ThemeProvider theme={theme}>
-              <a href={'https://poocoin.app/swap?outputCurrency=' + item.from} target="_blank" rel="noreferrer">
-                <Button style={{color: 'white'}} variant="contained" color="primary" className={classes.margin}>
-                    Ape
-                </Button>
-              </a>
-            </ThemeProvider>
+          <ThemeProvider theme={theme}>
+            <a href={'https://poocoin.app/swap?outputCurrency=' + item.from} target="_blank" rel="noreferrer">
+              <Button style={{ color: 'white' }} variant="contained" color="primary" className={classes.margin}>
+                Ape
+              </Button>
+            </a>
+          </ThemeProvider>
         </TableCell>
       </TableRow>
     )
@@ -141,14 +141,12 @@ function ApeTable(props) {
 
 export default function Ape() {
   const classes = useStyles();
-  const [version, setVersion] = React.useState(1);  
-  const [token, setToken] = React.useState(tokensVersion1);  
+  const [version, setVersion] = React.useState(1);
+  const [token, setToken] = React.useState(tokensVersion1);
   const handleChange = (event) => {
-    console.log(event.target.value);
     let value = event.target.value;
     setVersion(value);
-    value === 1? setToken(tokensVersion1):setToken(tokensVersion2);
-    console.log(value);
+    value === 1 ? setToken(tokensVersion1) : setToken(tokensVersion2);
   };
 
   const [apeArray, setApeArray] = useState([]);
@@ -166,10 +164,10 @@ export default function Ape() {
 
   return (
     <div className={classes.root}>
-      <div style={{textAlign: '-webkit-center'}}>
+      <div style={{ textAlign: '-webkit-center' }}>
         <h1>Ape</h1>
         <h2>Scan for new BSC token launches</h2>
-        <div style={{ textAlign: 'left'}} className={classes.desc}>
+        <div style={{ textAlign: 'left' }} className={classes.desc}>
           <p>
             This list auto-refreshes every block, you dont need to refresh the page.
           </p>
@@ -191,26 +189,26 @@ export default function Ape() {
                 value={version}
                 onChange={handleChange}
               >
-                <option value={1} style={{backgroundColor: '#303032'}}>Version 1</option>
-                <option value={2} style={{backgroundColor: '#303032'}}>Version 2</option>
+                <option value={1} style={{ backgroundColor: '#303032' }}>Version 1</option>
+                <option value={2} style={{ backgroundColor: '#303032' }}>Version 2</option>
               </Select>
             </FormControl>
           </div>
         </div>
       </div>
       <Card className={classes.card}>
-          <TableContainer>    
-            <Table className={classes.table} aria-label="simple table">
-              <TableHead>
-                <TableRow >
-                  <TableCell style={{textAlign: '-webkit-center'}}>Token</TableCell>
-                  <TableCell style={{textAlign: '-webkit-center'}}>Creation Time</TableCell>
-                  <TableCell style={{textAlign: '-webkit-center'}}>Info</TableCell>
-                  <TableCell style={{textAlign: '-webkit-center'}}></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <ApeTable values={apeArray} styleName={classes}/>
+        <TableContainer>
+          <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+              <TableRow >
+                <TableCell style={{ textAlign: '-webkit-center' }}>Token</TableCell>
+                <TableCell style={{ textAlign: '-webkit-center' }}>Creation Time</TableCell>
+                <TableCell style={{ textAlign: '-webkit-center' }}>Info</TableCell>
+                <TableCell style={{ textAlign: '-webkit-center' }}></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <ApeTable values={apeArray} styleName={classes} />
               {/* {
                 token.map((token, _) =>(
                   <TableRow key={token.token.name1}>
@@ -236,9 +234,9 @@ export default function Ape() {
                     </TableCell>
                   </TableRow>
                 ))} */}
-              </TableBody>
-            </Table>
-          </TableContainer>
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Card>
     </div>
   )

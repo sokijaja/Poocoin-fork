@@ -83,7 +83,6 @@ export default function SimpleSelect() {
 
   const tokenSelect = (e) => {
     const url = e.value;
-    console.log(url);
   };
 
   const tokenInputChange = (inputValue) => {
