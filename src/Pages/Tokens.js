@@ -1,21 +1,11 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import Grid from "@material-ui/core/Grid";
 import Tab from "../Component/basic/hometab";
 import Lefttab from "../Component/about/tab";
-import Chart from "../Component/home/chart";
 import Input from "../Component/basic/input";
-// import Button from '@material-ui/core/Button';
 import { makeStyles } from "@material-ui/core/styles";
-// import Icon from '@material-ui/core/Icon';
-import IconButton from "@material-ui/core/IconButton";
-import PhotoCamera from "@material-ui/icons/PhotoCamera";
-import Panel from "../Component/multichart/panel";
 import rightPoster from "../Images/moonstar3.gif";
-import leftPoster from "../Images/leftposter.gif";
-import SearchInput from "../Component/TokenSelect";
-import SelectBox from "../Component/about/select";
 import Button from "@material-ui/core/Button";
 import logo from "../Images/TokenIcons/logo2.png";
 import Buttonicon from "../Images/bscscan.png";
@@ -26,11 +16,9 @@ import Chart2 from "../Component/about/chart";
 import TableTab from "../Component/home/centercontain/tabletab";
 import TokenSelect from "../Component/home/tokenSelect";
 import Select from "react-select";
-import { getReserve } from "../PooCoin";
+import { getRate, getReserve } from "../PooCoin";
 import { useHistory, useParams } from "react-router";
 import { getLpinfo } from "../actions";
-import { useLocation } from "react-router-dom";
-import { getLpOtherTokensName } from "../actions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -98,38 +86,36 @@ const useStyles = makeStyles((theme) => ({
 export default function Tokens(props) {
   const classes = useStyles();
   const [showMode, setShowMode] = useState(1);
-  const [priceData, setPriceData] = useState([]);
-  const [tokenLp, setToken] = useState([]);
+  const [priceRateData, setPriceRateData] = useState(0);
   const history = useHistory();
   const [lpDatas, setLpDatas] = useState([]);
-  const tokenName = [];
-  const { state } = useLocation();
+  const [currentTokenInfo, setCurrentTokenInfo] = useState({});
 
-  const [reserve, setReserveData] = useState([]);
-  const setReserve = (data) => {
-    // setReserveData(data);
-  };
-  const [tokenAddress, setTokenAddress] = useState(props.match.params.id);
+  const [tokenAddress, setTokenAddress] = useState(useParams().id);
   useEffect(() => {
     getLpinfo(tokenAddress)
-      .then(lpInfos => {
+      .then(data => {
         const tokens = [];
-        for (var idx in lpInfos) {
-          if (lpInfos[idx].token0 == tokenAddress) {
+        for (var idx in data.lpInfos) {
+          if (data.lpInfos[idx].token0 == tokenAddress) {
             let combined_json = {};
-            combined_json["label"] = lpInfos[idx].tokenName1;
-            combined_json["value"] = lpInfos[idx].tokenName1;
+            combined_json["label"] = data.lpInfos[idx].tokenName1;
+            let addrLpInfo = [data.lpInfos[idx].token1, data.lpInfos[idx].tokenSymbol1, data.lpInfos[idx].lp_address, 0];
+            combined_json["value"] = addrLpInfo;
             tokens.push(combined_json);
           } else {
             let combined_json = {};
-            combined_json["label"] = lpInfos[idx].tokenName0;
-            combined_json["value"] = lpInfos[idx].tokenName0;
+            combined_json["label"] = data.lpInfos[idx].tokenName0;
+            let addrLpInfo = [data.lpInfos[idx].token0, data.lpInfos[idx].tokenSymbol0, data.lpInfos[idx].lp_address, 1];
+            combined_json["value"] = addrLpInfo;
             tokens.push(combined_json);
           }
         }
         setLpDatas(tokens);
+        setCurrentTokenInfo(data.tokenInfos)
       })
-  }, [tokenAddress])
+    getRate(tokenAddress, '0xe9e7cea3dedca5984780bafc599bd69add087d56', setPriceRateData);
+  }, [tokenAddress, currentTokenInfo, lpDatas])
 
   const handleChange = () => {
     setShowMode(!showMode);
@@ -139,14 +125,6 @@ export default function Tokens(props) {
   };
 
   const handleTokenPropsChange = (tokenAddress) => {
-    // let tokens = [];
-    // for (var idx in props) {
-    //   let combined_json = {};
-    //   combined_json["label"] = props[idx]["type"];
-    //   combined_json["value"] = props[idx]["token0"];
-    //   tokens.push(combined_json);
-    // }
-    // setToken(tokens);
     history.push(`/tokens/${tokenAddress}`);
     setTokenAddress(tokenAddress)
   };
@@ -169,8 +147,8 @@ export default function Tokens(props) {
             >
               <img className={classes.img} src={logo} width="32" height="32" />
               <span>
-                Thoreum (THOREUM/BNB)
-                <br />${priceData}
+                {currentTokenInfo.name} ({currentTokenInfo.name}/BNB)
+                <br /><span className={'textSuccess'}>${parseFloat(priceRateData).toFixed(8)}</span>
               </span>
             </p>
             <Grid style={{ float: "left" }}>
@@ -232,7 +210,7 @@ export default function Tokens(props) {
     container = (
       <Grid container>
         <Grid item xs={3}>
-          <Lefttab lpdata={lpDatas} name={tokenName} />
+          <Lefttab lpdata={lpDatas} currentTokenAddress={tokenAddress} currentTokenInfo={currentTokenInfo} />
         </Grid>
         <Grid item xs={6} style={{ marginTop: 5 }}>
           {centerContainer}
@@ -262,7 +240,7 @@ export default function Tokens(props) {
     container = (
       <Grid container item xs={12}>
         <Grid item xs={3}>
-          <Lefttab lpdata={lpDatas} name={tokenName} />
+          <Lefttab lpdata={lpDatas} currentTokenAddress={tokenAddress} name={currentTokenInfo} />
         </Grid>
         <Grid item xs={9}>
           {centerContainer}

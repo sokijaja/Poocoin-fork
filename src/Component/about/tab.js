@@ -6,8 +6,8 @@ import Tab from "@material-ui/core/Tab";
 import PropTypes from "prop-types";
 import List from "./list";
 import { getTotalSupply } from "../../PooCoin/index.js";
-import DoubleArrowIcon from "@material-ui/icons/DoubleArrow";
-import Button from "@material-ui/core/Button";
+import { numberWithCommas } from '../../PooCoin/util';
+import { Divider } from "@material-ui/core";
 // import { useState } from "react";
 
 const useStyles = makeStyles({
@@ -78,27 +78,26 @@ function a11yProps(index) {
 }
 
 export default function CenteredTabs(props) {
-  const { lpdata, name } = props;
+  const { lpdata, currentTokenInfo, currentTokenAddress } = props;
   // const [lpdatastate, setLpdataState] = useState(lpdata);
   // const [sname, setSName] = useState(name);
 
-  const [totalSupply, setTotal] = useState([]);
-
-  const setTotalSupply = (data) => {
-    setTotal(data);
-  };
+  const [totalSupply, setTotal] = useState();
 
   useEffect(() => {
-    getTotalSupply(setTotalSupply);
+    setTotalSupply()
   }, []);
 
+  const setTotalSupply = async () => {
+    let totalSupplyData = await getTotalSupply(currentTokenAddress)
+    setTotal(totalSupplyData);
+  }
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
   return (
     <Paper className={classes.root}>
       <Tabs
@@ -112,12 +111,13 @@ export default function CenteredTabs(props) {
         <Tab label="Token" className={classes.tabTitlePan} />
         <Tab label="News" className={classes.tabTitlePan} />
       </Tabs>
+      {/* <Divider className={'mb-3 mt-3'} /> */}
       <TabPanel value={value} index={0} className={classes.tabpanel}>
         <div className={classes.item}>
           Total Supply:
-          <br /> {totalSupply.totalSupply}
+          <br />{numberWithCommas(totalSupply)}
         </div>
-        <List data={lpdata} />
+        <List lpdata={lpdata} totalSupply={totalSupply} currentTokenInfo={currentTokenInfo} />
       </TabPanel>
       <TabPanel value={value} index={1}></TabPanel>
     </Paper>
