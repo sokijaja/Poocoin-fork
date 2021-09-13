@@ -14,8 +14,7 @@ import TelegramIcon from "@material-ui/icons/Telegram";
 import Switch from "../Component/multichart/switch";
 import Chart2 from "../Component/about/chart";
 import TableTab from "../Component/home/centercontain/tabletab";
-import TokenSelect from "../Component/home/tokenSelect";
-// import TokenSelect from "../Component/tokenSelect";
+import TokenSelect from "../Component/TokenSelect";
 import Select from "react-select";
 import { getRate, getReserve } from "../PooCoin";
 import { useHistory, useParams } from "react-router";
@@ -135,7 +134,8 @@ export default function Tokens(props) {
     setShowMode(!showMode);
   };
 
-  const handleTokenPropsChange = (tokenAddress) => {
+  const handleTokenPropsChange = (tokenInfo) => {
+    const tokenAddress = tokenInfo.address;
     history.push(`/tokens/${tokenAddress}`);
     dispatch({ type: 'SET_TOKENADDRESS', payload: tokenAddress })
   };

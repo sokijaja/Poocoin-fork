@@ -2,10 +2,59 @@
 /* eslint-disable no-loop-func */
 const ethers = require("ethers");
 const Web3 = require("web3");
-const BigNumber = require("bignumber.js");
-import erc20_abi from '../config/abi/erc20.json';
-import router_abi from '../config/abi/router.json';
 
+const abiDecoder = require("abi-decoder");
+const logDecodeABI = [
+  {
+    inputs: [{ type: "address", name: "" }],
+    constant: true,
+    name: "isInstantiation",
+    payable: false,
+    outputs: [{ type: "bool", name: "" }],
+    type: "function",
+  },
+  {
+    inputs: [
+      { type: "address[]", name: "_owners" },
+      { type: "uint256", name: "_required" },
+      { type: "uint256", name: "_dailyLimit" },
+    ],
+    constant: false,
+    name: "create",
+    payable: false,
+    outputs: [{ type: "address", name: "wallet" }],
+    type: "function",
+  },
+  {
+    inputs: [
+      { type: "address", name: "" },
+      { type: "uint256", name: "" },
+    ],
+    constant: true,
+    name: "instantiations",
+    payable: false,
+    outputs: [{ type: "address", name: "" }],
+    type: "function",
+  },
+  {
+    inputs: [{ type: "address", name: "creator" }],
+    constant: true,
+    name: "getInstantiationCount",
+    payable: false,
+    outputs: [{ type: "uint256", name: "" }],
+    type: "function",
+  },
+  {
+    inputs: [
+      { indexed: false, type: "address", name: "sender" },
+      { indexed: false, type: "address", name: "instantiation" },
+    ],
+    type: "event",
+    name: "ContractInstantiation",
+    anonymous: false,
+  },
+];
+abiDecoder.addABI(logDecodeABI);
 const topHolderAddress = "0x1ecd8ed7ffd03f38863f3b86ef3b9807a1999ff8";
 const profileAddress = "0xba90d15d6384e8223bb4d96fe9efb0f06194fb39";
 const unvettedAddress = "0x3a05d30f7428fe2333fb23afa9a2bf2dc012316b";
@@ -14,6 +63,7 @@ const myAccount = "0x50796F695484b29ba8b14881a516428FA7A58581";
 const getLogsAddress = "0xca143ce32fe78f1f7019d7d551a6402fc5350c73";
 const topics =
   "0x0d3648bd0f6ba80134a33ba9275ac585d9d315f0ad8355cddefde31afa28d0e9";
+const tokenAddress = "0xCe5814eFfF15D53EFd8025B9F2006D4d7D640b9B";
 // pancakeswap v2 router addresss
 const pancakeswap_router = "0x10ED43C718714eb63d5aA57B78B54704E256024E";
 
@@ -21,9 +71,7 @@ const pancakeswap_router = "0x10ED43C718714eb63d5aA57B78B54704E256024E";
 const provider = new ethers.providers.WebSocketProvider(
   "wss://bsc-ws-node.nariox.org:443"
 );
-var web3 = new Web3(
-  new Web3.providers.WebsocketProvider("wss://bsc-ws-node.nariox.org:443")
-);
+var web3 = new Web3(new Web3.providers.WebsocketProvider("wss://bsc-ws-node.nariox.org:443"));
 
 const abi = [
   "function holderInfo(uint256, uint256) public view returns (address, uint256)",
@@ -56,6 +104,11 @@ const unvettedAbi = [
   "function messageLength() public view returns (uint256)",
 ];
 
+const getTotalSupply_contract = new ethers.Contract(
+  tokenAddress,
+  abi,
+  provider
+);
 const contract = new ethers.Contract(topHolderAddress, abi, provider);
 const profile_contract = new ethers.Contract(profileAddress, abi, provider);
 const unvetted_contract = new ethers.Contract(
@@ -64,72 +117,38 @@ const unvetted_contract = new ethers.Contract(
   provider
 );
 const poocoint_contract = new ethers.Contract(poocoinAddress, abi, provider);
+const getAmountsOut_contract = new ethers.Contract(
+  pancakeswap_router,
+  abi,
+  provider
+);
 
-const pancakeRouterContract = new ethers.Contract(pancakeswap_router, abi, provider);
 // get pair
-export const getRate = async (tokenIn, tokenOut, setRate) => {
-  try {
-    
-    await pancakeRouterContract
-      .getAmountsOut(ethers.utils.parseUnits("1", 18), [tokenIn, tokenOut])
-      .then((res) => {
-        setRate(parseInt(res[1]) / 1000000000000000000);
-      }).catch((err) => {
-        console.log(err);
-      })
-  } catch (err) {
-    console.log(tokenIn + tokenOut);
-    console.log(err);
-  }
-}
-
-const pancakeswapRouterContract = new web3.eth.Contract(router_abi, pancakeswap_router);
-// get Amount out
-export const getAmountsOut = async (amount, tokenIn, tokenOut, account, updateAmountsOut) => {
-  try {
-    const tokenInContract = new web3.eth.Contract(erc20_abi, tokenIn);
-    const tokenIn_decimals = await tokenInContract.methods.decimals().call({from:account});
-    const tokenOutContract = new web3.eth.Contract(erc20_abi, tokenOut);
-    const tokenOut_decimals = await tokenOutContract.methods.decimals().call({from:account});
-
-    const amount_in = toBigNum(amount, tokenIn_decimals);
-    pancakeswapRouterContract.methods
-      .getAmountsOut(amount_in, [tokenIn, tokenOut])
-      .call({from: account}).then((result) => {
-        console.log(result);
-        const amount_out = toHuman(result[1], tokenOut_decimals);
-        updateAmountsOut(amount_out);
-      }).catch((err) => {
-        console.log(err);
-      })
-  }catch(err) {
-    console.log(err)
-  }
+const getRate = async (tokenIn, tokenOut, setRate) => {
+  await getAmountsOut_contract
+    .getAmountsOut(ethers.utils.parseUnits("1", 18), [tokenIn, tokenOut])
+    .then((res) => {
+      setRate(parseInt(res[1]) / 1000000000000000000);
+    });
 };
 
 //get total supply
-export const getTotalSupply = async (tokenAddress) => {
-  const getTotalSupply_contract = new ethers.Contract(
-    tokenAddress,
-    abi,
-    provider
-  );
-  const ts = await getTotalSupply_contract.totalSupply()
-  let totalSupply = web3.utils.fromWei(ts.toString(), "ether");
-  return totalSupply;
+const getTotalSupply = async (setTotalSupply) => {
+  let temp = {};
+  await getTotalSupply_contract.totalSupply().then((tSupply) => {
+    let totalSupply = tSupply;
+    temp.totalSupply = web3.utils.toBN(totalSupply).toString();
+    // console.log(temp);
+    setTotalSupply(temp);
+  });
 };
 
 //get reserve
-export const getReserve = async (lpAddress, tokenNo) => {
+const getReserve = async (lpAddress, setReserve) => {
   const getReserves_contract = new ethers.Contract(lpAddress, abi, provider);
-  const reserves = await getReserves_contract.getReserves();
-  if (tokenNo == 0) {
-    let ret = web3.utils.fromWei(reserves[1].toString(), "ether");
-    return ret.toString()
-  } else {
-    let ret = web3.utils.fromWei(reserves[0].toString(), "ether");
-    return ret.toString()
-  }
+  await getReserves_contract.getReserves().then((res) => {
+    console.log(res);
+  });
 };
 
 // async function getPriceBySymbol(symbol) {
@@ -145,7 +164,7 @@ export const getReserve = async (lpAddress, tokenNo) => {
 //     })
 // }
 
-export const vettedValues = async (setVettedData) => {
+const vettedValues = async (setVettedData) => {
   let results = [];
   try {
     await contract.topHolderSize().then((count) => {
@@ -181,7 +200,7 @@ export const vettedValues = async (setVettedData) => {
   }
 };
 
-export const unvettedValues = async (setUnvettedData) => {
+const unvettedValues = async (setUnvettedData) => {
   let unvettedArray = [];
   unvetted_contract.messageLength().then((count) => {
     for (var i = parseInt(count) - 1; i > parseInt(count) - 11; i--) {
@@ -196,7 +215,7 @@ export const unvettedValues = async (setUnvettedData) => {
   });
 };
 
-export const poocoinBalance = async (account, setPoocoinBalanceData) => {
+const poocoinBalance = async (account, setPoocoinBalanceData) => {
   if (account == null) account = myAccount;
   poocoint_contract.balanceOf(account).then((balance) => {
     setPoocoinBalanceData(parseInt(balance));
@@ -206,7 +225,7 @@ export const poocoinBalance = async (account, setPoocoinBalanceData) => {
 let fromBlock = 0;
 let apeArray = [];
 
-export const apeLists = async (setApeLists) => {
+const apeLists = async (setApeLists) => {
   web3.eth.getBlockNumber().then((blockNumber) => {
     fromBlock = (blockNumber - 1000).toString(16);
 
@@ -550,7 +569,7 @@ const ownerAbi = [
 const myContract = new web3.eth.Contract(daiAbi, token_address);
 const ownerContract = new ethers.Contract(token_address, ownerAbi, provider);
 
-export const devActivity = async (setDevActivityData) => {
+const devActivity = async (setDevActivityData) => {
   ownerContract.owner().then((res) => {
     let wallet_address = res;
 
@@ -617,88 +636,50 @@ const totalSupply = async (setTotalSupplyData) => {
   });
 };
 
-export const tokenBalance = async (wallet_address,token_address,setTokenBalanceData) => {
-
-  try {
-    const contract = new web3.eth.Contract(erc20_abi, token_address);
-    const decimals = await contract.methods.decimals().call({from:wallet_address});
-    contract.methods.balanceOf(wallet_address)
-        .call({from: wallet_address}).then((balance) => {
-          setTokenBalanceData(toHuman(balance, decimals));
-        }).catch((err) => {
-          console.log(err);
-        })
-  }catch(err) {
-    console.log(err);
-  }
+const tokenBalance = async (
+  wallet_address,
+  token_address,
+  setTokenBalanceData
+) => {
+  let balance_contract = new ethers.Contract(token_address, abi, provider);
+  balance_contract.balanceOf(wallet_address).then((balance) => {
+    setTokenBalanceData((parseInt(balance) / 1000000000000000000).toFixed(4));
+  });
 };
 
-export const bnbBalance = (wallet_address, setBnbBalanceData) => {
+const bnbBalance = async (wallet_address, setBnbBalanceData) => {
 
   web3.eth.getBalance(wallet_address).then(balance => {
-    setBnbBalanceData(web3.utils.fromWei(balance.toString(), "ether"));
-  }).catch(err => {
-    console.log(err);
+    setBnbBalanceData((parseInt(balance)/1000000000000000000).toFixed(7));
   })
 }
 
-export const tokenSwap = async (ethereum, amount, tokenIn, tokenOut, account, callback) => {
-  var mweb3 = new Web3(ethereum);
-  var contract = new mweb3.eth.Contract(router_abi, pancakeswap_router);
-  contract.setProvider(ethereum);
+const tokenSwap = async (provider, routerAbi, amount, tokenIn, tokenOut, account, slippage, callback) => {
   try {
-    var amountIn = ethers.utils.parseUnits(amount, 'ether');
-    var tx = await contract.methods.swapExactTokensForTokens(amountIn, 0, [tokenIn, tokenOut], account, Date.now() + 1000 * 60 * 10)
-      .send({
-        from: account
-      });
+    // metamask
+    var mweb3 = new Web3(provider);
+    var contract = new mweb3.eth.Contract(routerAbi, pancakeswap_router);
+    contract.setProvider(provider);
+
+    if (tokenIn == "0x0000000000000000000000000000000000000000") { // BNB 
+      var amountOut = contract.methods.getAmountsOut(ethers.utils.parseUnits(amount, 'ether'), [tokenIn, tokenOut]);
+      var tx = await contract.methods.swapExactETHForTokens(amountIn, 0, [tokenIn, tokenOut], account, Date.now() + 1000 * 60 * 10)
+        .send({
+            from: account
+        });
+    } else {
+      var amountIn = ethers.utils.parseUnits(amount, 'ether');
+      var tx = await contract.methods.swapExactTokensForTokens(amountIn, 0, [tokenIn, tokenOut], account, Date.now() + 1000 * 60 * 10)
+        .send({
+            from: account
+        });
+    }
+    
     console.log(tx);
     callback(tx);
   } catch (err) {
-    console.log(err);
+      console.log(err);
   }
 }
 
-export const getAllowance = (ethereum, account, token, updateAllowance) => {
-  try {
-    const mweb3 = new Web3(ethereum);
-    const contract = new mweb3.eth.Contract(erc20_abi, token);
-    contract.setProvider(ethereum);
-    const decimals = 18;
-    contract.methods.allowance(account, pancakeswap_router).call().then((allowance) => {
-      updateAllowance(toHuman(allowance, decimals))
-    });
-  }catch (err) {
-    console.log(err);
-  }
-}
-
-export const approveToken = async (ethereum, token, amount, account) => {
-  try {
-    const mweb3 = new Web3(ethereum);
-    const contract = new mweb3.eth.Contract(erc20_abi, token);
-    contract.setProvider(ethereum);
-    
-    const tx = await contract.methods.approve(pancakeswap_router, "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff").send({
-        from: account
-    });
-    
-    return {
-        hash: tx.blockHash,
-        status: tx.status,
-    }
-  } catch (err) {
-      return {
-          status: false
-      }
-  }
-}  
-
-const toHuman = (num, decimals) => {
-  const humanNum = new BigNumber(num).div(new BigNumber(10).pow(new BigNumber(decimals)));
-  return humanNum.toNumber();
-}
-
-const toBigNum = (num, decimals) => {
-  return new BigNumber(num).times(new BigNumber(10).pow(new BigNumber(decimals)));
-}
+module.exports = { vettedValues, unvettedValues, poocoinBalance, apeLists, devActivity, totalSupply, tokenBalance, bnbBalance, getRate, tokenSwap };
