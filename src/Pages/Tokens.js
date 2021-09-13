@@ -19,6 +19,7 @@ import Select from "react-select";
 import { getRate, getReserve } from "../PooCoin";
 import { useHistory, useParams } from "react-router";
 import { getLpinfo } from "../actions";
+import { useSelector, useDispatch } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,8 +40,9 @@ const useStyles = makeStyles((theme) => ({
     color: "#ffffff",
     paddingBottom: 10,
   },
-  inputWidth: {
+  inputField: {
     width: "100%",
+    marginTop: '20px',
   },
   tabContainer: {
     minHeight: "700px !important",
@@ -48,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   rightSide: {
     backgroundColor: "#303030",
     marginTop: 5,
-    padding: 0,
+    padding: 10,
   },
   img: {
     margin: "auto",
@@ -81,6 +83,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "white",
     marginLeft: 10,
   },
+  headerContainer: {
+    height: "auto",
+    padding: '20px',
+  }
 }));
 
 export default function Tokens(props) {
@@ -90,9 +96,10 @@ export default function Tokens(props) {
   const history = useHistory();
   const [lpDatas, setLpDatas] = useState([]);
   const [currentTokenInfo, setCurrentTokenInfo] = useState({});
-
-  const [tokenAddress, setTokenAddress] = useState(useParams().id);
+  const tokenAddress = useSelector((state) => state.tokenAddress)
+  const dispatch = useDispatch();
   useEffect(() => {
+    dispatch({ type: 'SET_TOKENADDRESS', payload: props.match.params.id })
     getLpinfo(tokenAddress)
       .then(data => {
         const tokens = [];
@@ -125,18 +132,17 @@ export default function Tokens(props) {
   };
 
   const handleTokenPropsChange = (tokenAddress) => {
-    console.log(tokenAddress);
     history.push(`/tokens/${tokenAddress}`);
-    setTokenAddress(tokenAddress)
+    dispatch({ type: 'SET_TOKENADDRESS', payload: tokenAddress })
   };
 
   const tokenSelect = (e) => { };
 
   let centerContainer = (
-    <Grid>
-      <Grid container spacing={2}>
-        <Grid xs item>
-          <Grid item>
+    <div>
+      <div className={classes.headerContainer}>
+        <Grid container spacing={2}>
+          <Grid xs item>
             <p
               style={{
                 display: "flex",
@@ -156,8 +162,6 @@ export default function Tokens(props) {
               <TokenSelect tokenProps={handleTokenPropsChange} />
             </Grid>
           </Grid>
-        </Grid>
-        <Grid xs item>
           <Grid className={classes.buttongrid}>
             <Button className={classes.button}>
               <img src={Buttonicon} width="18" height="18" />
@@ -178,31 +182,32 @@ export default function Tokens(props) {
             </Button>
           </Grid>
         </Grid>
-      </Grid>
-      <Grid
-        item
-        container
-        spacing={2}
-        xs={12}
-        style={{ marginTop: 15, flexFlow: "row" }}
-      >
-        <Button className={classes.button}>Reload</Button>
-        <div className={classes.selectBox}>
-          <Select
-            // defaultValue={tokenLp[0]}
-            options={lpDatas}
-            // input={false}
-            onChange={tokenSelect}
-          // onInputChange={tokenInputChange}
-          ></Select>
-        </div>
-        <Switch />
-      </Grid>
+        <Grid
+          item
+          container
+          spacing={2}
+          xs={12}
+          style={{ marginTop: 15, flexFlow: "row" }}
+        >
+          <Button className={classes.button}>Reload</Button>
+          <div className={classes.selectBox}>
+            <Select
+              // defaultValue={tokenLp[0]}
+              options={lpDatas}
+              // input={false}
+              onChange={tokenSelect}
+            // onInputChange={tokenInputChange}
+            ></Select>
+          </div>
+          <Switch />
+        </Grid>
+      </div>
       <Grid xs={12} style={{ marginTop: 20 }} item>
-        <Chart2 />
+        <Chart2 tokenName={currentTokenInfo.name} />
+        <br />
         <TableTab />
       </Grid>
-    </Grid>
+    </div>
   );
 
   let container;
@@ -211,7 +216,7 @@ export default function Tokens(props) {
     container = (
       <Grid container>
         <Grid item xs={3}>
-          <Lefttab lpdata={lpDatas} currentTokenAddress={tokenAddress} currentTokenInfo={currentTokenInfo} />
+          <Lefttab lpdata={lpDatas} currentTokenInfo={currentTokenInfo} />
         </Grid>
         <Grid item xs={6} style={{ marginTop: 5 }}>
           {centerContainer}
@@ -232,7 +237,7 @@ export default function Tokens(props) {
               />
             </a>
           </div>
-          <Input className={classes.inputWidth} />
+          <Input className={classes.inputField} />
           <Tab className={classes.tabContainer} />
         </Grid>
       </Grid>
@@ -241,7 +246,7 @@ export default function Tokens(props) {
     container = (
       <Grid container item xs={12}>
         <Grid item xs={3}>
-          <Lefttab lpdata={lpDatas} currentTokenAddress={tokenAddress} name={currentTokenInfo} />
+          <Lefttab lpdata={lpDatas} name={currentTokenInfo} />
         </Grid>
         <Grid item xs={9}>
           {centerContainer}

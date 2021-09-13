@@ -20,7 +20,7 @@ import { getReserve } from "../../PooCoin";
 import { useParams } from "react-router";
 import { tokenBalance, getRate } from "../../PooCoin";
 import { numberWithCommas } from "../../PooCoin/util";
-
+import { useSelector, useDispatch } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -83,9 +83,11 @@ function ListItemLink(props) {
 const SimpleList = ({ lpdata, totalSupply, currentTokenInfo }) => {
 
   // let marketCap = totalSupply * ratePrice;
-  const currentTokenAddress = useParams().id;
   const [burnBalance, setBurnBalance] = useState(0);
   const [priceRateData, setPriceRateData] = useState(0);
+  const currentTokenAddress = useSelector((state) => state.tokenAddress);
+  const classes = useStyles();
+
   const setBurnData = (data) => {
     setBurnBalance(data);
   }
@@ -93,10 +95,12 @@ const SimpleList = ({ lpdata, totalSupply, currentTokenInfo }) => {
     setPriceRateData(data);
   }
   useEffect(() => {
-    tokenBalance('0x000000000000000000000000000000000000dead', currentTokenAddress, setBurnData)
-    getRate(currentTokenAddress, '0xe9e7cea3dedca5984780bafc599bd69add087d56', setPriceRate);
-  }, [])
-  const classes = useStyles();
+    if (currentTokenAddress != undefined) {
+      tokenBalance('0x000000000000000000000000000000000000dead', currentTokenAddress, setBurnData)
+      getRate(currentTokenAddress, '0xe9e7cea3dedca5984780bafc599bd69add087d56', setPriceRate);
+    }
+  }, [currentTokenAddress])
+
   if (totalSupply == undefined) {
     totalSupply = 0;
   }

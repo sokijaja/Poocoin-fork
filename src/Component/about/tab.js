@@ -8,6 +8,8 @@ import List from "./list";
 import { getTotalSupply } from "../../PooCoin/index.js";
 import { numberWithCommas } from '../../PooCoin/util';
 import { Divider } from "@material-ui/core";
+import { useSelector, useDispatch } from 'react-redux'
+
 // import { useState } from "react";
 
 const useStyles = makeStyles({
@@ -70,34 +72,28 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-function a11yProps(index) {
-  return {
-    id: `scrollable-auto-tab-${index}`,
-    "aria-controls": `scrollable-auto-tabpanel-${index}`,
-  };
-}
-
 export default function CenteredTabs(props) {
-  const { lpdata, currentTokenInfo, currentTokenAddress } = props;
-  // const [lpdatastate, setLpdataState] = useState(lpdata);
-  // const [sname, setSName] = useState(name);
-
+  const { lpdata, currentTokenInfo } = props;
+  const classes = useStyles();
   const [totalSupply, setTotal] = useState();
+  const currentTokenAddress = useSelector((state) => state.tokenAddress)
 
   useEffect(() => {
     setTotalSupply()
-  }, []);
+  }, [currentTokenAddress]);
 
   const setTotalSupply = async () => {
-    let totalSupplyData = await getTotalSupply(currentTokenAddress)
-    setTotal(totalSupplyData);
+    if (currentTokenAddress != undefined) {
+      let totalSupplyData = await getTotalSupply(currentTokenAddress)
+      setTotal(totalSupplyData);
+    }
   }
-  const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
   return (
     <Paper className={classes.root}>
       <Tabs

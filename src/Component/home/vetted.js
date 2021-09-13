@@ -11,6 +11,7 @@ import StarOutlineIcon from "@material-ui/icons/StarOutline";
 import { Link } from "react-router-dom";
 import { vettedValues } from "../../PooCoin/index.js";
 import { CircularProgress } from "@material-ui/core";
+import { useDispatch } from 'react-redux'
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -69,6 +70,7 @@ const useStyles = makeStyles({
 
 function VettedTable(props) {
   const values = props.values;
+  const dispatch = useDispatch();
   return values.map((item, index) => (
     <StyledTableRow key={index}>
       <StyledTableCell component="th" scope="row">
@@ -77,6 +79,7 @@ function VettedTable(props) {
             pathname: `/tokens/${item.linkAddress}`,
             state: item.linkAddress,
           }}
+          onClick={() => dispatch({ type: 'SET_TOKENADDRESS', payload: item.linkAddress })}
         >
           {item.name}&nbsp;
           <span className={"textSuccess"}>${item.amount.toFixed(4)}</span>

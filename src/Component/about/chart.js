@@ -5,13 +5,13 @@ import Basechart from '../basic/chart';
 // import Searchinput from '../basic/searchinput';
 import Button from '@material-ui/core/Button';
 
-export default function About() {
+export default function About(props) {
   return (
     <div>
       <Grid container item>
-          <Grid item xs={12}>
-            <Basechart />
-          </Grid>
+        <Grid item xs={12}>
+          <Basechart tokenName={props.tokenName} />
+        </Grid>
       </Grid>
     </div>
   );
