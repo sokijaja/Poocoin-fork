@@ -3,7 +3,7 @@ import "../../css/advertise.css";
 import { Alert } from "@material-ui/lab";
 import { Card, CardHeader, OutlinedInput } from "@material-ui/core";
 import VettedTable from "./ActivityTable";
-import { totalSupply } from "../../PooCoin/index.js";
+import { getTotalSupply } from "../../PooCoin/index.js";
 
 export default function Activity(props) {
 
@@ -14,7 +14,7 @@ export default function Activity(props) {
   };
 
   useEffect(() => {
-    totalSupply(setTotalSupply);
+    getTotalSupply(setTotalSupply);
   }, []);
 
   return (

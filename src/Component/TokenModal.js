@@ -10,6 +10,7 @@ import BUSD from '../Images/BUSD.png';
 import USDT from '../Images/USDT.png';
 import BTCB from '../Images/BTCB.png';
 import TokenSelect from './TokenSelect';
+import DefaultTokens from '../config/default_tokens.json';
 import { ListSubheader, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
@@ -38,7 +39,8 @@ const useStyles = makeStyles((theme) => ({
   },
   list: {
     backgroundColor: '#262626',
-    color: 'white'
+    color: 'white',
+    zIndex: 0
   },
   listBody: {
     backgroundColor: '#303032'
@@ -60,17 +62,14 @@ export default function TokenModal(props) {
     setOpen(false);
   };
 
-  const onTokenSelect = (tk) => {
+  const onTokenSelect = (tokenInfo) => {
 
-    let icon;
-    if (tk == 'BNB') icon = BNB;
-    else if (tk == 'BUSD') icon = BUSD;
-    else if (tk == 'USDT') icon = USDT;
-    else if (tk == 'BTCB') icon = BTCB;
-    else if (tk == 'ETH') icon = ETH;
+    const token_symbol = tokenInfo.symbol;
+    const token_address = tokenInfo.address;
+    const icon = tokenInfo.icon;
 
-    setToken(<Fragment><img src={icon} width="23px"/>&nbsp;{tk}</Fragment>);
-    props.tokenChange(tk);
+    setToken(<Fragment><img src={icon} width="23px"/>&nbsp;{token_symbol}</Fragment>);
+    props.tokenChange(token_address, token_symbol);
     setOpen(false);
   }
 
@@ -97,7 +96,7 @@ export default function TokenModal(props) {
             <div className={classes.label}>
               <span style={{color: 'white'}}>Select a token</span>
             </div>
-            <TokenSelect></TokenSelect>
+            <TokenSelect tokenProps={onTokenSelect}></TokenSelect>
             <List
               component="nav"
               subheader={
@@ -107,31 +106,31 @@ export default function TokenModal(props) {
               }
               className={classes.list}
             >
-              <ListItem button className={classes.listBody} onClick={() => onTokenSelect('BNB')}>
+              <ListItem button className={classes.listBody} onClick={() => onTokenSelect({address: DefaultTokens.BNB.address, symbol: DefaultTokens.BNB.symbol, name: DefaultTokens.BNB.name, icon: BNB})}>
                 <ListItemIcon>
                   <img src={BNB} style={{width: '20px'}}/>
                 </ListItemIcon>
                 <ListItemText primary="BNB" />
               </ListItem>
-              <ListItem button className={classes.listBody} onClick={() => onTokenSelect('BUSD')}>
+              <ListItem button className={classes.listBody} onClick={() => onTokenSelect({address: DefaultTokens.BUSD.address, symbol: DefaultTokens.BUSD.symbol, name: DefaultTokens.BUSD.name, icon: BUSD})}>
                 <ListItemIcon>
                   <img src={BUSD} style={{width: '20px'}}/>
                 </ListItemIcon>
                 <ListItemText primary="BUSD" />
               </ListItem>
-              <ListItem button className={classes.listBody} onClick={() => onTokenSelect('USDT')}>
+              <ListItem button className={classes.listBody} onClick={() => onTokenSelect({address: DefaultTokens.USDT.address, symbol: DefaultTokens.USDT.symbol, name: DefaultTokens.USDT.name, icon: USDT})}>
                 <ListItemIcon>
                   <img src={USDT} style={{width: '20px'}}/>
                 </ListItemIcon>
                 <ListItemText primary="USDT" />
               </ListItem>
-              <ListItem button className={classes.listBody} onClick={() => onTokenSelect('BTCB')}>
+              <ListItem button className={classes.listBody} onClick={() => onTokenSelect({address: DefaultTokens.BTCB.address, symbol: DefaultTokens.BTCB.symbol, name: DefaultTokens.BTCB.name, icon: BTCB})}>
                 <ListItemIcon>
                   <img src={BTCB} style={{width: '20px'}}/>
                 </ListItemIcon>
                 <ListItemText primary="BTCB" />
               </ListItem>
-              <ListItem button className={classes.listBody} onClick={() => onTokenSelect('ETH')}>
+              <ListItem button className={classes.listBody} onClick={() => onTokenSelect({address: DefaultTokens.ETH.address, symbol: DefaultTokens.ETH.symbol, name: DefaultTokens.ETH.name, icon: ETH})}>
                 <ListItemIcon>
                   <img src={ETH} style={{width: '20px'}}/>
                 </ListItemIcon>

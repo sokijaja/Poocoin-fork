@@ -14,8 +14,7 @@ import TelegramIcon from "@material-ui/icons/Telegram";
 import Switch from "../Component/multichart/switch";
 import Chart2 from "../Component/about/chart";
 import TableTab from "../Component/home/centercontain/tabletab";
-import TokenSelect from "../Component/home/tokenSelect";
-// import TokenSelect from "../Component/tokenSelect";
+import TokenSelect from "../Component/TokenSelect";
 import Select from "react-select";
 import { getRate, getReserve } from "../PooCoin";
 import { useHistory, useParams } from "react-router";
@@ -99,7 +98,6 @@ export default function Tokens(props) {
   const [currentTokenInfo, setCurrentTokenInfo] = useState({});
   const tokenAddress = useSelector((state) => state.tokenAddress)
   const dispatch = useDispatch();
-
   useEffect(() => {
     dispatch({ type: 'SET_TOKENADDRESS', payload: props.match.params.id })
     getLpinfo(tokenAddress)
@@ -123,9 +121,7 @@ export default function Tokens(props) {
         setLpDatas(tokens);
         setCurrentTokenInfo(data.tokenInfos)
       })
-    if (tokenAddress != undefined) {
-      getRate(tokenAddress, '0xe9e7cea3dedca5984780bafc599bd69add087d56', setPriceRateData);
-    }
+    getRate(tokenAddress, '0xe9e7cea3dedca5984780bafc599bd69add087d56', setPriceRateData);
   }, [tokenAddress])
 
   const handleChange = () => {
@@ -135,7 +131,8 @@ export default function Tokens(props) {
     setShowMode(!showMode);
   };
 
-  const handleTokenPropsChange = (tokenAddress) => {
+  const handleTokenPropsChange = (tokenInfo) => {
+    const tokenAddress = tokenInfo.address;
     history.push(`/tokens/${tokenAddress}`);
     dispatch({ type: 'SET_TOKENADDRESS', payload: tokenAddress })
   };
