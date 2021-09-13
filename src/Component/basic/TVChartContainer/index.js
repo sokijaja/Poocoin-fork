@@ -14,6 +14,13 @@ const ChartContainer = {
 }
 
 export class TVChartContainer extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			containerId: props.containerId + '_' + Math.random()
+		}
+	}
+
 	static defaultProps = {
 		interval: '15',
 		containerId: 'tv_chart_container',
@@ -28,13 +35,12 @@ export class TVChartContainer extends React.Component {
 	};
 
 	componentDidMount() {
-		console.log(this.props);
 		const widgetOptions = {
 			debug: false,
 			symbol: this.props.tokenName + '/' + this.props.coinName,
 			datafeed: Datafeed,
 			interval: this.props.interval,
-			container_id: this.props.containerId,
+			container_id: this.state.containerId,
 			library_path: this.props.libraryPath,
 			locale: getLanguageFromURL() || 'en',
 			disabled_features: ['use_localstorage_for_settings'],
@@ -76,7 +82,7 @@ export class TVChartContainer extends React.Component {
 	render() {
 		return (
 			<div
-				id={this.props.containerId}
+				id={this.state.containerId}
 				style={ChartContainer}
 			/>
 		);

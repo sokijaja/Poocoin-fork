@@ -121,7 +121,9 @@ export default function Tokens(props) {
         setLpDatas(tokens);
         setCurrentTokenInfo(data.tokenInfos)
       })
-    getRate(tokenAddress, '0xe9e7cea3dedca5984780bafc599bd69add087d56', setPriceRateData);
+    if (tokenAddress != undefined) {
+      getRate(tokenAddress, '0xe9e7cea3dedca5984780bafc599bd69add087d56', setPriceRateData);
+    }
   }, [tokenAddress])
 
   const handleChange = () => {

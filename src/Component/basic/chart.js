@@ -29,7 +29,6 @@ const useStyles = makeStyles({
 export default function Chart(props) {
   const classes = useStyles();
   let { tokenName } = props;
-  console.log(tokenName);
   if (tokenName == undefined) {
     tokenName = "Poocoin"
   }

@@ -84,6 +84,7 @@ export default function CenteredTabs(props) {
 
   const setTotalSupply = async () => {
     if (currentTokenAddress != undefined) {
+      console.log(currentTokenAddress);
       let totalSupplyData = await getTotalSupply(currentTokenAddress)
       setTotal(totalSupplyData);
     }
