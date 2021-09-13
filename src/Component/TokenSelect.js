@@ -7,6 +7,7 @@ import FormControl from "@material-ui/core/FormControl";
 import { Button, Icon } from "@material-ui/core";
 import TokenInput from "./TokenInput";
 import Select from "react-select";
+import { getSearchTokenName } from "../actions";
 // import { Field } from 'react-final-form'
 
 const useStyles = makeStyles((theme) => ({
@@ -22,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
     flexBasis: "450px",
   },
   tokenSelect: {
+    zIndex: 1000,
     width: "100%",
     "& .MuiInputBase-input": {
       padding: ".75rem 3rem .75rem .75rem",
@@ -53,26 +55,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SimpleSelect() {
+export default function SimpleSelect({ tokenProps }) {
   const [inputText, setInputText] = useState("");
   let tokens = [];
   const [tokensArray, setTokenArray] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/token/getTokenName", {
-        params: { foo: inputText },
-      })
-      .then((res) => {
-        for (var idx in res.data) {
-          let combined_json = {};
-          combined_json["label"] = res.data[idx]["name"];
-          combined_json["value"] = res.data[idx]["token"];
-          tokens.push(combined_json);
-        }
-        setTokenArray(tokens);
-      });
-  });
+    if (inputText.length > 1) {
+      axios
+        .get("/token/getTokenName", {
+          params: { foo: inputText },
+        })
+        .then((res) => {
+          for (var idx in res.data) {
+            let combined_json = {};
+            combined_json["label"] = `${res.data[idx]["name"]} (${res.data[idx]["symbol"]}) ${res.data[idx]["token"]}`;
+            combined_json["value"] = res.data[idx]["token"];
+            combined_json["symbol"] = res.data[idx]["symbol"];
+            combined_json["name"] = res.data[idx]["name"];
+            combined_json["address"] = res.data[idx]["token"];
+            tokens.push(combined_json);
+          }
+          setTokenArray(tokens);
+        });
+      // setTokenArray(getSearchTokenName(inputText));
+    }
+  }, [inputText]);
 
   const classes = useStyles();
   const [isToken, setIsToken] = React.useState(1);
@@ -82,7 +90,7 @@ export default function SimpleSelect() {
   };
 
   const tokenSelect = (e) => {
-    const url = e.value;
+    tokenProps(e);
   };
 
   const tokenInputChange = (inputValue) => {
