@@ -115,7 +115,7 @@ export default function Tokens(props) {
         setCurrentTokenInfo(data.tokenInfos)
       })
     getRate(tokenAddress, '0xe9e7cea3dedca5984780bafc599bd69add087d56', setPriceRateData);
-  }, [tokenAddress, currentTokenInfo, lpDatas])
+  }, [tokenAddress])
 
   const handleChange = () => {
     setShowMode(!showMode);
@@ -125,6 +125,7 @@ export default function Tokens(props) {
   };
 
   const handleTokenPropsChange = (tokenAddress) => {
+    console.log(tokenAddress);
     history.push(`/tokens/${tokenAddress}`);
     setTokenAddress(tokenAddress)
   };
