@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Container, TextField, InputAdornment } from '@material-ui/core';
+import { Button, Container, TextField, InputAdornment, Typography } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import ArrowDownwardTwoToneIcon from '@material-ui/icons/ArrowDownwardTwoTone';
@@ -7,25 +7,19 @@ import Icon from '@material-ui/core/Icon';
 import classNames from 'classnames'
 import InLineLink from '../Component/InLineLink';
 import TokenModal from '../Component/TokenModal';
-import BNB from '../Images/BNB.png';
-import ETH from '../Images/ETH.png';
-import BUSD from '../Images/BUSD.png';
-import USDT from '../Images/USDT.png';
-import BTCB from '../Images/BTCB.png';
+import DefaultTokens from '../config/default_tokens.json';
 import { useStatePersist } from 'use-state-persist';
 import { useWallet } from 'use-wallet';
 import '../css/Trade.css';
-// import Geyser, {getTotalStats} from './trade/geyser';
-// import UniswapPool from './trade/uniswap-pool';
-import routerAbi from '../PooCoin/router.json';
-import { tokenBalance, bnbBalance, getRate, tokenSwap } from '../PooCoin';
+
+import { tokenBalance, bnbBalance, getRate, tokenSwap, approveToken, getAllowance, getAmountsOut } from '../PooCoin';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    margin: '50px auto 40px auto',
+    margin: '20px auto 40px auto',
     backgroundColor: '#303032',
     width: 400,
-    height: 400,
+    height: 'auto',
     padding: '20px',
     paddingTop: '24px',
     textAlign: 'start',
@@ -67,6 +61,11 @@ const useStyles = makeStyles((theme) => ({
     color: 'white',
     marginTop: 15
   },
+  tolabel: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    color: 'white',
+  },
   updown: {
     borderWidth: 0,
     margin: 15,
@@ -90,6 +89,14 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
+  swapInfo: {
+    marginTop: '10px',
+    backgroundColor: '#262626',
+    padding: '10px'
+  },
+  swapInfoText: {
+    fontSize: 13
+  }
 }));
 
 const CssTextField = withStyles({
@@ -142,93 +149,40 @@ function getModalStyle() {
 }
 
 export default function Trade() {
-
-  const statsLabels = [{
-    id: "all_time_total_rewards_token",
-    name: "Total Rewards",
-    unit: "GUH"
-  }, {
-    id: "current_locked_rewards_token",
-    name: "Locked Rewards",
-    unit: "GUH"
-  }, {
-    id: "program_duration_days",
-    name: "Maximum bonus at",
-    unit: "days"
-  }, {
-    id: "current_total_staked",
-    name: "Total Deposits",
-    unit: "USD"
-  }, {
-    id: "current_unlocked_rewards_token",
-    name: "Unlocked Rewards",
-    unit: "GUH"
-  }, {
-    id: "current_reward_rate_30d_token",
-    name: "Reward unlock rate",
-    unit: `GUH / month`
-  },
-  {
-    id: "apy_estimate",
-    name: "APY",
-    unit: "%"
-  }];
-
-  const [items, setItems] = React.useState([
-    {
-      name: "Total Rewards",
-      value: "-- GUH",
-    }, {
-      name: "Locked Rewards",
-      value: "-- GUH",
-    }, {
-      name: "Program duration",
-      value: "-- days left",
-    }, {
-      name: "Total Deposits",
-      value: "-- USD",
-    }, {
-      name: "Unlocked Rewards",
-      value: "-- GUH",
-    }, {
-      name: "Reward unlock rate",
-      value: "-- GUH / month",
-    }
-  ]);
-
+  
   const classes = useStyles();
+
+  // select swap version
   const [tabIndex, setTabIndex] = React.useState(0);
+
+  // slippage
   const [slippage, setSlippage] = React.useState(0);
   const [isAutoSlippage, setIsAutoSlippage] = React.useState(false);
+
+  // from(to) tokenaddress, symbol, swap amount, balance
   const [fromAmount, setFromAmount] = React.useState();
   const [fromToken, setFromToken] = React.useState("");
+  const [fromTokenSymbol, setFromTokenSymbol] = React.useState("");
   const [fromBalance, setFromBalance] = React.useState(0);
   const [toAmount, setToAmount] = React.useState();
   const [toToken, setToToken] = React.useState("");
+  const [toTokenSymbol, setToTokenSymbol] = React.useState("");
   const [toBalance, setToBalance] = React.useState(0);
 
-  // for swap
-  const [userDisconnected, setUserDisconnected] = useStatePersist(true);
-  const { account, connect, reset, ethereum } = useWallet();
-  const [pending, setPending] = useState(false);
-  const [geyser, setGeyser] = useState(null);
-  const [withdraw, setWithdraw] = useState(0);
-  const [depositedBalance, setDepositedBalance] = useState(0);
-  const [, setPendingTxType] = useState(TxType.None);
-  const [availableBalance, setAvailableBalance] = useState(0);
+  // for metamask
+  const { account, ethereum } = useWallet();
+
+  // check approve or swap
   const [allowance, setAllowance] = useState(0);
-  const [depositedLiquidityEquivalent, setDepositedLiquidityEquivalent] = useState(null);
-  const [accumulatedRewards, setAccumulatedRewards] = useState(null);
-  const [totalStaked, setTotalStaked] = useState(0);
-  const [rewardRate30, setRewardRate30] = useState(0);
-  const [uniswapPool, setUniswapPool] = useState(null);
-  const [pairRate, setPairRate] = useState();
-  const [tokenIn, setTokenIn] = useState();
-  const [tokenOut, setTokenOut] = useState();
-  const [open, setOpen] = useState();
+
+  // swap infos
+  const [minimumReceived, setMinimumReceived] = useState(0);
+  const [priceImpact, setPriceImpact] = useState(0);
+  const [price0, setPrice0] = useState(0);
+  const [price1, setPrice1] = useState(0);
 
   const settedTokens = [
-    ["BNB", ""],
+    ["BNB", "0x0000000000000000000000000000000000000000"],
     ["BUSD", "0xe9e7cea3dedca5984780bafc599bd69add087d56"],
     ["USDT", "0x55d398326f99059ff775485246999027b3197955"],
     ["BTCB", "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c"],
@@ -251,104 +205,79 @@ export default function Trade() {
   }
 
   const setFromTokenBalanceData = (data) => {
-    setFromBalance(data);
+    setFromBalance(parseFloat(data).toFixed(8));
   }
 
   const setToTokenBalanceData = (data) => {
-    setToBalance(data);
+    setToBalance(parseFloat(data).toFixed(8));
   }
 
   const onclickMaxBtn = () => {
     let token_address;
-    for (var i = 0; i < settedTokens.length; i++) {
-      if (settedTokens[i][0] === fromToken && fromToken === "BNB") {
-        bnbBalance(account, setFromAmount);
-        break;
-      } else if (settedTokens[i][0] === fromToken && fromToken !== 'BNB') {
-        token_address = settedTokens[i][1];
-        // set token balance
-        tokenBalance(account, token_address, setFromAmount);
-        break;
-      }
+    // for (var i = 0; i < settedTokens.length; i++) {
+    //   if (settedTokens[i][0] === fromToken && fromToken === "BNB") {
+    //     bnbBalance(account, setFromAmount);
+    //     break;
+    //   } else if (settedTokens[i][0] === fromToken && fromToken !== 'BNB') {
+    //     token_address = settedTokens[i][1];
+    //     // set token balance
+    //     tokenBalance(account, token_address, setFromAmount);
+    //     break;
+    //   }
+    // }
+  }
+
+  // update allowance callback
+  const updateAllowance = (allowance_) => {
+    setAllowance(allowance_);
+    console.log(allowance_);
+  }
+
+  // update amounts out callback
+  const updateAmountsOut = (amount_out) => {
+    setToAmount(amount_out);
+    setMinimumReceived(amount_out * (100 - slippage)  / 100);
+    const from_price = amount_out / fromAmount;
+    setPrice0(from_price);
+    setPrice1(1 / from_price);
+  }
+
+  const updateTokenPrice = (price) => {
+
+  }
+
+  // update Infos
+  const updateInfos = () => {
+
+    const from_token_address = (fromToken == DefaultTokens.BNB.address ? DefaultTokens.WBNB.address : fromToken);
+    if (ethereum && account && from_token_address)
+      getAllowance(ethereum, account, from_token_address, updateAllowance);
+
+    if (fromAmount && fromAmount > 0 && from_token_address && toToken) {
+      getAmountsOut(fromAmount, from_token_address, toToken, account, updateAmountsOut);
+      getRate(from_token_address, toToken, updateTokenPrice);
     }
   }
 
-  const onFromTokenChange = async (tk) => {
-    setFromToken(tk);
+  const onFromTokenChange = async (token, token_symbol) => {
+    
+    setFromToken(token); 
+    setFromTokenSymbol(token_symbol);
 
-    if (toToken !== "") {
-      for (var j = 0; j < settedTokens.length; j++) {
-        if (settedTokens[j][0] === fromToken) {
-          setTokenIn(settedTokens[j][1]);
-        }
-        if (settedTokens[j][0] === toToken) {
-          setTokenOut(settedTokens[j][1]);
-        }
-      }
-
-      try {
-        await getRate(tokenIn, tokenOut, setTokenRate);
-      } catch (e) {
-
-      }
-
-      if (toAmount !== 0)
-        setToAmount(parseFloat(pairRate) * parseFloat(toAmount));
-    }
-
-    let token_address;
-    for (var i = 0; i < settedTokens.length; i++) {
-      if (settedTokens[i][0] === tk && tk === "BNB") {
-        bnbBalance(account, setFromTokenBalanceData);
-        break;
-      } else if (settedTokens[i][0] === tk && tk !== 'BNB') {
-        token_address = settedTokens[i][1];
-        // set token balance
-        tokenBalance(account, token_address, setFromTokenBalanceData);
-        break;
-      }
-    }
+    if (token == DefaultTokens.BNB.address)
+      bnbBalance(account, setFromTokenBalanceData);
+    else
+      tokenBalance(account, token, setFromTokenBalanceData); 
   }
+ 
+  const onToTokenChange = async (token, token_symbol) => {
+    setToToken(token); 
+    setToTokenSymbol(token_symbol);
 
-  const setTokenRate = async (data) => {
-    await setPairRate(data);
-  }
-
-  const onToTokenChange = async (tk) => {
-    setToToken(tk);
-
-    if (fromToken !== "") {
-      for (var j = 0; j < settedTokens.length; j++) {
-        if (settedTokens[j][0] === fromToken) {
-          setTokenIn(settedTokens[j][1]);
-        }
-        if (settedTokens[j][0] === toToken) {
-          setTokenOut(settedTokens[j][1]);
-        }
-      }
-
-      try {
-        await getRate(tokenIn, tokenOut, setTokenRate);
-      } catch (e) {
-
-      }
-      if (fromAmount !== 0 && fromToken !== '')
-        setToAmount(parseFloat(pairRate) * parseFloat(fromAmount));
-
-    }
-
-    let token_address;
-    for (var i = 0; i < settedTokens.length; i++) {
-      if (settedTokens[i][0] === tk && tk === "BNB") {
-        bnbBalance(account, setToTokenBalanceData);
-        break;
-      } else if (settedTokens[i][0] === tk && tk !== 'BNB') {
-        token_address = settedTokens[i][1];
-        // set token balance
-        tokenBalance(account, token_address, setToTokenBalanceData);
-        break;
-      }
-    }
+    if (token == DefaultTokens.BNB.address)
+      bnbBalance(account, setToTokenBalanceData);
+    else
+      tokenBalance(account, token, setToTokenBalanceData);
   }
 
   const onclickFromToChange = () => {
@@ -363,31 +292,34 @@ export default function Trade() {
   const onChangeFromAmount = async (event) => {
 
     const val = event.target.value;
-    await setFromAmount(val);
-    console.log(val);
-    console.log(pairRate);
-    // if(toToken !== '' && pairRate !== 'undefined')
-    //     setToAmount(parseFloat(pairRate) * parseFloat(val));
+    setFromAmount(val);
   }
 
   const onChangeToAmount = async (event) => {
     const val = event.target.value;
-    await setToAmount(val);
-
-    console.log(val);
-    console.log(pairRate);
-    // if(fromToken !== '' && pairRate !== 'undefined')
-    //     setFromAmount(parseFloat(pairRate) * parseFloat(val));
+    setToAmount(val);
   }
 
-  // swap
-
+  // swap callback
   const swapcallback = () => {
 
   }
   
-  const tokenFromToSwap = () => {
-    tokenSwap(ethereum, routerAbi, "0.001", "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c", "0xb27adaffb9fea1801459a1a81b17218288c097cc", account, swapcallback);
+  // approve token
+  const onApprove = () => {
+    approveToken(ethereum, fromToken, fromAmount, account);
+  }
+
+  // swap tokens
+  const onSwap = () => {
+    tokenSwap(ethereum, fromAmount, fromToken, toToken, account, slippage, swapcallback);
+  }
+
+  const requireApprove = () => {
+    if (account) {
+        return fromAmount > allowance || allowance === 0;
+    }
+    return false;
   }
 
   useEffect(() => {
@@ -399,6 +331,10 @@ export default function Trade() {
     setSlippage(0.5);
 
   }, [account]);
+
+  useEffect(() => {
+    updateInfos();
+  }, [fromToken, fromAmount, toToken, slippage]);
 
   const autoSlippage = (isAutoSlippage ? classNames(classes.button, classes.slippageSelected) : classNames(classes.button, classes.slippage));
   const [modalOpen, setModalOpen] = React.useState(false);
@@ -475,7 +411,7 @@ export default function Trade() {
           }}
         />
         <div className={classes.label}>
-          <span>From ({fromToken})</span>
+          <span>From ({fromTokenSymbol})</span>
           <span>Balance: {fromBalance}</span>
         </div>
         <CssTextField
@@ -495,15 +431,15 @@ export default function Trade() {
         <div style={{ textAlign: 'center' }}>
           <Button variant="contained" className={classNames(classes.updown, classes.button)} onClick={() => onclickFromToChange()}><ArrowDownwardTwoToneIcon /></Button>
         </div>
-        <div className={classes.label}>
-          <span>To ({toToken})</span>
+        <div className={classes.tolabel}>
+          <span>To ({toTokenSymbol})</span>
           <span>Balance: {toBalance}</span>
         </div>
         <CssTextField
           id="standard-start-adornment"
           InputProps={{
             disableUnderline: true,
-            value: toAmount,
+            value: toAmount > 0 ? toAmount.toFixed(8) : toAmount,
             placeholder: '0.0',
             onChange: onChangeToAmount,
             endAdornment:
@@ -512,14 +448,31 @@ export default function Trade() {
               </InputAdornment>,
           }}
         />
-
+        {
+          fromAmount && fromAmount > 0 && fromToken && toToken ?
+          <Container className={classes.swapInfo}>
+            <Typography className={classes.swapInfoText}>Minimum Received: {minimumReceived.toFixed(8)}</Typography>
+            <Typography className={classes.swapInfoText}>Price Impact: {priceImpact}</Typography>
+            <Typography className={classes.swapInfoText}>Price: {price0.toFixed(8)} {toTokenSymbol}/{fromTokenSymbol}</Typography>
+            <Typography className={classes.swapInfoText}>Price: {price1.toFixed(8)} {fromTokenSymbol}/{toTokenSymbol}</Typography>
+          </Container> 
+          : ""
+        }
         <div className={classes.label}>
           {!account && <span>Connect your wallet</span>}
           {
-            account && fromAmount && toAmount && <Button
+            account && fromToken && requireApprove() && <Button
               variant={"contained"}
               className={classes.swapBtn}
-              onClick={() => tokenFromToSwap()}
+              onClick={() => onApprove()}
+            >Approve</Button>
+          }
+          {
+            account && !requireApprove() && <Button
+              variant={"contained"}
+              disabled={fromToken && toToken && fromAmount ? false : true}
+              className={classes.swapBtn}
+              onClick={() => onSwap()}
             >Swap</Button>
           }
         </div>

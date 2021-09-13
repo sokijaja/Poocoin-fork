@@ -1,4 +1,5 @@
 import networkInfo from '../constants/networkInfo.json';
+import BigNumber from 'bignumber.js';
 
 function dec2hexString(dec) {
     return '0x' + (parseInt(dec)).toString(16);
@@ -43,4 +44,12 @@ export function numberWithCommas(x) {
     if (x != undefined) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
+}
+export const toHuman = (num, decimals) => {
+    const humanNum = new BigNumber(num).div(new BigNumber(10).pow(new BigNumber(decimals)));
+    return humanNum.toNumber();
+}
+
+export const toBigNum = (num, decimals) => {
+    return new BigNumber(num).times(new BigNumber(10).pow(new BigNumber(decimals)));
 }

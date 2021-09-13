@@ -78,7 +78,7 @@ const useStyles = makeStyles({
 async function getTokenName(values) {
    
    const data = JSON.stringify({values: values});
-  return await axios.get('http://localhost:5000/token/getTokenDevActivity/' + data);
+  return await axios.get("/token/getTokenDevActivity/" + data);
 }
 
 function DevActivityTable(props) {
