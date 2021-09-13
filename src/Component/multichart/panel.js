@@ -49,7 +49,7 @@ export default function TransitionAlerts({ displayMode, symbolAddress, symbolNam
   let chart;
   if (displayMode) {
     chart = (
-      <Chart className={classes.chart} symbolAddress={symbolAddress} symbolName={symbolName} />
+      <Chart className={classes.chart} tokenName={symbolName} />
     );
   }
 

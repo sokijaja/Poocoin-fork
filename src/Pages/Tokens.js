@@ -15,6 +15,7 @@ import Switch from "../Component/multichart/switch";
 import Chart2 from "../Component/about/chart";
 import TableTab from "../Component/home/centercontain/tabletab";
 import TokenSelect from "../Component/home/tokenSelect";
+// import TokenSelect from "../Component/tokenSelect";
 import Select from "react-select";
 import { getRate, getReserve } from "../PooCoin";
 import { useHistory, useParams } from "react-router";
@@ -98,6 +99,7 @@ export default function Tokens(props) {
   const [currentTokenInfo, setCurrentTokenInfo] = useState({});
   const tokenAddress = useSelector((state) => state.tokenAddress)
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch({ type: 'SET_TOKENADDRESS', payload: props.match.params.id })
     getLpinfo(tokenAddress)

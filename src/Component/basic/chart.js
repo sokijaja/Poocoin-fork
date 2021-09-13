@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { useState } from 'react';
-import { TVChartContainer } from './TVChartContainer';
+import { useEffect, useState } from 'react';
+import TVChartContainer from './TVChartContainer';
 import { coin } from '../../constants';
 
 const useStyles = makeStyles({
@@ -28,19 +28,14 @@ const useStyles = makeStyles({
 });
 export default function Chart(props) {
   const classes = useStyles();
-  let { tokenName } = props;
-  if (tokenName == undefined) {
-    tokenName = "Poocoin"
-  }
   const [coinName, setCoinName] = useState(coin.USD);
 
   const handleChangeCoinName = (event) => {
     setCoinName(event.target.value);
   }
-
   return (
     <div className={classes.TradingView}>
-      <TVChartContainer tokenName={tokenName} coinName={coinName} />
+      <TVChartContainer tokenName={props.tokenName} coinName={coinName} />
       <select
         value={coinName}
         onChange={handleChangeCoinName}
