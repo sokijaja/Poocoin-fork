@@ -15,7 +15,6 @@ const ChartContainer = {
 
 export class TVChartContainer extends React.Component {
 	static defaultProps = {
-		symbol: 'Poocoin/USD',
 		interval: '15',
 		containerId: 'tv_chart_container',
 		libraryPath: '/charting_library/',
@@ -29,6 +28,7 @@ export class TVChartContainer extends React.Component {
 	};
 
 	componentDidMount() {
+		console.log(this.props);
 		const widgetOptions = {
 			debug: false,
 			symbol: this.props.tokenName + '/' + this.props.coinName,

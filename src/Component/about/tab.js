@@ -6,8 +6,10 @@ import Tab from "@material-ui/core/Tab";
 import PropTypes from "prop-types";
 import List from "./list";
 import { getTotalSupply } from "../../PooCoin/index.js";
-import DoubleArrowIcon from "@material-ui/icons/DoubleArrow";
-import Button from "@material-ui/core/Button";
+import { numberWithCommas } from '../../PooCoin/util';
+import { Divider } from "@material-ui/core";
+import { useSelector, useDispatch } from 'react-redux'
+
 // import { useState } from "react";
 
 const useStyles = makeStyles({
@@ -70,29 +72,22 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-function a11yProps(index) {
-  return {
-    id: `scrollable-auto-tab-${index}`,
-    "aria-controls": `scrollable-auto-tabpanel-${index}`,
-  };
-}
-
 export default function CenteredTabs(props) {
-  const { lpdata, name } = props;
-  // const [lpdatastate, setLpdataState] = useState(lpdata);
-  // const [sname, setSName] = useState(name);
-
-  const [totalSupply, setTotal] = useState([]);
-
-  const setTotalSupply = (data) => {
-    setTotal(data);
-  };
+  const { lpdata, currentTokenInfo } = props;
+  const classes = useStyles();
+  const [totalSupply, setTotal] = useState();
+  const currentTokenAddress = useSelector((state) => state.tokenAddress)
 
   useEffect(() => {
-    getTotalSupply(setTotalSupply);
-  }, []);
+    setTotalSupply()
+  }, [currentTokenAddress]);
 
-  const classes = useStyles();
+  const setTotalSupply = async () => {
+    if (currentTokenAddress != undefined) {
+      let totalSupplyData = await getTotalSupply(currentTokenAddress)
+      setTotal(totalSupplyData);
+    }
+  }
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -112,12 +107,13 @@ export default function CenteredTabs(props) {
         <Tab label="Token" className={classes.tabTitlePan} />
         <Tab label="News" className={classes.tabTitlePan} />
       </Tabs>
+      {/* <Divider className={'mb-3 mt-3'} /> */}
       <TabPanel value={value} index={0} className={classes.tabpanel}>
         <div className={classes.item}>
           Total Supply:
-          <br /> {totalSupply.totalSupply}
+          <br />{numberWithCommas(totalSupply)}
         </div>
-        <List data={lpdata} />
+        <List lpdata={lpdata} totalSupply={totalSupply} currentTokenInfo={currentTokenInfo} />
       </TabPanel>
       <TabPanel value={value} index={1}></TabPanel>
     </Paper>

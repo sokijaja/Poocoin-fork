@@ -1,49 +1,41 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Box from "@material-ui/core/Box";
-import PropTypes from "prop-types";
-import List from "./list";
-import { getTotalSupply } from "../../PooCoin";
-import DoubleArrowIcon from "@material-ui/icons/DoubleArrow";
-import Button from "@material-ui/core/Button";
-import Link from "@material-ui/core/Link";
+import { getRate } from "../../PooCoin/index";
 import { getReserve } from "../../PooCoin/index";
+import { numberWithCommas } from "../../PooCoin/util";
 
-const useStyles = makeStyles({});
+const useStyles = makeStyles({
+  root: {
+    marginBottom: '1rem'
+  },
+  linkTag: {
+    fontSize: "14px",
+    color: '#3eb8ff',
+  },
+});
 
 export default function LpInfoItem(props) {
-  let { lpInfo } = props;
-  //   let lp = JSON.parse(JSON.stringify(lpInfo[0]));
-  //   console.log(lp);
-  //   console.log(lp.lp_address);
+  const classes = useStyles();
+  const [lpInfo, setLpInfo] = useState({});
+  const [priceRate, setPriceRateData] = useState(0);
 
-  const [reserveVal, setReserveVal] = useState([]);
-
-  const setReserve = (data) => {
-    setReserveVal(data);
-  };
+  const setPriceRate = (data) => {
+    setPriceRateData(data)
+  }
   useEffect(() => {
-    // getReserve(lp.lp_address, setReserve);
+    const lpdataInfo = props.lpInfo;
+    getReserve(lpdataInfo.value[2], lpdataInfo.value[3]).then((reserveData) => {
+      setLpInfo({ label: lpdataInfo.label, symbol: lpdataInfo.value[1], tokenAddress: lpdataInfo.value[0], lpAddress: lpdataInfo.value[2], reserve: reserveData });
+    });
+    getRate(lpdataInfo.value[0], '0x55d398326f99059ff775485246999027b3197955', setPriceRate);
   }, []);
 
-  const classes = useStyles();
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  const lpMarketcap = numberWithCommas(parseInt(priceRate * lpInfo.reserve));
 
   return (
-    <div>
-      <div>
-        <Link className={classes.link}> Pcv2 </Link>|{/* {type} */}
-      </div>
-      <div>
-        4,383.71 BNB
-        <span className={classes.value}>($1,544,527)</span> |{" "}
-        <Link className={classes.link}> Chart </Link>|{" "}
-        <Link className={classes.link}> Holders </Link>
-      </div>
+    <div className={classes.root}>
+      <a target="_blank" className={classes.linkTag} href="https://pancakeswap.finance/swap">Pc v2</a> | {props.currentTokenInfo.name}/{lpInfo.label} LP Holdings:<br />
+      {(lpInfo.reserve == undefined) ? 0 : parseFloat(lpInfo.reserve).toFixed(2) + lpInfo.symbol}<span className={'textSuccess'}>{(lpInfo.reserve == undefined) ? '($0)' : `(${lpMarketcap})`}</span> |<a target="_blank" className={classes.linkTag} href={`https://bscscan.com/token/${lpInfo.tokenAddress}?a=${lpInfo.lpAddress}#tokenAnalytics`}> Chart</a> | <a target="_blank" className={classes.linkTag} href={`https://bscscan.com/token/${lpInfo.lpAddress}`}>Holders</a>
     </div>
   );
 }

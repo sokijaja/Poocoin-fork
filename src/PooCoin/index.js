@@ -63,7 +63,6 @@ const myAccount = "0x50796F695484b29ba8b14881a516428FA7A58581";
 const getLogsAddress = "0xca143ce32fe78f1f7019d7d551a6402fc5350c73";
 const topics =
   "0x0d3648bd0f6ba80134a33ba9275ac585d9d315f0ad8355cddefde31afa28d0e9";
-const tokenAddress = "0xCe5814eFfF15D53EFd8025B9F2006D4d7D640b9B";
 // pancakeswap v2 router addresss
 const pancakeswap_router = "0x10ED43C718714eb63d5aA57B78B54704E256024E";
 
@@ -106,11 +105,6 @@ const unvettedAbi = [
   "function messageLength() public view returns (uint256)",
 ];
 
-const getTotalSupply_contract = new ethers.Contract(
-  tokenAddress,
-  abi,
-  provider
-);
 const contract = new ethers.Contract(topHolderAddress, abi, provider);
 const profile_contract = new ethers.Contract(profileAddress, abi, provider);
 const unvetted_contract = new ethers.Contract(
@@ -119,38 +113,50 @@ const unvetted_contract = new ethers.Contract(
   provider
 );
 const poocoint_contract = new ethers.Contract(poocoinAddress, abi, provider);
-const getAmountsOut_contract = new ethers.Contract(
-  pancakeswap_router,
-  abi,
-  provider
-);
+
 
 // get pair
 const getRate = async (tokenIn, tokenOut, setRate) => {
-  await getAmountsOut_contract
-    .getAmountsOut(ethers.utils.parseUnits("1", 18), [tokenIn, tokenOut])
-    .then((res) => {
-      setRate(parseInt(res[1]) / 1000000000000000000);
-    });
+  try {
+    const getAmountsOut_contract = new ethers.Contract(
+      pancakeswap_router,
+      abi,
+      provider
+    );
+    await getAmountsOut_contract
+      .getAmountsOut(ethers.utils.parseUnits("1", 18), [tokenIn, tokenOut])
+      .then((res) => {
+        setRate(parseInt(res[1]) / 1000000000000000000);
+      });
+  } catch (err) {
+    console.log(tokenIn + tokenOut);
+    console.log(err);
+  }
 };
 
 //get total supply
-const getTotalSupply = async (setTotalSupply) => {
-  let temp = [];
-  await getTotalSupply_contract.totalSupply().then((tSupply) => {
-    let totalSupply = tSupply;
-    temp.totalSupply = web3.utils.toBN(totalSupply).toString();
-    // console.log(temp);
-    setTotalSupply(temp);
-  });
+const getTotalSupply = async (tokenAddress) => {
+  const getTotalSupply_contract = new ethers.Contract(
+    tokenAddress,
+    abi,
+    provider
+  );
+  const ts = await getTotalSupply_contract.totalSupply()
+  let totalSupply = web3.utils.fromWei(ts.toString(), "ether");
+  return totalSupply;
 };
 
 //get reserve
-const getReserve = async (lpAddress, setReserve) => {
+const getReserve = async (lpAddress, tokenNo) => {
   const getReserves_contract = new ethers.Contract(lpAddress, abi, provider);
-  await getReserves_contract.getReserves().then((res) => {
-    console.log(res);
-  });
+  const reserves = await getReserves_contract.getReserves();
+  if (tokenNo == 0) {
+    let ret = web3.utils.fromWei(reserves[1].toString(), "ether");
+    return ret.toString()
+  } else {
+    let ret = web3.utils.fromWei(reserves[0].toString(), "ether");
+    return ret.toString()
+  }
 };
 
 // async function getPriceBySymbol(symbol) {
@@ -645,7 +651,8 @@ const tokenBalance = async (
 ) => {
   let balance_contract = new ethers.Contract(token_address, abi, provider);
   balance_contract.balanceOf(wallet_address).then((balance) => {
-    setTokenBalanceData((parseInt(balance) / 1000000000000000000).toFixed(4));
+    const balance_chn = web3.utils.fromWei(balance.toString(), "ether");
+    setTokenBalanceData((parseFloat(balance_chn).toFixed(4)));
   });
 };
 
@@ -673,4 +680,4 @@ const tokenSwap = async (provider, routerAbi, amount, tokenIn, tokenOut, account
   }
 }
 
-module.exports = { vettedValues, unvettedValues, poocoinBalance, apeLists, devActivity, totalSupply, tokenBalance, bnbBalance, getRate, tokenSwap, getTotalSupply };
+module.exports = { vettedValues, unvettedValues, poocoinBalance, apeLists, devActivity, totalSupply, tokenBalance, bnbBalance, getRate, tokenSwap, getTotalSupply, getReserve };

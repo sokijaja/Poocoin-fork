@@ -15,7 +15,12 @@ import Link from "@material-ui/core/Link";
 import { arrayify } from "ethers/lib/utils";
 import { TokenAmount } from "@pancakeswap-libs/sdk";
 import { cleanup } from "@testing-library/react";
-import LpInfoItem from "./LpInfoItem";
+import LpInfoItem from "./lpInfoItem";
+import { getReserve } from "../../PooCoin";
+import { useParams } from "react-router";
+import { tokenBalance, getRate } from "../../PooCoin";
+import { numberWithCommas } from "../../PooCoin/util";
+import { useSelector, useDispatch } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,83 +56,104 @@ const useStyles = makeStyles((theme) => ({
   link: {
     fontSize: 12,
   },
+  tokenTransaction: {
+    textAlign: 'left',
+    padding: '15px',
+    fontSize: '15px',
+    '& a:hover': {
+      color: 'white'
+    },
+    '& img': {
+      marginTop: '-5px',
+      marginRight: '5px',
+    }
+  },
+  bscIcon: {
+    width: '20px',
+  },
+  bitqueryIcon: {
+    width: '80px',
+  }
 }));
 
 function ListItemLink(props) {
   return <ListItem button component="a" {...props} />;
 }
 
-const SimpleList = ({ data, name }) => {
-  const tokenType = [];
+const SimpleList = ({ lpdata, totalSupply, currentTokenInfo }) => {
 
-  const [lpdata, setLpdata] = useState(data);
-
-  // const [tokenTypeArray, setTokenArray] = useState([]);
-  // console.log(data);
-  // useEffect(() => {
-  //   return () => {
-  //     if (lpdata.length !== 0) {
-  //       for (let i = 0; i < lpdata[0].length; i++) {
-  //         tokenType.push(lpdata[0][i].type);
-  //       }
-  //       setTokenArray(tokenType);
-  //     }
-  //   };
-  // }, []);
-
+  // let marketCap = totalSupply * ratePrice;
+  const [burnBalance, setBurnBalance] = useState(0);
+  const [priceRateData, setPriceRateData] = useState(0);
+  const currentTokenAddress = useSelector((state) => state.tokenAddress);
   const classes = useStyles();
 
+  const setBurnData = (data) => {
+    setBurnBalance(data);
+  }
+  const setPriceRate = (data) => {
+    setPriceRateData(data);
+  }
+  useEffect(() => {
+    if (currentTokenAddress != undefined) {
+      tokenBalance('0x000000000000000000000000000000000000dead', currentTokenAddress, setBurnData)
+      getRate(currentTokenAddress, '0xe9e7cea3dedca5984780bafc599bd69add087d56', setPriceRate);
+    }
+  }, [currentTokenAddress])
+
+  if (totalSupply == undefined) {
+    totalSupply = 0;
+  }
+  const realMarketCap = (parseFloat(totalSupply) - burnBalance) * parseFloat(priceRateData);
+  const pureMarketCap = numberWithCommas(parseInt(realMarketCap));
   return (
     <div className={classes.root}>
       <div>
         <p className={classes.market}>
           Market Cap: (Includes locked, excludes burned)
         </p>
-        <p className={classes.marketValue}>$14,162,672</p>
+        <p className={classes.marketValue}>${pureMarketCap}</p>
       </div>
-      <Divider />
-      {/* <SubList className={classes.SubList} /> */}
+      <Divider className={'mb-3 mt-3'} />
       <div className={classes.SubList}>
         <div className={classes.list}>
-          <LpInfoItem lpInfo={lpdata} />
+          {lpdata.map((row, index) =>
+            <LpInfoItem lpInfo={row} currentTokenInfo={currentTokenInfo} key={index} />
+          )}
+          {/* <LpInfoItem lpInfo={lpdata} /> */}
         </div>
       </div>
-      <List component="nav" aria-label="main mailbox folders">
-        <ListItem>
-          <ListItemIcon>
-            <img src={BSC} height="20" />
-          </ListItemIcon>
-          <ListItemText primary="POOCOIN Transactions" />
-        </ListItem>
-        <Divider />
-        <ListItem>
-          <ListItemIcon>
-            <img src={BSC} height="20" />
-          </ListItemIcon>
-          <ListItemText primary="POOCOIN Transactions" />
-        </ListItem>
-        <Divider />
-        <ListItem>
-          <ListItemIcon>
-            <img src={BSC} height="20" />
-          </ListItemIcon>
-          <ListItemText primary="POOCOIN Transactions" />
-        </ListItem>
-        <Divider />
-        <ListItem>
-          <Link style={{ color: "#fff  !important" }}>
-            {" "}
-            Dev Wallet Checker{" "}
-          </Link>
-        </ListItem>
-        <Divider />
-        <ListItem>
-          <Link>
-            {" "}
-            <img src={BSC} height="20" /> Bitquery Explorer{" "}
-          </Link>
-        </ListItem>
-      </List>
+      <Divider className={'mb-3 mt-3'} />
+      <div className={classes.tokenTransaction}>
+        <a target="_blank" href={`https://bscscan.com/token/${currentTokenAddress}`}>
+          <img src={BSC} className={classes.bscIcon} />
+          {currentTokenInfo.symbol}
+          &nbsp;Transactions
+        </a>
+      </div>
+      <Divider />
+      <div className={classes.tokenTransaction}>
+        <a target="_blank" href={`https://bscscan.com/address/${currentTokenAddress}#code`}>
+          <img src={BSC} className={classes.bscIcon} />
+          {currentTokenInfo.symbol}
+          &nbsp;Contract
+        </a>
+      </div>
+      <Divider />
+      <div className={classes.tokenTransaction} >
+        <a target="_blank" href={`https://bscscan.com/token/${currentTokenAddress}#balances`}>
+          <img src={BSC} className={classes.bscIcon} />
+          {currentTokenInfo.symbol}
+          &nbsp;Holders
+        </a>
+      </div>
+      <Divider />
+      <div className={classes.tokenTransaction}>
+        <a target="_blank" href={`https://explorer.bitquery.io/bsc/token/${currentTokenAddress}`}>
+          <img src="https://bitquery.io/wp-content/uploads/2020/09/bitquery_logo_w.png" className={classes.bitqueryIcon} />
+          &nbsp;Bitquery Explorer
+        </a>
+      </div>
     </div>
   );
 };

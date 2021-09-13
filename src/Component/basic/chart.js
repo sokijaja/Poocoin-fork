@@ -27,12 +27,12 @@ const useStyles = makeStyles({
   }
 });
 export default function Chart(props) {
+  const classes = useStyles();
   let { tokenName } = props;
+  console.log(tokenName);
   if (tokenName == undefined) {
     tokenName = "Poocoin"
   }
-  const classes = useStyles();
-  const [chartTokenName, setChartTokenName] = useState(tokenName);
   const [coinName, setCoinName] = useState(coin.USD);
 
   const handleChangeCoinName = (event) => {
@@ -41,7 +41,7 @@ export default function Chart(props) {
 
   return (
     <div className={classes.TradingView}>
-      <TVChartContainer tokenName={chartTokenName} coinName={coinName} />
+      <TVChartContainer tokenName={tokenName} coinName={coinName} />
       <select
         value={coinName}
         onChange={handleChangeCoinName}

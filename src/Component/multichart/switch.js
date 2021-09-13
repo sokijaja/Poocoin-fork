@@ -22,12 +22,12 @@ export default function Switches() {
         style={{color: 'white'}}
       > Single blocks </Switch> */}
       <FormControlLabel
-        control={<Switch checked={state.checkedA} onChange={handleChange} color="primary"  name="checkedA" inputProps={{ 'aria-label': 'secondary checkbox' }} />}
-        label="Single blocks" style={{color: 'white', marginLeft:20}}
+        control={<Switch checked={state.checkedA} onChange={handleChange} color="primary" name="checkedA" inputProps={{ 'aria-label': 'secondary checkbox' }} />}
+        label="Single blocks" style={{ color: 'white', marginLeft: 0 }}
       />
       <FormControlLabel
         control={<Switch checked={state.checkedB} onChange={handleChange} color="primary" name="checkedB" inputProps={{ 'aria-label': 'primary checkbox' }} />}
-        label="Show trades" style={{color: 'white'}}
+        label="Show trades" style={{ color: 'white' }}
       />
     </div>
   );

@@ -102,24 +102,38 @@ router.get("/getLpinfo", async (req, res) => {
         },
       ],
     });
-
+    tokenName = await tokenSchema
+      .findOne({
+        token: token_address,
+      })
+    let tokenInfo = { name: tokenName.name, symbol: tokenName.symbol };
     let ret_arr = [];
     for (let index = 0; index < lpInfos.length; index++) {
       tokenName0 = await tokenSchema
         .find({
           token: lpInfos[index].token0,
         })
-        .select("name")
       tokenName1 = await tokenSchema
         .find({
-          token: lpInfos[index].token0,
+          token: lpInfos[index].token1,
         })
-        .select("name")
-      const item = { token0: lpInfos[index].token0, token1: lpInfos[index].token1, lp_address: lpInfos[index].lp_address, type: lpInfos[index].type, tokenName0: tokenName0[0].name, tokenName1: tokenName1[0].name }
+      if (tokenName0.length == 0 || tokenName1.length == 0) {
+        continue;
+      }
+      const item = {
+        token0: lpInfos[index].token0,
+        token1: lpInfos[index].token1,
+        lp_address: lpInfos[index].lp_address,
+        type: lpInfos[index].type,
+        tokenName0: tokenName0[0].name,
+        tokenName1: tokenName1[0].name,
+        tokenSymbol0: tokenName0[0].symbol,
+        tokenSymbol1: tokenName1[0].symbol,
+      }
       ret_arr.push(item);
     }
-    res.json(ret_arr);
-  } catch (err) { }
+    res.json({ lpInfos: ret_arr, tokenInfos: tokenInfo });
+  } catch (err) { console.log(err) }
 });
 
 // router.route("/postTokenURL").post((req, res, next) => {
