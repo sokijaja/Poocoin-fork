@@ -33,6 +33,7 @@ import {
 } from 'use-wallet'
 
 function Layout() {
+
   let localChainId = parseInt(localStorage.getItem("PoocoinChainId"));
   let [connectId, setConnectId] = useState(connectType.metamask);
 

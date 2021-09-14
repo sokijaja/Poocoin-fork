@@ -15,7 +15,7 @@ import Link from "@material-ui/core/Link";
 import { arrayify } from "ethers/lib/utils";
 import { TokenAmount } from "@pancakeswap-libs/sdk";
 import { cleanup } from "@testing-library/react";
-import LpInfoItem from "./LpInfoItem";
+import LpInfoItem from "./lpInfoItem";
 import { getReserve } from "../../PooCoin";
 import { useParams } from "react-router";
 import { tokenBalance, getRate } from "../../PooCoin";

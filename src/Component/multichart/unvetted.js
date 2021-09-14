@@ -6,24 +6,28 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import StarOutlineIcon from '@material-ui/icons/StarOutline';
+import StarOutlineIcon from "@material-ui/icons/StarOutline";
+import StarIcon from '@material-ui/icons/Star';
 import { Link } from 'react-router-dom';
 import { unvettedValues } from '../../PooCoin/index.js';
-import { CircularProgress } from '@material-ui/core';
+import { useDispatch } from 'react-redux'
+import { storeLocalTokenInfo, checkLocalTokenInfo, removeLocalTokenInfo } from '../../PooCoin/util';
+import { CircularProgress } from "@material-ui/core";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
-    borderColor: '#262626'
+    borderColor: "#262626",
+    textAlignLast: "center",
   },
   body: {
-    fontSize: 12,
     padding: 0,
     paddingLeft: 10,
-    color: '#fff',
-    backgroundColor: '#303030',
-    borderColor: '#262626'
+    color: "#fff",
+    backgroundColor: "#303030",
+    borderColor: "#262626",
+    textAlignLast: "center",
   },
 }))(TableCell);
 
@@ -35,70 +39,76 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-function createData(name, balance, price) {
-  return { name, balance, price };
-}
-
-const rows = [
-  createData('BNBack', '0.00', '$0.0179'),
-  createData('DOGE LOVE', '0.00', '$0.0179'),
-  createData('StackCake', '0.00', '$0.0179'),
-  createData('FAT CAKE', '0.00', '$0.0179'),
-  createData('BABYUNI', '0.00', '$0.0179'),
-];
-
 const useStyles = makeStyles({
   table: {
     minWidth: 100,
-    fontSize: '0.875rem',
-    padding: '10px !important',
-    color: '#fff'
+    fontSize: "0.875rem",
+    padding: "10px !important",
+    color: "#fff",
   },
   tableTh: {
     padding: 0,
-    fontSize: '0.8125rem',
+    fontSize: "0.8125rem",
     paddingLeft: 10,
-    backgroundColor: '#262626'
-  },
-  priceValue: {
-    color: '#28a745'
-  },
-  firstName: {
-    textTransform: 'uppercase',
-    fontSize: 13
-  },
-  otherName: {
-    fontSize: 12,
-    color: '#ADB5BD'
+    backgroundColor: "#262626",
   },
   CircularProgress: {
     color: "#b2b5be",
     marginTop: '20px'
   },
+  starredIcon: {
+    cursor: 'pointer'
+  },
+  starredFillIcon: {
+    color: '#f7b500!important',
+    cursor: 'pointer'
+  }
 });
 
 function UnvettedTable(props) {
   const values = props.values;
-  const classes = props.styleName;
+  const classes = props.className;
+  const dispatch = useDispatch();
+  const addUnvettedData = unvettedData => () => {
+    checkLocalTokenInfo(unvettedData[0])
+      ?
+      removeLocalTokenInfo(unvettedData[0])
+      :
+      storeLocalTokenInfo(unvettedData[0], unvettedData[1].split('/')[3], 0)
+    props.reloadData()
+  }
   return (
     values.map((item, index) =>
       <StyledTableRow key={index}>
-        <StyledTableCell component="th" scope="row" onClick={() => props.onSymbol(item.address)}>
-          <span className={classes.firstName}>{item[1].split('/')[3]}</span> <span className={classes.priceValue}>$ 0.0000</span>
-          <div className={classes.otherName}>{item[1].split('/')[3]}</div>
+        <StyledTableCell component="th" scope="row" onClick={() => props.onSymbol(item[0])}>
+          <span>{item[1].split('/')[3]} </span>
+          <span className={"textSuccess"}>$0.0000</span>
+          <br />
+          <span className={"textMuted"}>{item[1].split('/')[3]}</span>
         </StyledTableCell>
-        <StyledTableCell>0.00<div className={classes.priceValue}>$0.00</div></StyledTableCell>
-        <StyledTableCell><StarOutlineIcon /></StyledTableCell>
+        <StyledTableCell>
+          <span>0.00</span>
+          <br />
+          <span className={'textSuccess'}>$0.00</span>
+        </StyledTableCell>
+        <StyledTableCell>
+          {
+            checkLocalTokenInfo(item[0]) == true ?
+              <StarIcon className={classes.starredFillIcon} onClick={addUnvettedData(item)} />
+              :
+              <StarOutlineIcon className={classes.starredIcon} onClick={addUnvettedData(item)} />
+          }
+        </StyledTableCell>
       </StyledTableRow>
     )
   );
 }
 
 export default function CustomizedTables(props) {
-
   const [unvettedData, setUnvettedData] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [reload, setReloading] = useState(1);
+  const classes = useStyles();
   const setUnvettedValues = (data) => {
     if (data.length == 0) {
       setLoading(true)
@@ -106,14 +116,15 @@ export default function CustomizedTables(props) {
       setLoading(false)
       setUnvettedData(data);
     }
-  }
+  };
 
   useEffect(() => {
     unvettedValues(setUnvettedValues);
   }, []);
 
-  const classes = useStyles();
-
+  const reloadComponent = () => {
+    reload == 1 ? setReloading(0) : setReloading(1)
+  }
   return (
     <div>
       <TableContainer>
@@ -126,17 +137,7 @@ export default function CustomizedTables(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            <UnvettedTable values={unvettedData} styleName={classes} onSymbol={props.onSymbol} />
-            {/* {rows.map((row) => (
-              <StyledTableRow key={row.name}>
-                <StyledTableCell component="th" scope="row">
-                  <span className={classes.firstName}>{row.name}</span> <span className={classes.priceValue}>{row.price}</span>
-                  <div className={classes.otherName}>{row.name}</div>
-                </StyledTableCell>
-                <StyledTableCell>{row.balance}<div className={classes.priceValue}>${row.balance}</div></StyledTableCell>
-                <StyledTableCell><StarOutlineIcon /></StyledTableCell>
-              </StyledTableRow>
-            ))} */}
+            <UnvettedTable className={classes} reloadData={reloadComponent} onSymbol={props.onSymbol} values={unvettedData} />
           </TableBody>
         </Table>
       </TableContainer>

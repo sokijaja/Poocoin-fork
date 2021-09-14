@@ -1,52 +1,39 @@
-import React, { Component, useEffect, useState } from 'react';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import StarOutlineIcon from '@material-ui/icons/StarOutline';
-import { vettedValues } from '../../PooCoin/index.js';
-import { CircularProgress } from '@material-ui/core';
+import React, { Component, useEffect, useState } from "react";
+import { withStyles, makeStyles } from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import StarOutlineIcon from "@material-ui/icons/StarOutline";
+import StarIcon from '@material-ui/icons/Star';
+import { Link } from "react-router-dom";
+import { vettedValues } from "../../PooCoin/index.js";
+import { CircularProgress } from "@material-ui/core";
+import { useDispatch } from 'react-redux'
+import { storeLocalTokenInfo, checkLocalTokenInfo, removeLocalTokenInfo } from '../../PooCoin/util';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
-    borderColor: '#262626',
+    borderColor: "#262626",
+    textAlignLast: "center",
   },
   body: {
-    fontSize: 12,
     padding: 0,
     paddingLeft: 10,
-    color: '#fff',
-    backgroundColor: '#303030',
-    borderColor: '#262626'
+    color: "#fff",
+    backgroundColor: "#303030",
+    borderColor: "#262626",
+    textAlignLast: "center",
   },
 }))(TableCell);
 
-function VettedTable(props) {
-  const values = props.values;
-  const classes = props.styleName;
-
-  return (
-    values.map((item, index) =>
-      <StyledTableRow key={index}>
-        <StyledTableCell component="th" scope="row" onClick={() => props.onSymbol(item.address, item.name)} className={classes.symbol}>
-          <span className={classes.firstName}>{item.name}</span> <span className={classes.priceValue}>${item.amount.toFixed(4)}</span>
-          <div className={classes.otherName}>{item.name}</div>
-        </StyledTableCell>
-        <StyledTableCell>{item.amount.toFixed(2)}<div className={classes.priceValue}>${item.amount.toFixed(2)}</div></StyledTableCell>
-        <StyledTableCell><StarOutlineIcon /></StyledTableCell>
-      </StyledTableRow>
-    )
-  );
-}
-
 const StyledTableRow = withStyles((theme) => ({
   root: {
-    '&:nth-of-type(odd)': {
+    "&:nth-of-type(odd)": {
       backgroundColor: theme.palette.action.hover,
     },
   },
@@ -55,39 +42,72 @@ const StyledTableRow = withStyles((theme) => ({
 const useStyles = makeStyles({
   table: {
     minWidth: 100,
-    fontSize: '0.875rem',
-    padding: '10px !important',
-    color: '#fff'
+    fontSize: "0.875rem",
+    padding: "10px !important",
+    color: "#fff",
   },
   tableTh: {
     padding: 0,
-    fontSize: '0.8125rem',
+    fontSize: "0.8125rem",
     paddingLeft: 10,
-    backgroundColor: '#262626'
-  },
-  priceValue: {
-    color: '#28a745'
-  },
-  firstName: {
-    textTransform: 'uppercase',
-    fontSize: 13
-  },
-  otherName: {
-    fontSize: 12,
-    color: '#ADB5BD'
+    backgroundColor: "#262626",
   },
   CircularProgress: {
     color: "#b2b5be",
     marginTop: '20px'
   },
-  symbol: {
-    cursor: 'pointer  '
+  starredIcon: {
+    cursor: 'pointer'
+  },
+  starredFillIcon: {
+    color: '#f7b500!important',
+    cursor: 'pointer'
   }
 });
+
+function VettedTable(props) {
+  const values = props.values;
+  const classes = props.className;
+  const dispatch = useDispatch();
+  const addVettedData = vettedData => () => {
+    checkLocalTokenInfo(vettedData.linkAddress)
+      ?
+      removeLocalTokenInfo(vettedData.linkAddress)
+      :
+      storeLocalTokenInfo(vettedData.linkAddress, vettedData.name, vettedData.amount)
+    props.reloadData()
+  }
+
+  return values.map((item, index) => (
+    <StyledTableRow key={index}>
+      <StyledTableCell component="th" scope="row" onClick={() => props.onSymbol(item.address, item.name)}>
+        {item.name}&nbsp;
+        <span className={"textSuccess"}>${item.amount.toFixed(4)}</span>
+        <br />
+        <span className={"textMuted"}>{item.name}</span>
+      </StyledTableCell>
+      <StyledTableCell>
+        <span>0.00</span>
+        <br />
+        <span className={"textSuccess"}>$0.00</span>
+      </StyledTableCell>
+      <StyledTableCell>
+        {
+          checkLocalTokenInfo(item.linkAddress) == true ?
+            <StarIcon className={classes.starredFillIcon} onClick={addVettedData(item)} />
+            :
+            <StarOutlineIcon className={classes.starredIcon} onClick={addVettedData(item)} />
+        }
+      </StyledTableCell>
+    </StyledTableRow>
+  ));
+}
 
 export default function CustomizedTables(props) {
   const [vettedData, setVettedData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [reload, setReloading] = useState(1);
+  const classes = useStyles();
 
   const setVettedValues = (data) => {
     if (data.length == 0) {
@@ -96,31 +116,32 @@ export default function CustomizedTables(props) {
       setLoading(false)
       setVettedData(data);
     }
-  }
-
-  // const selectSymbol = (symbol) => {
-  //   setSelectSymbol(symbol);
-  // }
+  };
 
   useEffect(() => {
     vettedValues(setVettedValues);
   }, []);
 
-  const classes = useStyles();
-
+  const reloadComponent = () => {
+    reload == 1 ? setReloading(0) : setReloading(1)
+  }
   return (
     <div>
       <TableContainer>
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <StyledTableCell className={classes.tableTh}>Tokens</StyledTableCell>
-              <StyledTableCell className={classes.tableTh}>Balance</StyledTableCell>
+              <StyledTableCell className={classes.tableTh}>
+                Tokens
+              </StyledTableCell>
+              <StyledTableCell className={classes.tableTh}>
+                Balance
+              </StyledTableCell>
               <StyledTableCell className={classes.tableTh}></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            <VettedTable values={vettedData} styleName={classes} onSymbol={props.onSymbol} />
+            <VettedTable className={classes} values={vettedData} onSymbol={props.onSymbol} reloadData={reloadComponent} />
           </TableBody>
         </Table>
       </TableContainer>

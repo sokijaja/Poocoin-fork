@@ -68,7 +68,7 @@ export default function Home() {
         <div className={classes.bottomText}>
           Telegram public chat:
           <a className={'textBlue fs5 linkText'}>
-            {" "}
+            &nbsp;
             http://t.me/poocointokenchat{" "}
           </a>
         </div>

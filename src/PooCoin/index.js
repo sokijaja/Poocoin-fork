@@ -69,7 +69,7 @@ const pancakeRouterContract = new ethers.Contract(pancakeswap_router, abi, provi
 // get pair
 export const getRate = async (tokenIn, tokenOut, setRate) => {
   try {
-    
+
     await pancakeRouterContract
       .getAmountsOut(ethers.utils.parseUnits("1", 18), [tokenIn, tokenOut])
       .then((res) => {
@@ -88,21 +88,21 @@ const pancakeswapRouterContract = new web3.eth.Contract(router_abi, pancakeswap_
 export const getAmountsOut = async (amount, tokenIn, tokenOut, account, updateAmountsOut) => {
   try {
     const tokenInContract = new web3.eth.Contract(erc20_abi, tokenIn);
-    const tokenIn_decimals = await tokenInContract.methods.decimals().call({from:account});
+    const tokenIn_decimals = await tokenInContract.methods.decimals().call({ from: account });
     const tokenOutContract = new web3.eth.Contract(erc20_abi, tokenOut);
-    const tokenOut_decimals = await tokenOutContract.methods.decimals().call({from:account});
+    const tokenOut_decimals = await tokenOutContract.methods.decimals().call({ from: account });
 
     const amount_in = toBigNum(amount, tokenIn_decimals);
     pancakeswapRouterContract.methods
       .getAmountsOut(amount_in, [tokenIn, tokenOut])
-      .call({from: account}).then((result) => {
+      .call({ from: account }).then((result) => {
         console.log(result);
         const amount_out = toHuman(result[1], tokenOut_decimals);
         updateAmountsOut(amount_out);
       }).catch((err) => {
         console.log(err);
       })
-  }catch(err) {
+  } catch (err) {
     console.log(err)
   }
 };
@@ -617,18 +617,18 @@ const totalSupply = async (setTotalSupplyData) => {
   });
 };
 
-export const tokenBalance = async (wallet_address,token_address,setTokenBalanceData) => {
+export const tokenBalance = async (wallet_address, token_address, setTokenBalanceData) => {
 
   try {
     const contract = new web3.eth.Contract(erc20_abi, token_address);
-    const decimals = await contract.methods.decimals().call({from:wallet_address});
+    const decimals = await contract.methods.decimals().call({ from: wallet_address });
     contract.methods.balanceOf(wallet_address)
-        .call({from: wallet_address}).then((balance) => {
-          setTokenBalanceData(toHuman(balance, decimals));
-        }).catch((err) => {
-          console.log(err);
-        })
-  }catch(err) {
+      .call({ from: wallet_address }).then((balance) => {
+        setTokenBalanceData(toHuman(balance, decimals));
+      }).catch((err) => {
+        console.log(err);
+      })
+  } catch (err) {
     console.log(err);
   }
 };
@@ -668,7 +668,7 @@ export const getAllowance = (ethereum, account, token, updateAllowance) => {
     contract.methods.allowance(account, pancakeswap_router).call().then((allowance) => {
       updateAllowance(toHuman(allowance, decimals))
     });
-  }catch (err) {
+  } catch (err) {
     console.log(err);
   }
 }
@@ -678,21 +678,21 @@ export const approveToken = async (ethereum, token, amount, account) => {
     const mweb3 = new Web3(ethereum);
     const contract = new mweb3.eth.Contract(erc20_abi, token);
     contract.setProvider(ethereum);
-    
+
     const tx = await contract.methods.approve(pancakeswap_router, "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff").send({
-        from: account
+      from: account
     });
-    
+
     return {
-        hash: tx.blockHash,
-        status: tx.status,
+      hash: tx.blockHash,
+      status: tx.status,
     }
   } catch (err) {
-      return {
-          status: false
-      }
+    return {
+      status: false
+    }
   }
-}  
+}
 
 const toHuman = (num, decimals) => {
   const humanNum = new BigNumber(num).div(new BigNumber(10).pow(new BigNumber(decimals)));

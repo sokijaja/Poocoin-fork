@@ -53,3 +53,39 @@ export const toHuman = (num, decimals) => {
 export const toBigNum = (num, decimals) => {
     return new BigNumber(num).times(new BigNumber(10).pow(new BigNumber(decimals)));
 }
+
+export const storeLocalTokenInfo = (linkAddress, name, amount) => {
+    const starredData = localStorage.getItem('starred');
+    let starredDataStorage = {};
+    if (starredData == null) {
+        const vettedDataItem = {};
+        vettedDataItem['name'] = name;
+        vettedDataItem['amount'] = amount;
+        starredDataStorage[linkAddress] = vettedDataItem
+    } else {
+        starredDataStorage = JSON.parse(localStorage.getItem('starred'));
+        console.log(starredDataStorage);
+        const vettedDataItem = {};
+        vettedDataItem['name'] = name;
+        vettedDataItem['amount'] = amount;
+        starredDataStorage[linkAddress] = vettedDataItem;
+    }
+    localStorage.setItem('starred', JSON.stringify(starredDataStorage))
+}
+
+export const checkLocalTokenInfo = (linkAddress) => {
+    const starredData = localStorage.getItem('starred');
+    if (starredData == null) {
+        return false
+    } else {
+        const starredDataStorage = JSON.parse(localStorage.getItem('starred'));
+        const ownStatus = starredDataStorage.hasOwnProperty(linkAddress);
+        return ownStatus;
+    }
+}
+
+export const removeLocalTokenInfo = (linkAddress) => {
+    const starredDataStorage = JSON.parse(localStorage.getItem('starred'));
+    delete starredDataStorage[linkAddress];
+    localStorage.setItem('starred', JSON.stringify(starredDataStorage))
+}

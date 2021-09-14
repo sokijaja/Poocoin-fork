@@ -45,8 +45,8 @@ const useStyles = makeStyles({
     color: '#fff'
   },
   walletLink: {
-    float: 'right',
-    display: 'inline-block'
+    textAlign: 'right',
+    cursor: 'pointer'
   },
   promotedLink: {
     color: '#3eb8ff'
@@ -107,9 +107,6 @@ export default function CenteredTabs({ symbol, onSymbol }) {
         <TableTab className={classes.tableTab} onSymbol={onSymbol} />
       </TabPanel>
       <TabPanel value={value} index={1} className={classes.tabpanel}>
-        <div className={classes.walletLink}><Link to="">Restore Hidden</Link></div>
-        <div></div>
-        <div className={classes.walletContainer}>Connect your wallet to see your tokens.</div>
         <div>
           <div className={classes.walletLink}>
             <Link to="">Restore Hidden</Link>
@@ -124,10 +121,10 @@ export default function CenteredTabs({ symbol, onSymbol }) {
         </div>
       </TabPanel>
       <TabPanel value={value} index={2} className={classes.tabpanel}>
-        <StarredTable />
+        <StarredTable onSymbol={onSymbol} />
       </TabPanel>
       <TabPanel value={value} index={3} className={classes.tabpanel}>
-        <HistoryTable />
+        <HistoryTable onSymbol={onSymbol} />
       </TabPanel>
     </Paper>
   );
