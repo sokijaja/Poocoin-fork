@@ -69,6 +69,7 @@ function VettedTable(props) {
   const values = props.values;
   const classes = props.className;
   const dispatch = useDispatch();
+
   const addVettedData = vettedData => () => {
     checkLocalTokenInfo(vettedData.linkAddress)
       ?
@@ -78,6 +79,10 @@ function VettedTable(props) {
     props.reloadData()
   }
 
+  const dispatchTokenInfo = (tokenName, tokenAddress) => () => {
+    dispatch({ type: 'SET_TOKENADDRESS', payload: tokenAddress });
+    dispatch({ type: 'SET_TOKENNAME', payload: tokenName });
+  }
   return values.map((item, index) => (
     <StyledTableRow key={index}>
       <StyledTableCell component="th" scope="row">
@@ -86,7 +91,7 @@ function VettedTable(props) {
             pathname: `/tokens/${item.linkAddress}`,
             state: item.linkAddress,
           }}
-          onClick={() => dispatch({ type: 'SET_TOKENADDRESS', payload: item.linkAddress })}
+          onClick={dispatchTokenInfo(item.name, item.linkAddress)}
         >
           {item.name}&nbsp;
           <span className={"textSuccess"}>${item.amount.toFixed(4)}</span>

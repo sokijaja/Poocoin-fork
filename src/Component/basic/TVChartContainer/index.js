@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Datafeed from './api'
 import { makeStyles } from '@material-ui/core/styles';
+import { useSelector } from 'react-redux';
 
 function getLanguageFromURL() {
 	const regex = new RegExp('[\\?&]lang=([^&#]*)');
@@ -15,20 +16,25 @@ const useStyles = makeStyles({
 	}
 });
 export default function TVChartContainer(props) {
-	const { tokenName, coinName } = props;
+	const { coinName } = props;
 	const classes = useStyles();
-	// const containerId = 'tv_chart_container' + '_' + Math.random();
-	const [containerId, setContainerId] = useState();
-	const [tokenSymbol, setTokenSymbol] = useState('poocoin');
+	const containerId = 'tv_chart_container' + '_' + Math.random();
+	const tokenName = useSelector((state) => state.tokenName);
+	// const [containerId, setContainerId] = useState();
 	useEffect(() => {
-		setContainerId('tv_chart_container' + '_' + Math.random());
-		setTokenSymbol(tokenName);
-		console.log(coinName);
-		console.log(tokenSymbol);
+		// setContainerId('tv_chart_container' + '_' + Math.random());
+		console.log(tokenName);
+		console.log(widgetOptions);
+		const widget = (window.tvWidget = new window.TradingView.widget(
+			widgetOptions
+		));
+		widget.onChartReady(() => {
+			console.log("Chart has loaded!");
+		});
 	}, [tokenName])
 	const widgetOptions = {
 		debug: false,
-		symbol: tokenSymbol + '/' + coinName,
+		symbol: tokenName + '/' + coinName,
 		datafeed: Datafeed,
 		interval: '15',
 		container_id: containerId,
@@ -43,6 +49,7 @@ export default function TVChartContainer(props) {
 		fullscreen: false,
 		autosize: false,
 		studies_overrides: {},
+		theme: 'black',
 		overrides: {
 			// "mainSeriesProperties.showCountdown": true,
 			"paneProperties.background": "#131722",
@@ -55,15 +62,14 @@ export default function TVChartContainer(props) {
 		}
 	};
 	if (containerId != undefined) {
-		console.log(widgetOptions);
-		window.TradingView.onready(() => {
-			const widget = window.tvWidget = new window.TradingView.widget(widgetOptions);
-			widget.onChartReady(() => {
-				console.log('Chart has loaded!')
-			});
-		});
+		// 	window.TradingView.onready(() => {
+		// 		const widget = window.tvWidget = new window.TradingView.widget(widgetOptions);
+		// 		widget.onChartReady(() => {
+		// 			console.log('Chart has loaded!')
+		// 		});
+		// 	});
+
 	}
-	console.log(containerId);
 	return (
 		<div>
 			<div
