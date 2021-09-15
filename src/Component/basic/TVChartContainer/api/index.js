@@ -12,6 +12,7 @@ export default {
 
 	},
 	searchSymbols: (userInput, exchange, symbolType, onResultReadyCallback) => {
+
 	},
 	resolveSymbol: (symbolName, onSymbolResolvedCallback, onResolveErrorCallback) => {
 		// expects a symbolInfo object in response
@@ -50,8 +51,6 @@ export default {
 
 	},
 	getBars: function (symbolInfo, resolution, from, to, onHistoryCallback, onErrorCallback, firstDataRequest) {
-		// console.log('function args',arguments)
-		// console.log(`Requesting bars between ${new Date(from * 1000).toISOString()} and ${new Date(to * 1000).toISOString()}`)
 		historyProvider.getBars(symbolInfo, resolution, from, to, firstDataRequest)
 			.then(bars => {
 				if (bars.length) {

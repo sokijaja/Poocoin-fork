@@ -16,21 +16,18 @@ const useStyles = makeStyles({
 	}
 });
 export default function TVChartContainer(props) {
-	const { coinName } = props;
+	const { tokenName, coinName } = props;
 	const classes = useStyles();
 	const containerId = 'tv_chart_container' + '_' + Math.random();
-	const tokenName = useSelector((state) => state.tokenName);
-	// const [containerId, setContainerId] = useState();
 	useEffect(() => {
-		// setContainerId('tv_chart_container' + '_' + Math.random());
-		console.log(tokenName);
-		console.log(widgetOptions);
-		const widget = (window.tvWidget = new window.TradingView.widget(
-			widgetOptions
-		));
-		widget.onChartReady(() => {
-			console.log("Chart has loaded!");
-		});
+		if (tokenName != undefined) {
+			const widget = (window.tvWidget = new window.TradingView.widget(
+				widgetOptions
+			));
+			widget.onChartReady(() => {
+				console.log("Chart has loaded!");
+			});
+		}
 	}, [tokenName])
 	const widgetOptions = {
 		debug: false,
@@ -49,9 +46,16 @@ export default function TVChartContainer(props) {
 		fullscreen: false,
 		autosize: false,
 		studies_overrides: {},
-		theme: 'black',
+		theme: 'Dark',
+		toolbar_bg: "#131722",
+		studies_access: {
+			type: "black",
+			tools: [
+				{ name: "Aroon" },
+				{ name: "Balance of Power", grayed: true },
+			]
+		},
 		overrides: {
-			// "mainSeriesProperties.showCountdown": true,
 			"paneProperties.background": "#131722",
 			"paneProperties.vertGridProperties.color": "#363c4e",
 			"paneProperties.horzGridProperties.color": "#363c4e",
@@ -61,15 +65,7 @@ export default function TVChartContainer(props) {
 			"mainSeriesProperties.candleStyle.wickDownColor": '#7f323f',
 		}
 	};
-	if (containerId != undefined) {
-		// 	window.TradingView.onready(() => {
-		// 		const widget = window.tvWidget = new window.TradingView.widget(widgetOptions);
-		// 		widget.onChartReady(() => {
-		// 			console.log('Chart has loaded!')
-		// 		});
-		// 	});
 
-	}
 	return (
 		<div>
 			<div

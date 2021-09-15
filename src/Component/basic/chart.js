@@ -12,7 +12,6 @@ const useStyles = makeStyles({
   },
   TradingView: {
     position: 'relative',
-    height: '275px'
   },
   coinSelect: {
     position: 'absolute',
@@ -30,13 +29,13 @@ const useStyles = makeStyles({
 export default function Chart(props) {
   const classes = useStyles();
   const [coinName, setCoinName] = useState(coin.USD);
-  const tokenName = useSelector((state) => state.tokenName);
+  // const tokenName = useSelector((state) => state.tokenName);
   const handleChangeCoinName = (event) => {
     setCoinName(event.target.value);
   }
   return (
     <div className={classes.TradingView}>
-      <TVChartContainer tokenName={tokenName} coinName={coinName} />
+      <TVChartContainer tokenName={props.tokenName} coinName={coinName} />
       <select
         value={coinName}
         onChange={handleChangeCoinName}

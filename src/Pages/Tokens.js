@@ -12,7 +12,7 @@ import Buttonicon from "../Images/bscscan.png";
 import LanguageIcon from "@material-ui/icons/Language";
 import TelegramIcon from "@material-ui/icons/Telegram";
 import Switch from "../Component/multichart/switch";
-import Chart2 from "../Component/about/chart";
+import Chart2 from "../Component/basic/chart";
 import TableTab from "../Component/home/centercontain/tabletab";
 import TokenSelect from "../Component/TokenSelect";
 import Select from "react-select";
@@ -20,6 +20,8 @@ import { getRate, getReserve } from "../PooCoin";
 import { useHistory, useParams } from "react-router";
 import { getLpinfo } from "../actions";
 import { useSelector, useDispatch } from 'react-redux'
+import { getBNBLpaddress } from "../actions";
+import DefaultTokens from '../config/default_tokens.json';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -86,6 +88,10 @@ const useStyles = makeStyles((theme) => ({
   headerContainer: {
     height: "auto",
     padding: '20px',
+  },
+  chartPan: {
+    display: 'inline-block',
+    width: 'auto',
   }
 }));
 
@@ -96,10 +102,14 @@ export default function Tokens(props) {
   const history = useHistory();
   const [lpDatas, setLpDatas] = useState([]);
   const [currentTokenInfo, setCurrentTokenInfo] = useState({});
+
   const tokenAddress = useSelector((state) => state.tokenAddress)
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch({ type: 'SET_TOKENADDRESS', payload: props.match.params.id })
+
+    //Get all info about current token from lpaddress and token table
     getLpinfo(tokenAddress)
       .then(data => {
         const tokens = [];
@@ -121,7 +131,14 @@ export default function Tokens(props) {
         setLpDatas(tokens);
         setCurrentTokenInfo(data.tokenInfos)
       })
-    getRate(tokenAddress, '0xe9e7cea3dedca5984780bafc599bd69add087d56', setPriceRateData);
+
+    //Get Lpaddress from current token address and BNB token address
+    getBNBLpaddress(props.match.params.id).then(BNBLpaddress => {
+      localStorage.setItem('chartLpaddress', BNBLpaddress);
+    })
+
+    //Get Lpaddress from current token address and BUSD token address
+    getRate(tokenAddress, DefaultTokens.BUSD.address, setPriceRateData);
   }, [tokenAddress])
 
   const handleChange = () => {
@@ -204,7 +221,9 @@ export default function Tokens(props) {
         </Grid>
       </div>
       <Grid xs={12} style={{ marginTop: 20 }} item>
-        <Chart2 tokenName={currentTokenInfo.name} />
+        <div className={classes.chartPan} >
+          <Chart2 tokenName={currentTokenInfo.name} />
+        </div>
         <br />
         <TableTab />
       </Grid>

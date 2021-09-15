@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useState } from "react";
 import Grid from '@material-ui/core/Grid';
-import Chart from '../Component/about/chart';
+import Chart from '../Component/basic/chart';
 import Abouttab from '../Component/about/tab';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
