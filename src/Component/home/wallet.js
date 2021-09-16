@@ -3,6 +3,7 @@ import { withStyles, makeStyles } from '@material-ui/core/styles';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Modal, Grid, Paper } from '@material-ui/core';
 import StarOutlineIcon from '@material-ui/icons/StarOutline';
 import { Link } from 'react-router-dom';
+import { getWalletToken } from '../../PooCoin'
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -75,6 +76,7 @@ export default function CustomizedTables() {
   const classes = useStyles();
   const [open, setModalOpen] = useState(false);
 
+  getWalletToken('1', '1')
   const modalClose = () => {
     setModalOpen(false);
   };

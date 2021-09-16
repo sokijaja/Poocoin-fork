@@ -13,6 +13,7 @@ import { unvettedValues } from '../../PooCoin/index.js';
 import { useDispatch } from 'react-redux'
 import { storeLocalTokenInfo, checkLocalTokenInfo, removeLocalTokenInfo } from '../../PooCoin/util';
 import { CircularProgress } from "@material-ui/core";
+import { storeLocalMultichart } from '../../PooCoin/util';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -77,10 +78,14 @@ function UnvettedTable(props) {
       storeLocalTokenInfo(unvettedData[0], unvettedData[1].split('/')[3], 0)
     props.reloadData()
   }
+  const addMultichartInfo = tokenAddress => () => {
+    storeLocalMultichart(tokenAddress);
+    props.onSymbol()
+  }
   return (
     values.map((item, index) =>
       <StyledTableRow key={index}>
-        <StyledTableCell component="th" scope="row" onClick={() => props.onSymbol(item[0])}>
+        <StyledTableCell component="th" scope="row" onClick={addMultichartInfo(item[0])}>
           <span>{item[1].split('/')[3]} </span>
           <span className={"textSuccess"}>$0.0000</span>
           <br />

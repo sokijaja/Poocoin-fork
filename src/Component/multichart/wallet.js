@@ -82,6 +82,7 @@ export default function CustomizedTables() {
   const modalOpen = () => {
     setModalOpen(true);
   }
+
   return (
     <div>
       <Grid container className={classes.tableHead}>

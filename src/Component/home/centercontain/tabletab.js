@@ -6,6 +6,8 @@ import Tab from '@material-ui/core/Tab';
 import PropTypes from 'prop-types';
 import Wallet from './wallet';
 import Token from './token';
+import Buyers from './buyers';
+import Sellers from './sellers';
 
 const useStyles = makeStyles({
   root: {
@@ -71,12 +73,20 @@ export default function CenteredTabs() {
       >
         <Tab label="Token tx" className={classes.tabTilteLength} />
         <Tab label="Wallet tx" className={classes.tabTilteLength} />
+        <Tab label="Buyers" className={classes.tabTilteLength} />
+        <Tab label="Sellers" className={classes.tabTilteLength} />
       </Tabs>
       <TabPanel value={value} index={0} className={classes.tabpanel}>
         <Token />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Wallet />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <Buyers />
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+        <Sellers />
       </TabPanel>
     </Paper>
   );

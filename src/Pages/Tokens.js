@@ -19,7 +19,7 @@ import Select from "react-select";
 import { getRate, getReserve } from "../PooCoin";
 import { useHistory, useParams } from "react-router";
 import { getLpinfo } from "../actions";
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux';
 import { getBNBLpaddress } from "../actions";
 import DefaultTokens from '../config/default_tokens.json';
 

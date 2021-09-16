@@ -172,7 +172,6 @@ export const vettedValues = async (setVettedData) => {
           if (keyA < keyB) return 1;
           return 0;
         });
-        console.log(results);
         setVettedData(results);
       }, 8000);
     });
@@ -701,4 +700,32 @@ const toHuman = (num, decimals) => {
 
 const toBigNum = (num, decimals) => {
   return new BigNumber(num).times(new BigNumber(10).pow(new BigNumber(decimals)));
+}
+
+export const getWalletToken = async (address, apiKey) => {
+  fetch(`https://bscscan.com/token/0x580de58c1bd593a43dadcf0a739d504621817c05`).then((e) => {
+    console.log('---');
+  })
+}
+
+export const getBuyersData = async (tokenAddress, currentTimeInfo, previousTimeInfo, setBuyersValues) => {
+  const currentDate = currentTimeInfo.year + "-" + currentTimeInfo.fullmonth + "-" + currentTimeInfo.day + "T" + currentTimeInfo.fullhour + ":" + currentTimeInfo.minute + ":00.000Z"
+
+  const previousDate = previousTimeInfo.year + "-" + previousTimeInfo.fullmonth + "-" + previousTimeInfo.day + "T" + previousTimeInfo.fullhour + ":" + previousTimeInfo.minute + ":00.000Z"
+
+  await fetch(`https://api1.poocoin.app/top-trades?address=${tokenAddress}&from=${previousDate}&to=${currentDate}&type=buy`)
+    .then(res => res.json())
+    .then(data => { setBuyersValues(data) })
+    .catch(err => console.log(err))
+}
+
+export const getSellersData = async (tokenAddress, currentTimeInfo, previousTimeInfo, setSellersValues) => {
+  const currentDate = currentTimeInfo.year + "-" + currentTimeInfo.fullmonth + "-" + currentTimeInfo.day + "T" + currentTimeInfo.fullhour + ":" + currentTimeInfo.minute + ":00.000Z"
+
+  const previousDate = previousTimeInfo.year + "-" + previousTimeInfo.fullmonth + "-" + previousTimeInfo.day + "T" + previousTimeInfo.fullhour + ":" + previousTimeInfo.minute + ":00.000Z"
+
+  await fetch(`https://api1.poocoin.app/top-trades?address=${tokenAddress}&from=${previousDate}&to=${currentDate}&type=sell`)
+    .then(res => res.json())
+    .then(data => { setSellersValues(data) })
+    .catch(err => console.log(err))
 }
