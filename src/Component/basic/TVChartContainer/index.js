@@ -11,27 +11,25 @@ function getLanguageFromURL() {
 
 const useStyles = makeStyles({
 	ChartContainer: {
-		height: '290px',
-		display: 'flex'
 	}
 });
 export default function TVChartContainer(props) {
-	const { tokenName, coinName } = props;
+	const { tokenAddress, coinName, height } = props;
 	const classes = useStyles();
 	const containerId = 'tv_chart_container' + '_' + Math.random();
 	useEffect(() => {
-		if (tokenName != undefined) {
-			const widget = (window.tvWidget = new window.TradingView.widget(
-				widgetOptions
-			));
-			widget.onChartReady(() => {
-				console.log("Chart has loaded!");
-			});
-		}
-	}, [tokenName])
+		const widget = (window.tvWidget = new window.TradingView.widget(
+			widgetOptions
+		));
+		widget.onChartReady(() => {
+			console.log("Chart has loaded!");
+		});
+	}, [tokenAddress])
 	const widgetOptions = {
+		width: '100%',
+		height: height,
 		debug: false,
-		symbol: tokenName + '/' + coinName,
+		symbol: tokenAddress + '/BNB',
 		datafeed: Datafeed,
 		interval: '15',
 		container_id: containerId,
@@ -46,15 +44,7 @@ export default function TVChartContainer(props) {
 		fullscreen: false,
 		autosize: false,
 		studies_overrides: {},
-		theme: 'Dark',
 		toolbar_bg: "#131722",
-		studies_access: {
-			type: "black",
-			tools: [
-				{ name: "Aroon" },
-				{ name: "Balance of Power", grayed: true },
-			]
-		},
 		overrides: {
 			"paneProperties.background": "#131722",
 			"paneProperties.vertGridProperties.color": "#363c4e",

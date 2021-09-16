@@ -5,10 +5,8 @@ const history = {}
 // const api_key = 'a6c625fb5265a4b6b52e6d3034cbc5b0715c5629ff43a8789ed6eefb9b1fa600'
 
 const api_temp_root = 'https://api2.poocoin.app/candles-bsc?'
-const lpAddr = localStorage.getItem('chartLpaddress')
 const baseLp = '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16'
 let date = new Date().toISOString().split('.').shift() + '.000Z';
-console.log(date);
 export default {
 	history: history,
 
@@ -16,7 +14,7 @@ export default {
 		const qs = {
 			to: date,
 			limit: 321,
-			lpAddress: lpAddr,
+			lpAddress: symbolInfo.ticker,
 			interval: '15m',
 			baseLp: baseLp
 		}
@@ -31,7 +29,6 @@ export default {
 					return []
 				}
 				if (data.length) {
-					// console.log(`Actually returned: ${new Date(data.TimeFrom * 1000).toISOString()} - ${new Date(data.TimeTo * 1000).toISOString()}`)
 					var bars = data.map(el => {
 						return {
 							time: new Date(el.time).getTime(), //TradingView requires bar time in ms

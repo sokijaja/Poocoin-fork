@@ -13,6 +13,7 @@ import { vettedValues } from "../../PooCoin/index.js";
 import { CircularProgress } from "@material-ui/core";
 import { useDispatch } from 'react-redux'
 import { storeLocalTokenInfo, checkLocalTokenInfo, removeLocalTokenInfo } from '../../PooCoin/util';
+import { storeLocalMultichart } from "../../PooCoin/util";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -62,13 +63,15 @@ const useStyles = makeStyles({
   starredFillIcon: {
     color: '#f7b500!important',
     cursor: 'pointer'
+  },
+  tokenList: {
+    cursor: 'pointer',
   }
 });
 
 function VettedTable(props) {
   const values = props.values;
   const classes = props.className;
-  const dispatch = useDispatch();
   const addVettedData = vettedData => () => {
     checkLocalTokenInfo(vettedData.linkAddress)
       ?
@@ -78,9 +81,14 @@ function VettedTable(props) {
     props.reloadData()
   }
 
+  const addMultichartInfo = tokenAddress => () => {
+    storeLocalMultichart(tokenAddress);
+    props.onSymbol()
+  }
+
   return values.map((item, index) => (
     <StyledTableRow key={index}>
-      <StyledTableCell component="th" scope="row" onClick={() => props.onSymbol(item.address, item.name)}>
+      <StyledTableCell className={classes.tokenList} component="th" scope="row" onClick={addMultichartInfo(item.linkAddress)}>
         {item.name}&nbsp;
         <span className={"textSuccess"}>${item.amount.toFixed(4)}</span>
         <br />

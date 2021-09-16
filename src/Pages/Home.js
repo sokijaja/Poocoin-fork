@@ -10,6 +10,8 @@ const useStyles = makeStyles({
     textAlign: "center",
     color: "black",
   },
+  content: {
+  },
   title: {
     fontSize: "2.5em",
     fontWeight: 700,
@@ -73,14 +75,16 @@ export default function Home() {
           </a>
         </div>
       </div>
-      <div className={classes.tokenSelect}>
-        <TokenSelect />
-      </div>
-      <div className={classes.rightSide}>
-        <div className={classes.inputWidth}>
-          <Input />
+      <div className={classes.content}>
+        <div className={classes.tokenSelect}>
+          <TokenSelect />
         </div>
-        <Tab className={classes.tabContainer} />
+        <div className={classes.rightSide}>
+          <div className={classes.inputWidth}>
+            <Input />
+          </div>
+          <Tab className={classes.tabContainer} />
+        </div>
       </div>
     </div>
   );

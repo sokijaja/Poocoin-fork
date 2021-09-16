@@ -64,7 +64,6 @@ export const storeLocalTokenInfo = (linkAddress, name, amount) => {
         starredDataStorage[linkAddress] = vettedDataItem
     } else {
         starredDataStorage = JSON.parse(localStorage.getItem('starred'));
-        console.log(starredDataStorage);
         const vettedDataItem = {};
         vettedDataItem['name'] = name;
         vettedDataItem['amount'] = amount;
@@ -88,4 +87,32 @@ export const removeLocalTokenInfo = (linkAddress) => {
     const starredDataStorage = JSON.parse(localStorage.getItem('starred'));
     delete starredDataStorage[linkAddress];
     localStorage.setItem('starred', JSON.stringify(starredDataStorage))
+}
+
+export const storeLocalMultichart = (tokenAddress) => {
+    const localMultichartData = JSON.parse(localStorage.getItem('multichart'));
+    if (localMultichartData == null) {
+        const multichartData = {}
+        const tem_data = new Array(9);
+        for (let index = 0; index < 9; index++) {
+            tem_data[index] = null;
+        }
+        tem_data[0] = tokenAddress;
+        multichartData['address'] = tem_data;
+        localStorage.setItem('multichart', JSON.stringify(multichartData));
+    } else {
+        for (let index = 0; index < 9; index++) {
+            if (localMultichartData.address[index] == null) {
+                localMultichartData.address[index] = tokenAddress
+                break;
+            }
+        }
+        localStorage.setItem('multichart', JSON.stringify(localMultichartData));
+    }
+}
+
+export const initLocalMultichart = (index) => {
+    const localMultichartData = JSON.parse(localStorage.getItem('multichart'));
+    localMultichartData.address.fill(null, (index), (index + 1))
+    localStorage.setItem('multichart', JSON.stringify(localMultichartData));
 }

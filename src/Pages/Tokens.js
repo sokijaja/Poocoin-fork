@@ -91,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
   },
   chartPan: {
     display: 'inline-block',
-    width: 'auto',
+    width: '100%',
   }
 }));
 
@@ -131,11 +131,6 @@ export default function Tokens(props) {
         setLpDatas(tokens);
         setCurrentTokenInfo(data.tokenInfos)
       })
-
-    //Get Lpaddress from current token address and BNB token address
-    getBNBLpaddress(props.match.params.id).then(BNBLpaddress => {
-      localStorage.setItem('chartLpaddress', BNBLpaddress);
-    })
 
     //Get Lpaddress from current token address and BUSD token address
     getRate(tokenAddress, DefaultTokens.BUSD.address, setPriceRateData);
@@ -222,7 +217,7 @@ export default function Tokens(props) {
       </div>
       <Grid xs={12} style={{ marginTop: 20 }} item>
         <div className={classes.chartPan} >
-          <Chart2 tokenName={currentTokenInfo.name} />
+          <Chart2 tokenAddress={tokenAddress} height="500px" />
         </div>
         <br />
         <TableTab />

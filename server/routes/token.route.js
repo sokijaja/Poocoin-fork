@@ -35,9 +35,10 @@ router.get("/getTokenName", async (req, res) => {
   }
 });
 
+//Get tokenName from current token address
 router.get("/getName", async (req, res) => {
   try {
-    let query = req.query.foo;
+    let query = req.query.tokenAddress;
     let tokenName;
     if (query.length > 1) {
       tokenName = await tokenSchema
@@ -142,7 +143,7 @@ router.get("/getBNBLpaddress", async (req, res) => {
   try {
     let tokenAddress = req.query.tokenAddress;
     let lpaddress;
-    if (tokenAddress.length > 0) {
+    if (tokenAddress != null) {
       lpaddress = await lpSchema.findOne({
         $or: [
           { $and: [{ token0: tokenAddress }, { token1: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c' }] },

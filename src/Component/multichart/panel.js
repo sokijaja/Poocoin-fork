@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import IconButton from '@material-ui/core/IconButton';
@@ -6,6 +6,8 @@ import Collapse from '@material-ui/core/Collapse';
 import CloseIcon from '@material-ui/icons/Close';
 import Chart from '../basic/chart';
 import '../../css/multichart.css';
+import { getBNBLpaddress } from '../../actions';
+import { initLocalMultichart } from '../../PooCoin/util';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,9 +30,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#141722',
     color: '#fff'
   },
-  chart: {
-    // zIndex: 1
-  },
   chartPan: {
     '& .tradingview-widget-copyright': {
       display: 'none',
@@ -42,15 +41,26 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function TransitionAlerts({ displayMode, symbolAddress, symbolName, onClickBtn, onClickIndex }) {
+export default function TransitionAlerts({ tokenAddress, index }) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
-
+  const [open, setOpen] = useState(false);
   let chart;
-  if (displayMode) {
+
+  useEffect(() => {
+    if (tokenAddress != null) {
+      setOpen(true)
+    }
+  }, [tokenAddress])
+
+  if (tokenAddress != null) {
     chart = (
-      <Chart className={classes.chart} tokenName={symbolName} />
+      <Chart tokenAddress={tokenAddress} height="280px" />
     );
+  }
+
+  const onClickBtn = index => () => {
+    initLocalMultichart(index)
+    setOpen(false);
   }
 
   return (
@@ -61,11 +71,7 @@ export default function TransitionAlerts({ displayMode, symbolAddress, symbolNam
           icon={false}
           action={
             <IconButton
-              onClick={() => {
-                setOpen(false);
-                setOpen(true);
-                onClickBtn(onClickIndex);
-              }}
+              onClick={onClickBtn(index)}
               aria-label="close"
               color="inherit"
               size="small"
@@ -78,7 +84,7 @@ export default function TransitionAlerts({ displayMode, symbolAddress, symbolNam
         <div className={classes.chartPan}>
           {chart}
         </div>
-      </Collapse>
+      </Collapse >
     </div >
   );
 }
