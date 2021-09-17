@@ -13,6 +13,8 @@ import { connectType, networkValue } from '../constants';
 import { connectWalletStatus } from '../constants';
 import Web3 from 'web3'
 import { switchNetwork } from '../PooCoin/util';
+import DefaultTokens from '../config/default_tokens.json'
+import { useSelector, useDispatch } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
   appBarSolid: {
@@ -135,10 +137,11 @@ export default function Header(props) {
 
   let [userDisconnected, setUserDisconnected] = useState(connectStatus);
 
-  const { account, connect, reset, status } = useWallet()
+  const { account, connect, reset, balance } = useWallet()
   const [poocoinBalanceData, setPoocoinBalanceData] = useState([]);
   const [priceData, setPriceData] = useState([]);
   const [network, setNetwork] = useState(localStorage.getItem('PoocoinChainId'));
+  const dispatch = useDispatch();
 
   const handleNetworkChange = (event) => {                         //select network chain
     if (event.target.value == networkValue.Binance) {
@@ -203,9 +206,15 @@ export default function Header(props) {
   if (account && userDisconnected == connectWalletStatus.connect) {
     coinAmount = (
       <div>
-        <div>Your <img src={PoocoinIcon} height="18" /> : {poocoinBalanceData} <span className={classes.amountColor}>$0.00</span></div>
-        <div>Your <img src={PoocoinIcon} height="18" /><img src={BNBIcon} height="15" /> LP V1: 0.00 <span className={classes.amountColor}>$0.00</span></div>
-        <div>Your <img src={PoocoinIcon} height="18" /><img src={BNBIcon} height="15" /> LP V2: 0.00 <span className={classes.amountColor}>$0.00</span></div>
+        <Link to={`/swap?outputCurrency=${DefaultTokens.POOCOIN.address}`} className={classes.link}>
+          <div>Your <img src={PoocoinIcon} height="18" /> : {poocoinBalanceData} <span className={classes.amountColor}>${parseFloat(balance).toFixed(2)}</span></div>
+        </Link>
+        <a target="_blank" href={`https://v1exchange.pancakeswap.finance/#/add/BNB/${DefaultTokens.POOCOIN.address}`} className={classes.link}>
+          <div>Your <img src={PoocoinIcon} height="18" /><img src={BNBIcon} height="15" /> LP V1: 0.00 <span className={classes.amountColor}>$0.00</span></div>
+        </a>
+        <a target="_blank" href={`https://pancakeswap.finance/add/BNB/${DefaultTokens.POOCOIN.address}`} className={classes.link}>
+          <div>Your <img src={PoocoinIcon} height="18" /><img src={BNBIcon} height="15" /> LP V2: 0.00 <span className={classes.amountColor}>$0.00</span></div>
+        </a>
       </div>
     );
     connectLabel = (
@@ -256,10 +265,15 @@ export default function Header(props) {
                 networkChainId == networkValue.Binance
                   ?
                   <Grid item>
-                    <span style={{ borderRadius: '999px', backgroundColor: 'white', padding: '5px' }}>
-                      <img src={PoocoinIcon} height="18" />
-                    </span>
-                    <span className={classes.amountColor}> ${priceData} </span>
+                    <Link
+                      to={`/tokens/${DefaultTokens.POOCOIN.address}`}
+                      onClick={() => dispatch({ type: 'SET_TOKENADDRESS', payload: DefaultTokens.POOCOIN.address })}
+                    >
+                      <span style={{ borderRadius: '999px', backgroundColor: 'white', padding: '5px' }}>
+                        <img src={PoocoinIcon} height="18" />
+                      </span>
+                      <span className={classes.amountColor}> ${priceData} </span>
+                    </Link>
                     <a href="telegram.com">
                       <img src={TelegramIcon} height='25' />
                     </a>

@@ -20,7 +20,7 @@ import { getReserve } from "../../PooCoin";
 import { useParams } from "react-router";
 import { tokenBalance, getRate } from "../../PooCoin";
 import { numberWithCommas } from "../../PooCoin/util";
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   root: {
