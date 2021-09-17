@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SimpleSelect({ tokenProps }) {
+export default function SimpleSelect({ tokenProps, inputHandle }) {
   const [inputText, setInputText] = useState("");
   let tokens = [];
   const [tokensArray, setTokenArray] = useState([]);
@@ -110,7 +110,7 @@ export default function SimpleSelect({ tokenProps }) {
         ></Select>
       </FormControl>
     );
-  else search = <TokenInput></TokenInput>;
+  else search = <TokenInput inputHandle={inputHandle}></TokenInput>;
 
   return (
     <div style={{ display: "flex", width: 300 }}>

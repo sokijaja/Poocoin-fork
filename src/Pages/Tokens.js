@@ -149,6 +149,12 @@ export default function Tokens(props) {
     dispatch({ type: 'SET_TOKENADDRESS', payload: tokenAddress })
   };
 
+  const inputHandle = (tokenAddress) => {
+    console.log(tokenAddress);
+    history.push(`/tokens/${tokenAddress}`);
+    dispatch({ type: 'SET_TOKENADDRESS', payload: tokenAddress })
+  };
+
   const tokenSelect = (e) => { };
 
   let centerContainer = (
@@ -172,7 +178,7 @@ export default function Tokens(props) {
               </span>
             </p>
             <Grid style={{ float: "left" }}>
-              <TokenSelect tokenProps={handleTokenPropsChange} />
+              <TokenSelect inputHandle={inputHandle} tokenProps={handleTokenPropsChange} />
             </Grid>
           </Grid>
           <Grid className={classes.buttongrid}>
