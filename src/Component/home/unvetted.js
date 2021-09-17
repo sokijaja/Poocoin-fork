@@ -62,6 +62,11 @@ const useStyles = makeStyles({
   starredFillIcon: {
     color: '#f7b500!important',
     cursor: 'pointer'
+  },
+  linkToken: {
+    '&:hover': {
+      color: 'white',
+    }
   }
 });
 
@@ -87,6 +92,7 @@ function UnvettedTable(props) {
               state: item[0],
             }}
             onClick={() => dispatch({ type: 'SET_TOKENADDRESS', payload: item[0] })}
+            className={classes.linkToken}
           >
             <span>{item[1].split('/')[3]} </span>
             <span className={"textSuccess"}>$0.0000</span>

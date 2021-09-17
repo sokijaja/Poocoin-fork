@@ -704,7 +704,6 @@ const toBigNum = (num, decimals) => {
 
 export const getWalletToken = async (address, apiKey) => {
   fetch(`https://bscscan.com/token/0x580de58c1bd593a43dadcf0a739d504621817c05`).then((e) => {
-    console.log('---');
   })
 }
 

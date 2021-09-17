@@ -108,6 +108,7 @@ router.get("/getLpinfo", async (req, res) => {
       .findOne({
         token: token_address,
       })
+    //token selected info
     let tokenInfo = { name: tokenName.name, symbol: tokenName.symbol };
     let ret_arr = [];
     for (let index = 0; index < lpInfos.length; index++) {
@@ -122,6 +123,7 @@ router.get("/getLpinfo", async (req, res) => {
       if (tokenName0.length == 0 || tokenName1.length == 0) {
         continue;
       }
+      //token0, token1 infos
       const item = {
         token0: lpInfos[index].token0,
         token1: lpInfos[index].token1,

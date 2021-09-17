@@ -8,6 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { vettedValues } from "../../PooCoin/index.js";
 import { CircularProgress } from "@material-ui/core";
+import { storeLocalMultichart } from '../../PooCoin/util.js';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -60,9 +61,12 @@ const useStyles = makeStyles({
     color: "#b2b5be",
     marginTop: '20px'
   },
+  tokenList: {
+    cursor: 'pointer',
+  }
 });
 
-export default function CustomizedTables() {
+export default function CustomizedTables(props) {
   const classes = useStyles();
   const [vettedData, setVettedData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -76,8 +80,12 @@ export default function CustomizedTables() {
     }
   };
 
+  const addMultichartInfo = tokenAddress => () => {
+    storeLocalMultichart(tokenAddress);
+    props.onSymbol()
+  }
+
   useEffect(() => {
-    console.log('----');
     vettedValues(setVettedValues);
   }, []);
 
@@ -93,7 +101,7 @@ export default function CustomizedTables() {
           <TableBody>
             {vettedData.map((row) => (
               <StyledTableRow key={row.name}>
-                <StyledTableCell component="th" scope="row">
+                <StyledTableCell className={classes.tokenList} component="th" scope="row" onClick={addMultichartInfo(row.linkAddress)}>
                   <span className={classes.uppper}>{row.name}</span>
                   <div className={classes.otherName}>{row.name}</div>
                 </StyledTableCell>

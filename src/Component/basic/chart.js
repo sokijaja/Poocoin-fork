@@ -29,20 +29,19 @@ const useStyles = makeStyles({
 export default function Chart(props) {
   const classes = useStyles();
   const [coinName, setCoinName] = useState(coin.USD);
-  // const tokenName = useSelector((state) => state.tokenName);
   const handleChangeCoinName = (event) => {
     setCoinName(event.target.value);
   }
   return (
     <div className={classes.TradingView}>
-      <TVChartContainer tokenAddress={props.tokenAddress} coinName={coinName} height={props.height} />
-      <select
+      <TVChartContainer tokenAddress={props.tokenAddress} convertSymbol={props.convertSymbol} height={props.height} />
+      {/* <select
         value={coinName}
         onChange={handleChangeCoinName}
         className={classes.coinSelect}>
         <option className={classes.coinOption} value={coin.USD}>USD</option>
         <option className={classes.coinOption} value={coin.BNB}>BNB</option>
-      </select>
+      </select> */}
     </div>
   );
 }

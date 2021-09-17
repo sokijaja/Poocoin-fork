@@ -20,24 +20,21 @@ import { getRate, getReserve } from "../PooCoin";
 import { useHistory, useParams } from "react-router";
 import { getLpinfo } from "../actions";
 import { useSelector, useDispatch } from 'react-redux';
-import { getBNBLpaddress } from "../actions";
 import DefaultTokens from '../config/default_tokens.json';
+import Trade from "./Trade";
+import AccountBalanceWallet from "@material-ui/icons/AccountBalanceWallet";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     "& > *": {
-      margin: theme.spacing(1),
-      padding: 0,
+      margin: "1px",
+      padding: "0px 30px 0px 0px",
     },
-    backgroundColor: '#303032!important'
+    backgroundColor: '#262626!important'
   },
   input: {
     display: "none",
   },
-  // button: {
-  //   margin: theme.spacing(1),
-  //   float: theme.right,
-  // },
   rightTitle: {
     color: "#ffffff",
     paddingBottom: 10,
@@ -87,7 +84,6 @@ const useStyles = makeStyles((theme) => ({
   },
   headerContainer: {
     height: "auto",
-    padding: '20px',
   },
   chartPan: {
     display: 'inline-block',
@@ -102,6 +98,9 @@ export default function Tokens(props) {
   const history = useHistory();
   const [lpDatas, setLpDatas] = useState([]);
   const [currentTokenInfo, setCurrentTokenInfo] = useState({});
+  const [showTrade, setShowTrade] = useState(false);
+  const [selectData, setSelectData] = useState([]);
+  const [convertSymbol, setConvertSymbol] = useState('BNB');
 
   const tokenAddress = useSelector((state) => state.tokenAddress)
   const dispatch = useDispatch();
@@ -113,22 +112,35 @@ export default function Tokens(props) {
     getLpinfo(tokenAddress)
       .then(data => {
         const tokens = [];
+        const selectOptionData = [];
         for (var idx in data.lpInfos) {
           if (data.lpInfos[idx].token0 == tokenAddress) {
             let combined_json = {};
             combined_json["label"] = data.lpInfos[idx].tokenName1;
+            //0: other token address, 1: other token symbolName 2: lp address 3: token order 
             let addrLpInfo = [data.lpInfos[idx].token1, data.lpInfos[idx].tokenSymbol1, data.lpInfos[idx].lp_address, 0];
             combined_json["value"] = addrLpInfo;
             tokens.push(combined_json);
+
+            let selectdata_json = {};
+            selectdata_json["label"] = "Pc v2 " + data.lpInfos[idx].tokenSymbol0 + "/" + data.lpInfos[idx].tokenSymbol1;
+            selectdata_json["value"] = data.lpInfos[idx].tokenSymbol1;
+            selectOptionData.push(selectdata_json)
           } else {
             let combined_json = {};
             combined_json["label"] = data.lpInfos[idx].tokenName0;
             let addrLpInfo = [data.lpInfos[idx].token0, data.lpInfos[idx].tokenSymbol0, data.lpInfos[idx].lp_address, 1];
             combined_json["value"] = addrLpInfo;
             tokens.push(combined_json);
+
+            let selectdata_json = {};
+            selectdata_json["label"] = "Pc v2 " + data.lpInfos[idx].tokenSymbol1 + "/" + data.lpInfos[idx].tokenSymbol0;
+            selectdata_json["value"] = data.lpInfos[idx].tokenSymbol0;
+            selectOptionData.push(selectdata_json)
           }
         }
         setLpDatas(tokens);
+        setSelectData(selectOptionData)
         setCurrentTokenInfo(data.tokenInfos)
       })
 
@@ -150,18 +162,29 @@ export default function Tokens(props) {
   };
 
   const inputHandle = (tokenAddress) => {
-    console.log(tokenAddress);
     history.push(`/tokens/${tokenAddress}`);
     dispatch({ type: 'SET_TOKENADDRESS', payload: tokenAddress })
   };
 
-  const tokenSelect = (e) => { };
-
+  const [tradeContent, setTradeContent] = useState();
+  const handleTrade = () => {
+    if (showTrade) {
+      setTradeContent()
+      setShowTrade(false)
+    } else {
+      setTradeContent(<Trade />)
+      setShowTrade(true)
+    }
+  }
+  const tokenSelect = (event) => {
+    console.log(event.value);
+    setConvertSymbol(event.value)
+  };
   let centerContainer = (
     <div>
       <div className={classes.headerContainer}>
         <Grid container spacing={2}>
-          <Grid xs item>
+          <Grid xs={6} item>
             <p
               style={{
                 display: "flex",
@@ -181,24 +204,26 @@ export default function Tokens(props) {
               <TokenSelect inputHandle={inputHandle} tokenProps={handleTokenPropsChange} />
             </Grid>
           </Grid>
-          <Grid className={classes.buttongrid}>
-            <Button className={classes.button}>
-              <img src={Buttonicon} width="18" height="18" />
-            </Button>
-            <Button className={classes.button}>Trade</Button>
-            <Button className={classes.button} onClick={handleChange}>
-              A
-            </Button>
-          </Grid>
-          <Grid className={classes.buttongrid}>
-            <Button style={{ color: "white" }}>
-              <LanguageIcon style={{ color: "white" }} />
-              Website
-            </Button>
-            <Button style={{ color: "white" }}>
-              <TelegramIcon style={{ color: "white" }} />
-              Telegram
-            </Button>
+          <Grid xs={6} item className={classes.buttongrid}>
+            <div>
+              <Button className={classes.button} target="_blank" href={`https://bscscan.com/token/${tokenAddress}`}>
+                <img src={Buttonicon} width="18" height="18" />
+              </Button>
+              <Button className={classes.button} onClick={handleTrade}>Trade</Button>
+              <Button className={classes.button} onClick={handleChange}>
+                <AccountBalanceWallet />
+              </Button>
+            </div>
+            <div>
+              <Button style={{ color: "white" }}>
+                <LanguageIcon style={{ color: "white" }} />
+                Website
+              </Button>
+              <Button style={{ color: "white" }}>
+                <TelegramIcon style={{ color: "white" }} />
+                Telegram
+              </Button>
+            </div>
           </Grid>
         </Grid>
         <Grid
@@ -211,8 +236,7 @@ export default function Tokens(props) {
           <Button className={classes.button}>Reload</Button>
           <div className={classes.selectBox}>
             <Select
-              // defaultValue={tokenLp[0]}
-              options={lpDatas}
+              options={selectData}
               // input={false}
               onChange={tokenSelect}
             // onInputChange={tokenInputChange}
@@ -222,8 +246,9 @@ export default function Tokens(props) {
         </Grid>
       </div>
       <Grid xs={12} style={{ marginTop: 20 }} item>
+        <div>{tradeContent}</div>
         <div className={classes.chartPan} >
-          <Chart2 tokenAddress={tokenAddress} height="500px" />
+          <Chart2 tokenAddress={tokenAddress} convertSymbol={convertSymbol} height="500px" />
         </div>
         <br />
         <TableTab />
@@ -235,7 +260,7 @@ export default function Tokens(props) {
 
   if (showMode) {
     container = (
-      <Grid container>
+      <Grid container spacing={2}>
         <Grid item xs={3}>
           <Lefttab lpdata={lpDatas} currentTokenInfo={currentTokenInfo} />
         </Grid>
@@ -267,7 +292,7 @@ export default function Tokens(props) {
     container = (
       <Grid container item xs={12}>
         <Grid item xs={3}>
-          <Lefttab lpdata={lpDatas} name={currentTokenInfo} />
+          <Lefttab lpdata={lpDatas} currentTokenInfo={currentTokenInfo} />
         </Grid>
         <Grid item xs={9}>
           {centerContainer}

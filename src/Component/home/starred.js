@@ -57,6 +57,11 @@ const useStyles = makeStyles({
   starredFillIcon: {
     color: '#f7b500!important',
     cursor: 'pointer'
+  },
+  linkToken: {
+    '&:hover': {
+      color: 'white',
+    }
   }
 });
 
@@ -86,29 +91,31 @@ export default function CustomizedTables() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {Object.keys(rows).map((key) => (
-            <StyledTableRow key={key}>
-              <StyledTableCell component="th" scope="row">
-                <Link
-                  to={`/tokens/${key}`}
-                  onClick={() => dispatch({ type: 'SET_TOKENADDRESS', payload: key })}
-                >
-                  {rows[key].name}&nbsp;
-                  <span className={'textSuccess'}>${parseFloat(rows[key].amount).toFixed(4)}</span>
+          {rows != null &&
+            Object.keys(rows).map((key) => (
+              <StyledTableRow key={key}>
+                <StyledTableCell component="th" scope="row">
+                  <Link
+                    to={`/tokens/${key}`}
+                    onClick={() => dispatch({ type: 'SET_TOKENADDRESS', payload: key })}
+                    className={classes.linkToken}
+                  >
+                    {rows[key].name}&nbsp;
+                    <span className={'textSuccess'}>${parseFloat(rows[key].amount).toFixed(4)}</span>
+                    <br />
+                    <span className={'textMuted'}>{rows[key].name}</span>
+                  </Link>
+                </StyledTableCell>
+                <StyledTableCell>
+                  <span>0.00</span>
                   <br />
-                  <span className={'textMuted'}>{rows[key].name}</span>
-                </Link>
-              </StyledTableCell>
-              <StyledTableCell>
-                <span>0.00</span>
-                <br />
-                <span className={'textSuccess'}>$0.00</span>
-              </StyledTableCell>
-              <StyledTableCell>
-                <StarIcon className={classes.starredFillIcon} onClick={removeStarredData(key)} />
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
+                  <span className={'textSuccess'}>$0.00</span>
+                </StyledTableCell>
+                <StyledTableCell>
+                  <StarIcon className={classes.starredFillIcon} onClick={removeStarredData(key)} />
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>

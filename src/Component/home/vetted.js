@@ -62,6 +62,11 @@ const useStyles = makeStyles({
   starredFillIcon: {
     color: '#f7b500!important',
     cursor: 'pointer'
+  },
+  linkToken: {
+    '&:hover': {
+      color: 'white',
+    }
   }
 });
 
@@ -79,9 +84,8 @@ function VettedTable(props) {
     props.reloadData()
   }
 
-  const dispatchTokenInfo = (tokenName, tokenAddress) => () => {
+  const dispatchTokenInfo = (tokenAddress) => () => {
     dispatch({ type: 'SET_TOKENADDRESS', payload: tokenAddress });
-    dispatch({ type: 'SET_TOKENNAME', payload: tokenName });
   }
   return values.map((item, index) => (
     <StyledTableRow key={index}>
@@ -91,7 +95,8 @@ function VettedTable(props) {
             pathname: `/tokens/${item.linkAddress}`,
             state: item.linkAddress,
           }}
-          onClick={dispatchTokenInfo(item.name, item.linkAddress)}
+          onClick={dispatchTokenInfo(item.linkAddress)}
+          className={classes.linkToken}
         >
           {item.name}&nbsp;
           <span className={"textSuccess"}>${item.amount.toFixed(4)}</span>

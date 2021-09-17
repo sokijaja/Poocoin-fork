@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable jsx-a11y/alt-text */
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Grid from '@material-ui/core/Grid';
 import Tab from '../Component/basic/tab';
 import Input from '../Component/basic/input';
@@ -9,7 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Panel from '../Component/multichart/panel';
 import rightPoster from '../Images/moonstar3.gif';
 import leftPoster from '../Images/leftposter.gif';
-import SearchInput from '../Component/TokenSelect';
+import TokenSelect from '../Component/TokenSelect';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import DefaultTokens from '../config/default_tokens.json';
 import { storeLocalMultichart } from "../PooCoin/util";
@@ -104,13 +104,25 @@ export default function Multichart() {
     setShowMode(!showMode);
   };
 
-  let multichartData = JSON.parse(localStorage.getItem('multichart'));
+  const handleTokenPropsChange = (tokenInfo) => {
+    storeLocalMultichart(tokenInfo.address);
+    setMultichartData(JSON.parse(localStorage.getItem('multichart')))
+  };
+
+  const inputHandle = (tokenAddress) => {
+    storeLocalMultichart(tokenAddress);
+    setMultichartData(JSON.parse(localStorage.getItem('multichart')))
+  };
+
+  const [multichartData, setMultichartData] = useState(JSON.parse(localStorage.getItem('multichart')));
+
   if (multichartData == null) {
     storeLocalMultichart(DefaultTokens.POOCOIN.address)
   }
+  // let multichartData = ;
 
   const onSymbol = () => {
-    multichartData = JSON.parse(localStorage.getItem('multichart'))
+    setMultichartData(JSON.parse(localStorage.getItem('multichart')))
   }
 
   let leftContainer = (
@@ -125,7 +137,7 @@ export default function Multichart() {
       <div style={{ display: 'flex' }}>
         <div className={classes.searchInput}>
           <div style={{ maxWidth: '400px' }}>
-            <SearchInput />
+            <TokenSelect inputHandle={inputHandle} tokenProps={handleTokenPropsChange} />
           </div>
         </div>
         <div className={classes.iconPadding}>
@@ -135,12 +147,11 @@ export default function Multichart() {
         </div>
       </div>
       <Grid item xs={12} lg={12} container>
-        {multichartData != null &&
-          multichartData.address.map((data, index) => (
-            <Grid item xs={4} lg={4} style={{ padding: '5px' }} key={index}>
-              <Panel tokenAddress={data} index={index} />
-            </Grid>
-          ))
+        {multichartData.address.map((data, index) => (
+          <Grid item xs={4} lg={4} style={{ padding: '5px' }} key={index}>
+            <Panel tokenAddress={data} index={index} />
+          </Grid>
+        ))
         }
       </Grid>
     </div>
