@@ -78,25 +78,23 @@ export const getRate = async (tokenIn, tokenOut, setRate) => {
         console.log(err);
       })
   } catch (err) {
-    console.log(tokenIn + tokenOut);
     console.log(err);
   }
 }
 
 const pancakeswapRouterContract = new web3.eth.Contract(router_abi, pancakeswap_router);
 // get Amount out
-export const getAmountsOut = async (amount, tokenIn, tokenOut, account, updateAmountsOut) => {
+export const getAmountsOut = async (amount, tokenIn, tokenOut, updateAmountsOut) => {
   try {
     const tokenInContract = new web3.eth.Contract(erc20_abi, tokenIn);
-    const tokenIn_decimals = await tokenInContract.methods.decimals().call({ from: account });
+    const tokenIn_decimals = await tokenInContract.methods.decimals().call();
     const tokenOutContract = new web3.eth.Contract(erc20_abi, tokenOut);
-    const tokenOut_decimals = await tokenOutContract.methods.decimals().call({ from: account });
+    const tokenOut_decimals = await tokenOutContract.methods.decimals().call();
 
     const amount_in = toBigNum(amount, tokenIn_decimals);
     pancakeswapRouterContract.methods
       .getAmountsOut(amount_in, [tokenIn, tokenOut])
-      .call({ from: account }).then((result) => {
-        console.log(result);
+      .call().then((result) => {
         const amount_out = toHuman(result[1], tokenOut_decimals);
         updateAmountsOut(amount_out);
       }).catch((err) => {
@@ -114,10 +112,18 @@ export const getTotalSupply = async (tokenAddress) => {
     abi,
     provider
   );
+
+  const decimals = await getDecimals(tokenAddress)
+
   const ts = await getTotalSupply_contract.totalSupply()
-  let totalSupply = web3.utils.fromWei(ts.toString(), "ether");
+  let totalSupply = toHuman(ts, decimals);
   return totalSupply;
 };
+
+const getDecimals = (tokenAddress) => {
+  let MyContract1 = new web3.eth.Contract(erc20_abi, tokenAddress);
+  return MyContract1.methods.decimals().call()
+}
 
 //get reserve
 export const getReserve = async (lpAddress, tokenNo) => {

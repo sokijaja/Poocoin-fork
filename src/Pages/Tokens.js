@@ -16,7 +16,7 @@ import Chart2 from "../Component/basic/chart";
 import TableTab from "../Component/home/centercontain/tabletab";
 import TokenSelect from "../Component/TokenSelect";
 import Select from "react-select";
-import { getRate, getReserve } from "../PooCoin";
+import { getAmountsOut, getRate } from "../PooCoin";
 import { useHistory, useParams } from "react-router";
 import { getLpinfo } from "../actions";
 import { useSelector, useDispatch } from 'react-redux';
@@ -145,7 +145,7 @@ export default function Tokens(props) {
       })
 
     //Get Lpaddress from current token address and BUSD token address
-    getRate(tokenAddress, DefaultTokens.BUSD.address, setPriceRateData);
+    getAmountsOut(1, tokenAddress, DefaultTokens.BUSD.address, setPriceRateData);
   }, [tokenAddress])
 
   const handleChange = () => {
@@ -154,6 +154,60 @@ export default function Tokens(props) {
   const handleChangeLeft = () => {
     setShowMode(!showMode);
   };
+
+  const QUERY = ` 
+{
+  ethereum(network: bsc) {
+    dexTrades(
+      options: {limit: 100, asc: "timeInterval.minute"}
+      date: {since: "2021-09-10"}
+      exchangeName: {is: "Uniswap"}
+      baseCurrency: {is: "0x910985ffa7101bf5801dd2e91555c465efd9aab3"}
+      quoteCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}
+    ) {
+      timeInterval {
+        minute(count: 5)
+      }
+      baseCurrency {
+        symbol
+        address
+      }
+      baseAmount
+      quoteCurrency {
+        symbol
+        address
+      }
+      quoteAmount
+      trades: count
+      quotePrice
+      maximum_price: quotePrice(calculate: maximum)
+      minimum_price: quotePrice(calculate: minimum)
+      open_price: minimum(of: block, get: quote_price)
+      close_price: maximum(of: block, get: quote_price)
+    }
+  }
+}
+`;
+
+  // -------- Endpoint ----------------------
+  const endpoint = "https://graphql.bitquery.io/";
+
+  // Function which fetches the data from the API
+  async function fetchData() {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: QUERY
+      })
+    });
+
+    const data = await response.json();
+    console.log(data);
+  }
+  fetchData();
 
   const handleTokenPropsChange = (tokenInfo) => {
     const tokenAddress = tokenInfo.address;
@@ -197,7 +251,7 @@ export default function Tokens(props) {
               <img className={classes.img} src={logo} width="32" height="32" />
               <span>
                 {currentTokenInfo.name} ({currentTokenInfo.name}/BNB)
-                <br /><span className={'textSuccess'}>${parseFloat(priceRateData).toFixed(8)}</span>
+                <br /><span className={'textSuccess'}>${parseFloat(priceRateData).toFixed(14)}</span>
               </span>
             </p>
             <Grid style={{ float: "left" }}>
