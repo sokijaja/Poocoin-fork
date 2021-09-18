@@ -35,9 +35,10 @@ router.get("/getTokenName", async (req, res) => {
   }
 });
 
+//Get tokenName from current token address
 router.get("/getName", async (req, res) => {
   try {
-    let query = req.query.foo;
+    let query = req.query.tokenAddress;
     let tokenName;
     if (query.length > 1) {
       tokenName = await tokenSchema
@@ -80,6 +81,7 @@ router.get("/getTokenProps", async (req, res) => {
   } catch (err) { }
 });
 
+//Get all info about current token from lpaddress and token table
 router.get("/getLpinfo", async (req, res) => {
   try {
     let token_address = req.query.foo;
@@ -106,6 +108,7 @@ router.get("/getLpinfo", async (req, res) => {
       .findOne({
         token: token_address,
       })
+    //token selected info
     let tokenInfo = { name: tokenName.name, symbol: tokenName.symbol };
     let ret_arr = [];
     for (let index = 0; index < lpInfos.length; index++) {
@@ -120,6 +123,7 @@ router.get("/getLpinfo", async (req, res) => {
       if (tokenName0.length == 0 || tokenName1.length == 0) {
         continue;
       }
+      //token0, token1 infos
       const item = {
         token0: lpInfos[index].token0,
         token1: lpInfos[index].token1,
@@ -135,6 +139,26 @@ router.get("/getLpinfo", async (req, res) => {
     res.json({ lpInfos: ret_arr, tokenInfos: tokenInfo });
   } catch (err) { console.log(err) }
 });
+
+//Get Lpaddress from current token address and BNB token address
+router.get("/getBNBLpaddress", async (req, res) => {
+  try {
+    let tokenAddress = req.query.tokenAddress;
+    let lpaddress;
+    if (tokenAddress != null) {
+      lpaddress = await lpSchema.findOne({
+        $or: [
+          { $and: [{ token0: tokenAddress }, { token1: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c' }] },
+          { $and: [{ token1: tokenAddress }, { token0: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c' }] },
+        ],
+      });
+      res.json(lpaddress.lp_address);
+    }
+  } catch (err) {
+    console.log(err);
+    // res.json(err);
+  }
+})
 
 // router.route("/postTokenURL").post((req, res, next) => {
 //   if (error) {

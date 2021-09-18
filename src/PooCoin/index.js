@@ -69,7 +69,7 @@ const pancakeRouterContract = new ethers.Contract(pancakeswap_router, abi, provi
 // get pair
 export const getRate = async (tokenIn, tokenOut, setRate) => {
   try {
-    
+
     await pancakeRouterContract
       .getAmountsOut(ethers.utils.parseUnits("1", 18), [tokenIn, tokenOut])
       .then((res) => {
@@ -78,31 +78,29 @@ export const getRate = async (tokenIn, tokenOut, setRate) => {
         console.log(err);
       })
   } catch (err) {
-    console.log(tokenIn + tokenOut);
     console.log(err);
   }
 }
 
 const pancakeswapRouterContract = new web3.eth.Contract(router_abi, pancakeswap_router);
 // get Amount out
-export const getAmountsOut = async (amount, tokenIn, tokenOut, account, updateAmountsOut) => {
+export const getAmountsOut = async (amount, tokenIn, tokenOut, updateAmountsOut) => {
   try {
     const tokenInContract = new web3.eth.Contract(erc20_abi, tokenIn);
-    const tokenIn_decimals = await tokenInContract.methods.decimals().call({from:account});
+    const tokenIn_decimals = await tokenInContract.methods.decimals().call();
     const tokenOutContract = new web3.eth.Contract(erc20_abi, tokenOut);
-    const tokenOut_decimals = await tokenOutContract.methods.decimals().call({from:account});
+    const tokenOut_decimals = await tokenOutContract.methods.decimals().call();
 
     const amount_in = toBigNum(amount, tokenIn_decimals);
     pancakeswapRouterContract.methods
       .getAmountsOut(amount_in, [tokenIn, tokenOut])
-      .call({from: account}).then((result) => {
-        console.log(result);
+      .call().then((result) => {
         const amount_out = toHuman(result[1], tokenOut_decimals);
         updateAmountsOut(amount_out);
       }).catch((err) => {
         console.log(err);
       })
-  }catch(err) {
+  } catch (err) {
     console.log(err)
   }
 };
@@ -114,10 +112,18 @@ export const getTotalSupply = async (tokenAddress) => {
     abi,
     provider
   );
+
+  const decimals = await getDecimals(tokenAddress)
+
   const ts = await getTotalSupply_contract.totalSupply()
-  let totalSupply = web3.utils.fromWei(ts.toString(), "ether");
+  let totalSupply = toHuman(ts, decimals);
   return totalSupply;
 };
+
+const getDecimals = (tokenAddress) => {
+  let MyContract1 = new web3.eth.Contract(erc20_abi, tokenAddress);
+  return MyContract1.methods.decimals().call()
+}
 
 //get reserve
 export const getReserve = async (lpAddress, tokenNo) => {
@@ -172,7 +178,6 @@ export const vettedValues = async (setVettedData) => {
           if (keyA < keyB) return 1;
           return 0;
         });
-        console.log(results);
         setVettedData(results);
       }, 8000);
     });
@@ -617,18 +622,18 @@ const totalSupply = async (setTotalSupplyData) => {
   });
 };
 
-export const tokenBalance = async (wallet_address,token_address,setTokenBalanceData) => {
+export const tokenBalance = async (wallet_address, token_address, setTokenBalanceData) => {
 
   try {
     const contract = new web3.eth.Contract(erc20_abi, token_address);
-    const decimals = await contract.methods.decimals().call({from:wallet_address});
+    const decimals = await contract.methods.decimals().call({ from: wallet_address });
     contract.methods.balanceOf(wallet_address)
-        .call({from: wallet_address}).then((balance) => {
-          setTokenBalanceData(toHuman(balance, decimals));
-        }).catch((err) => {
-          console.log(err);
-        })
-  }catch(err) {
+      .call({ from: wallet_address }).then((balance) => {
+        setTokenBalanceData(toHuman(balance, decimals));
+      }).catch((err) => {
+        console.log(err);
+      })
+  } catch (err) {
     console.log(err);
   }
 };
@@ -668,7 +673,7 @@ export const getAllowance = (ethereum, account, token, updateAllowance) => {
     contract.methods.allowance(account, pancakeswap_router).call().then((allowance) => {
       updateAllowance(toHuman(allowance, decimals))
     });
-  }catch (err) {
+  } catch (err) {
     console.log(err);
   }
 }
@@ -678,21 +683,21 @@ export const approveToken = async (ethereum, token, amount, account) => {
     const mweb3 = new Web3(ethereum);
     const contract = new mweb3.eth.Contract(erc20_abi, token);
     contract.setProvider(ethereum);
-    
+
     const tx = await contract.methods.approve(pancakeswap_router, "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff").send({
-        from: account
+      from: account
     });
-    
+
     return {
-        hash: tx.blockHash,
-        status: tx.status,
+      hash: tx.blockHash,
+      status: tx.status,
     }
   } catch (err) {
-      return {
-          status: false
-      }
+    return {
+      status: false
+    }
   }
-}  
+}
 
 const toHuman = (num, decimals) => {
   const humanNum = new BigNumber(num).div(new BigNumber(10).pow(new BigNumber(decimals)));
@@ -701,4 +706,38 @@ const toHuman = (num, decimals) => {
 
 const toBigNum = (num, decimals) => {
   return new BigNumber(num).times(new BigNumber(10).pow(new BigNumber(decimals)));
+}
+
+export const getWalletToken = async (address, apiKey) => {
+  fetch(`https://bscscan.com/token/0x580de58c1bd593a43dadcf0a739d504621817c05`).then((e) => {
+  })
+}
+
+export const getBuyersData = async (tokenAddress, currentTimeInfo, previousTimeInfo, setBuyersValues) => {
+  const currentDate = currentTimeInfo.year + "-" + currentTimeInfo.fullmonth + "-" + currentTimeInfo.day + "T" + currentTimeInfo.fullhour + ":" + currentTimeInfo.minute + ":00.000Z"
+
+  const previousDate = previousTimeInfo.year + "-" + previousTimeInfo.fullmonth + "-" + previousTimeInfo.day + "T" + previousTimeInfo.fullhour + ":" + previousTimeInfo.minute + ":00.000Z"
+
+  await fetch(`https://api1.poocoin.app/top-trades?address=${tokenAddress}&from=${previousDate}&to=${currentDate}&type=buy`)
+    .then(res => res.json())
+    .then(data => { setBuyersValues(data) })
+    .catch(err => console.log(err))
+}
+
+export const getSellersData = async (tokenAddress, currentTimeInfo, previousTimeInfo, setSellersValues) => {
+  const currentDate = currentTimeInfo.year + "-" + currentTimeInfo.fullmonth + "-" + currentTimeInfo.day + "T" + currentTimeInfo.fullhour + ":" + currentTimeInfo.minute + ":00.000Z"
+
+  const previousDate = previousTimeInfo.year + "-" + previousTimeInfo.fullmonth + "-" + previousTimeInfo.day + "T" + previousTimeInfo.fullhour + ":" + previousTimeInfo.minute + ":00.000Z"
+
+  await fetch(`https://api1.poocoin.app/top-trades?address=${tokenAddress}&from=${previousDate}&to=${currentDate}&type=sell`)
+    .then(res => res.json())
+    .then(data => { setSellersValues(data) })
+    .catch(err => console.log(err))
+}
+
+export const getWalletData = async (tokenAddress, account, setWalletValues) => {
+  await fetch(`https://api1.poocoin.app/wallet-tx?address=${tokenAddress}&wallet=${account}`)
+    .then(res => res.json())
+    .then(data => { setWalletValues(data) })
+    .catch(err => console.log(err))
 }

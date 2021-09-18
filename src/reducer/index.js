@@ -1,5 +1,6 @@
 const initialState = {
     tokenAddress: '',
+    tokenName: '',
 };
 
 export default function (state = initialState, action) {
@@ -8,6 +9,11 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 tokenAddress: action.payload
+            };
+        case 'SET_TOKENNAME':
+            return {
+                ...state,
+                tokenName: action.payload
             };
         default:
             return state;

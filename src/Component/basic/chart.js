@@ -2,6 +2,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useEffect, useState } from 'react';
 import TVChartContainer from './TVChartContainer';
 import { coin } from '../../constants';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles({
   root: {
@@ -11,7 +12,6 @@ const useStyles = makeStyles({
   },
   TradingView: {
     position: 'relative',
-    height: '275px'
   },
   coinSelect: {
     position: 'absolute',
@@ -29,20 +29,19 @@ const useStyles = makeStyles({
 export default function Chart(props) {
   const classes = useStyles();
   const [coinName, setCoinName] = useState(coin.USD);
-
   const handleChangeCoinName = (event) => {
     setCoinName(event.target.value);
   }
   return (
     <div className={classes.TradingView}>
-      <TVChartContainer tokenName={props.tokenName} coinName={coinName} />
-      <select
+      <TVChartContainer tokenAddress={props.tokenAddress} convertSymbol={props.convertSymbol} height={props.height} />
+      {/* <select
         value={coinName}
         onChange={handleChangeCoinName}
         className={classes.coinSelect}>
         <option className={classes.coinOption} value={coin.USD}>USD</option>
         <option className={classes.coinOption} value={coin.BNB}>BNB</option>
-      </select>
+      </select> */}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable jsx-a11y/alt-text */
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Grid from '@material-ui/core/Grid';
 import Tab from '../Component/basic/tab';
 import Input from '../Component/basic/input';
@@ -9,8 +9,10 @@ import IconButton from '@material-ui/core/IconButton';
 import Panel from '../Component/multichart/panel';
 import rightPoster from '../Images/moonstar3.gif';
 import leftPoster from '../Images/leftposter.gif';
-import SearchInput from '../Component/TokenSelect';
+import TokenSelect from '../Component/TokenSelect';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
+import DefaultTokens from '../config/default_tokens.json';
+import { storeLocalMultichart } from "../PooCoin/util";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -91,24 +93,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Multichart() {
-
   const classes = useStyles();
-
   const [showMode, setShowMode] = React.useState(1);
-  const [displayModeValue1, setDisplayModeValue1] = React.useState(1);
-  const [displayModeValue2, setDisplayModeValue2] = React.useState(0);
-  const [displayModeValue3, setDisplayModeValue3] = React.useState(0);
-  const [displayModeValue4, setDisplayModeValue4] = React.useState(0);
-  const [displayModeValue5, setDisplayModeValue5] = React.useState(0);
-  const [displayModeValue6, setDisplayModeValue6] = React.useState(0);
-  const [displayModeValue7, setDisplayModeValue7] = React.useState(0);
-  const [displayModeValue8, setDisplayModeValue8] = React.useState(0);
-  const [displayModeValue9, setDisplayModeValue9] = React.useState(0);
-  const [symbolAddress, setSymbolAddress] = React.useState(null);
-  const [symbolName, setSymbolName] = React.useState(null);
-
-  // let displayMode = 9;
-  // displayMode = (showMode === 0)? displayMode = 9: displayMode = 12;
 
   const handleChange = () => {
     setShowMode(!showMode);
@@ -118,50 +104,25 @@ export default function Multichart() {
     setShowMode(!showMode);
   };
 
-  const onClickBtn = (index) => {
-    if (index === 1) {
-      setDisplayModeValue1(0);
-    } else if (index === 2) {
-      setDisplayModeValue2(0);
-    } else if (index === 3) {
-      setDisplayModeValue3(0);
-    } else if (index === 4) {
-      setDisplayModeValue4(0);
-    } else if (index === 5) {
-      setDisplayModeValue5(0);
-    } else if (index === 6) {
-      setDisplayModeValue6(0);
-    } else if (index === 7) {
-      setDisplayModeValue7(0);
-    } else if (index === 8) {
-      setDisplayModeValue8(0);
-    } else if (index === 9) {
-      setDisplayModeValue9(0);
-    }
-  }
+  const handleTokenPropsChange = (tokenInfo) => {
+    storeLocalMultichart(tokenInfo.address);
+    setMultichartData(JSON.parse(localStorage.getItem('multichart')))
+  };
 
-  const onSymbol = (symbolAddress, symbolName) => {
-    setSymbolAddress(symbolAddress);
-    setSymbolName(symbolName);
-    if (!displayModeValue1) {
-      setDisplayModeValue1(1);
-    } else if (!displayModeValue2) {
-      setDisplayModeValue2(1);
-    } else if (!displayModeValue3) {
-      setDisplayModeValue3(1);
-    } else if (!displayModeValue4) {
-      setDisplayModeValue4(1);
-    } else if (!displayModeValue5) {
-      setDisplayModeValue5(1);
-    } else if (!displayModeValue6) {
-      setDisplayModeValue6(1);
-    } else if (!displayModeValue7) {
-      setDisplayModeValue7(1);
-    } else if (!displayModeValue8) {
-      setDisplayModeValue8(1);
-    } else if (!displayModeValue9) {
-      setDisplayModeValue9(1);
-    }
+  const inputHandle = (tokenAddress) => {
+    storeLocalMultichart(tokenAddress);
+    setMultichartData(JSON.parse(localStorage.getItem('multichart')))
+  };
+
+  const [multichartData, setMultichartData] = useState(JSON.parse(localStorage.getItem('multichart')));
+
+  if (multichartData == null) {
+    storeLocalMultichart(DefaultTokens.POOCOIN.address)
+  }
+  // let multichartData = ;
+
+  const onSymbol = () => {
+    setMultichartData(JSON.parse(localStorage.getItem('multichart')))
   }
 
   let leftContainer = (
@@ -176,7 +137,7 @@ export default function Multichart() {
       <div style={{ display: 'flex' }}>
         <div className={classes.searchInput}>
           <div style={{ maxWidth: '400px' }}>
-            <SearchInput />
+            <TokenSelect inputHandle={inputHandle} tokenProps={handleTokenPropsChange} />
           </div>
         </div>
         <div className={classes.iconPadding}>
@@ -186,33 +147,12 @@ export default function Multichart() {
         </div>
       </div>
       <Grid item xs={12} lg={12} container>
-        <Grid item xs={4} lg={4} style={{ padding: '5px' }}>
-          <Panel displayMode={displayModeValue1} symbolAddress={symbolAddress} symbolName={symbolName} onClickBtn={onClickBtn} onClickIndex={1} />
-        </Grid>
-        <Grid item xs={4} style={{ padding: '5px' }}>
-          <Panel displayMode={displayModeValue2} symbolAddress={symbolAddress} symbolName={symbolName} onClickBtn={onClickBtn} onClickIndex={2} />
-        </Grid>
-        <Grid item xs={4} style={{ padding: '5px' }}>
-          <Panel displayMode={displayModeValue3} symbolAddress={symbolAddress} symbolName={symbolName} onClickBtn={onClickBtn} onClickIndex={3} />
-        </Grid>
-        <Grid item xs={4} style={{ padding: '5px' }}>
-          <Panel displayMode={displayModeValue4} symbolAddress={symbolAddress} symbolName={symbolName} onClickBtn={onClickBtn} onClickIndex={4} />
-        </Grid>
-        <Grid item xs={4} style={{ padding: '5px' }}>
-          <Panel displayMode={displayModeValue5} symbolAddress={symbolAddress} symbolName={symbolName} onClickBtn={onClickBtn} onClickIndex={5} />
-        </Grid>
-        <Grid item xs={4} style={{ padding: '5px' }}>
-          <Panel displayMode={displayModeValue6} symbolAddress={symbolAddress} symbolName={symbolName} onClickBtn={onClickBtn} onClickIndex={6} />
-        </Grid>
-        <Grid item xs={4} style={{ padding: '5px' }}>
-          <Panel displayMode={displayModeValue7} symbolAddress={symbolAddress} symbolName={symbolName} onClickBtn={onClickBtn} onClickIndex={7} />
-        </Grid>
-        <Grid item xs={4} style={{ padding: '5px' }}>
-          <Panel displayMode={displayModeValue8} symbolAddress={symbolAddress} symbolName={symbolName} onClickBtn={onClickBtn} onClickIndex={8} />
-        </Grid>
-        <Grid item xs={4} style={{ padding: '5px' }}>
-          <Panel displayMode={displayModeValue9} symbolAddress={symbolAddress} symbolName={symbolName} onClickBtn={onClickBtn} onClickIndex={9} />
-        </Grid>
+        {multichartData.address.map((data, index) => (
+          <Grid item xs={4} lg={4} style={{ padding: '5px' }} key={index}>
+            <Panel tokenAddress={data} index={index} />
+          </Grid>
+        ))
+        }
       </Grid>
     </div>
   );

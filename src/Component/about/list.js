@@ -2,25 +2,14 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
-import InboxIcon from "@material-ui/icons/Inbox";
-import DraftsIcon from "@material-ui/icons/Drafts";
-import SubList from "./subList";
 import BSC from "../../Images/bscscan.png";
-import Link from "@material-ui/core/Link";
-import { arrayify } from "ethers/lib/utils";
-import { TokenAmount } from "@pancakeswap-libs/sdk";
-import { cleanup } from "@testing-library/react";
-import LpInfoItem from "./LpInfoItem";
-import { getReserve } from "../../PooCoin";
-import { useParams } from "react-router";
-import { tokenBalance, getRate } from "../../PooCoin";
+import LpInfoItem from "./lpInfoItem";
+import { tokenBalance, getAmountsOut } from "../../PooCoin";
 import { numberWithCommas } from "../../PooCoin/util";
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux';
+import DefaultTokens from '../../config/default_tokens.json'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -76,10 +65,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function ListItemLink(props) {
-  return <ListItem button component="a" {...props} />;
-}
-
 const SimpleList = ({ lpdata, totalSupply, currentTokenInfo }) => {
 
   // let marketCap = totalSupply * ratePrice;
@@ -96,8 +81,8 @@ const SimpleList = ({ lpdata, totalSupply, currentTokenInfo }) => {
   }
   useEffect(() => {
     if (currentTokenAddress != undefined) {
-      tokenBalance('0x000000000000000000000000000000000000dead', currentTokenAddress, setBurnData)
-      getRate(currentTokenAddress, '0xe9e7cea3dedca5984780bafc599bd69add087d56', setPriceRate);
+      tokenBalance(DefaultTokens.BURNADDRESS.address, currentTokenAddress, setBurnData)
+      getAmountsOut(1, currentTokenAddress, DefaultTokens.BUSD.address, setPriceRateData)
     }
   }, [currentTokenAddress])
 

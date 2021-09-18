@@ -6,29 +6,28 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import { GradeOutlined, Grade } from '@material-ui/icons';
+import StarOutlineIcon from "@material-ui/icons/StarOutline";
+import StarIcon from '@material-ui/icons/Star';
 import { Link } from 'react-router-dom';
 import { unvettedValues } from '../../PooCoin/index.js';
+import { useDispatch } from 'react-redux'
+import { storeLocalTokenInfo, checkLocalTokenInfo, removeLocalTokenInfo } from '../../PooCoin/util';
+import { CircularProgress } from "@material-ui/core";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    // backgroundColor: theme.palette.common.black,
-    backgroundColor: '#262626',
+    backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
-    padding: '0 0 0 10px',
-    textAlignLast: 'center',
-    borderColor: '#262626'
+    borderColor: "#262626",
+    textAlignLast: "center",
   },
   body: {
-    fontSize: 12,
-    lineHeight: 1.43,
     padding: 0,
     paddingLeft: 10,
-    color: '#fff',
-    textAlignLast: 'center',
-    backgroundColor: '#303030',
-    borderColor: '#262626',
+    color: "#fff",
+    backgroundColor: "#303030",
+    borderColor: "#262626",
+    textAlignLast: "center",
   },
 }))(TableCell);
 
@@ -43,21 +42,62 @@ const StyledTableRow = withStyles((theme) => ({
 const useStyles = makeStyles({
   table: {
     minWidth: 100,
+    fontSize: "0.875rem",
+    padding: "10px !important",
+    color: "#fff",
   },
+  tableTh: {
+    padding: 0,
+    fontSize: "0.8125rem",
+    paddingLeft: 10,
+    backgroundColor: "#262626",
+  },
+  CircularProgress: {
+    color: "#b2b5be",
+    marginTop: '20px'
+  },
+  starredIcon: {
+    cursor: 'pointer'
+  },
+  starredFillIcon: {
+    color: '#f7b500!important',
+    cursor: 'pointer'
+  },
+  linkToken: {
+    '&:hover': {
+      color: 'white',
+    }
+  }
 });
 
 function UnvettedTable(props) {
   const values = props.values;
+  const classes = props.className;
+  const dispatch = useDispatch();
+  const addUnvettedData = unvettedData => () => {
+    checkLocalTokenInfo(unvettedData[0])
+      ?
+      removeLocalTokenInfo(unvettedData[0])
+      :
+      storeLocalTokenInfo(unvettedData[0], unvettedData[1].split('/')[3], 0)
+    props.reloadData()
+  }
   return (
     values.map((item, index) =>
       <StyledTableRow key={index}>
         <StyledTableCell component="th" scope="row">
-          {/* <span>{item[1].split('/')[3]}</span> */}
-          <Link to={`/tokens/${item[0]}`} className={'fs2'}>
-            {item[1].split('/')[3]}&nbsp;
-            <span className={'textSuccess'}>$0.0000</span>
+          <Link
+            to={{
+              pathname: `/tokens/${item[0]}`,
+              state: item[0],
+            }}
+            onClick={() => dispatch({ type: 'SET_TOKENADDRESS', payload: item[0] })}
+            className={classes.linkToken}
+          >
+            <span>{item[1].split('/')[3]} </span>
+            <span className={"textSuccess"}>$0.0000</span>
             <br />
-            <span className={'textMuted'}>{item[1].split('/')[3]}</span>
+            <span className={"textMuted"}>{item[1].split('/')[3]}</span>
           </Link>
         </StyledTableCell>
         <StyledTableCell>
@@ -65,39 +105,59 @@ function UnvettedTable(props) {
           <br />
           <span className={'textSuccess'}>$0.00</span>
         </StyledTableCell>
-        <StyledTableCell><GradeOutlined /></StyledTableCell>
+        <StyledTableCell>
+          {
+            checkLocalTokenInfo(item[0]) == true ?
+              <StarIcon className={classes.starredFillIcon} onClick={addUnvettedData(item)} />
+              :
+              <StarOutlineIcon className={classes.starredIcon} onClick={addUnvettedData(item)} />
+          }
+        </StyledTableCell>
       </StyledTableRow>
     )
   );
 }
 
 export default function CustomizedTables() {
-
   const [unvettedData, setUnvettedData] = useState([]);
-
+  const [loading, setLoading] = useState(true);
+  const [reload, setReloading] = useState(1);
+  const classes = useStyles();
   const setUnvettedValues = (data) => {
-    setUnvettedData(data);
-  }
+    if (data.length == 0) {
+      setLoading(true)
+    } else {
+      setLoading(false)
+      setUnvettedData(data);
+    }
+  };
 
   useEffect(() => {
     unvettedValues(setUnvettedValues);
   }, []);
 
-  const classes = useStyles();
+  const reloadComponent = () => {
+    reload == 1 ? setReloading(0) : setReloading(1)
+  }
   return (
-    <TableContainer>
-      <Table className={classes.table} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Tokens</StyledTableCell>
-            <StyledTableCell>Balance</StyledTableCell>
-            <StyledTableCell></StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <UnvettedTable values={unvettedData} />
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <div>
+      <TableContainer>
+        <Table className={classes.table} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell className={classes.tableTh}>Tokens</StyledTableCell>
+              <StyledTableCell className={classes.tableTh}>Balance</StyledTableCell>
+              <StyledTableCell className={classes.tableTh}></StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <UnvettedTable className={classes} reloadData={reloadComponent} values={unvettedData} />
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {loading && (
+        <CircularProgress size={20} className={classes.CircularProgress} />
+      )}
+    </div>
   );
 }

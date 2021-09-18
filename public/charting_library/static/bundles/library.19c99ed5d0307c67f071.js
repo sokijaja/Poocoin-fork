@@ -24563,17 +24563,7 @@ webpackJsonp([12], [function (t, e, i) {
                 this._mainSub.hasClass("active") ? this._menu.close() : this._menu.open(this.getSortedIntervals())
             }, n.prototype._setIntervalDialogButton = function () {
                 var t = i(265);
-                this._intervalDialogButton = $("<span>").addClass("submenu interval-dialog-button apply-common-tooltip").attr("title", $.t("Open Interval Dialog")).append($("<i>")).appendTo(this._e).click(function () {
-                    var e = new t({
-                        callback: function (t) {
-                            s.interval.setValue(t)
-                        }
-                    }).show(),
-                        i = $(this);
-                    i.addClass("active"), e.on("destroy", function () {
-                        i.removeClass("active")
-                    })
-                })
+                this._intervalDialogButton = $("<span>").addClass("submenu interval-dialog-button apply-common-tooltip").attr("title", $.t("Open Interval Dialog"))
             }, n.prototype.addInterval = function (t) { }, n.prototype.removeInterval = function (t) { }, n.prototype.saveIntervals = function () { }, n.prototype.saveQuicked = function () {
                 TVSettings.setJSON("IntervalWidget.quicks", this._quicked)
             }, n.prototype.saveSettings = function () {
@@ -34052,7 +34042,7 @@ webpackJsonp([12], [function (t, e, i) {
                 })
             }
             var a, f, m, g, v, y, b, S, w, T, x, C, P, L, I, k, A, M, E, V, D;
-            t = t || {}, a = this._chartWidgetCollection = t.chartWidgetCollection, f = this._chartWidget = a.activeChartWidget.value(), m = this._onWidget = f.onWidget(), g = this, v = Modernizr.touch ? "touchstart" : "click", this._onResizeRequested = !1, this._resizerBridge = t.resizerBridge, this._$root = $(t.resizerBridge.body.value()), this._$root.addClass("header-chart-panel").html('<div class="header-chart-panel-sizer"><div class="header-chart-panel-content"><div class="right"></div><div class="left"></div></div></div>'), this._$sizer = this._$root.find(".header-chart-panel-sizer"), this._$content = this._$root.find(".header-chart-panel-content"), this._$left = this._$root.find(".left"), this._$right = this._$root.find(".right"), this._itemsVisibility = t.itemsVisibility, a.readOnly() || (e.enabled("header_symbol_search") && (y = this.createGroup("symbol-search").appendTo(this._$left), b = $('<div class="symbol-edit-widget no-last"></div>').appendTo(y), S = $('<div class="symbol-edit-wrap">').appendTo(b), w = null,
+            t = t || {}, a = this._chartWidgetCollection = t.chartWidgetCollection, f = this._chartWidget = a.activeChartWidget.value(), m = this._onWidget = f.onWidget(), g = this, v = Modernizr.touch ? "touchstart" : "click", this._onResizeRequested = !1, this._resizerBridge = t.resizerBridge, this._$root = $(t.resizerBridge.body.value()), this._$root.addClass("header-chart-panel").html('<div class="header-chart-panel-sizer"><div class="header-chart-panel-content"><div class="right"></div><div class="left"></div></div></div>'), this._$sizer = this._$root.find(".header-chart-panel-sizer"), this._$content = this._$root.find(".header-chart-panel-content"), this._$left = this._$root.find(".left"), this._$right = this._$root.find(".right"), this._itemsVisibility = t.itemsVisibility, a.readOnly() || (e.enabled("header_symbol_search") && (y = this.createGroup("symbol-search"), b = $('<div class="symbol-edit-widget no-last"></div>').appendTo(y), S = $('<div class="symbol-edit-wrap">').appendTo(b), w = null,
                 !e.enabled("charting_library_base") && u.canShowSpreadActions() && (T = $('<div class="symbol-edit-buttonswrap">').appendTo(S), w = $('<div class="spread-actions">').appendTo(T).on("mousedown", function (t) {
                     t.preventDefault()
                 })), x = $('<div class="symbol-edit-inputspacer">').appendTo(S), C = $('<input type="text" class="symbol-edit" maxlength="' + TradingView.SYMBOL_SEARCH_MAX_LENGTH + '">').appendTo(x), u.bindToInput(C, {
@@ -49660,8 +49650,7 @@ webpackJsonp([12], [function (t, e, i) {
                         if (o.body.value().css(c, h), o[c].setValue(h), _ !== this._recalcSingleRunToken) return
                     }
                     o.body.value().toggleClass("js-hidden", !1)
-                } else
-                    o && o.body.value().toggleClass("js-hidden", !0);
+                } else o && o.body.value().toggleClass("js-hidden", !0);
             this._affectsLayout("footer") && (o = this._areas.footer, d = this._height.value() - o.height.value(), this._affectsLayout("bottom") && (d -= this._areas.bottom.height.value()), o.body.value().css({
                 top: d
             })), this._affectsLayout("dompanel") && (o = this._areas.dompanel, p = 0, this._affectsLayout("right") && (p += this._areas.right.width.value()), o.body.value().css({

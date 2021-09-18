@@ -8,7 +8,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { vettedValues } from "../../PooCoin/index.js";
 import { CircularProgress } from "@material-ui/core";
-import { storeLocalMultichart } from '../../PooCoin/util.js';
+import { Link } from "react-router-dom";
+import { useDispatch } from 'react-redux';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -31,12 +32,6 @@ const StyledTableCell = withStyles((theme) => ({
     borderRadius: 0
   },
 }))(TableCell);
-
-const rows = Array.from(Array(1).keys()).map(item => {
-  return {
-    name: "THOREUM",
-  }
-})
 
 const StyledTableRow = withStyles((theme) => ({
   root: {
@@ -61,15 +56,18 @@ const useStyles = makeStyles({
     color: "#b2b5be",
     marginTop: '20px'
   },
-  tokenList: {
-    cursor: 'pointer',
+  linkToken: {
+    '&:hover': {
+      color: 'white',
+    }
   }
 });
 
-export default function CustomizedTables(props) {
+export default function CustomizedTables() {
   const classes = useStyles();
   const [vettedData, setVettedData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
   const setVettedValues = (data) => {
     if (data.length == 0) {
@@ -79,11 +77,6 @@ export default function CustomizedTables(props) {
       setVettedData(data);
     }
   };
-
-  const addMultichartInfo = tokenAddress => () => {
-    storeLocalMultichart(tokenAddress);
-    props.onSymbol()
-  }
 
   useEffect(() => {
     vettedValues(setVettedValues);
@@ -101,9 +94,18 @@ export default function CustomizedTables(props) {
           <TableBody>
             {vettedData.map((row) => (
               <StyledTableRow key={row.name}>
-                <StyledTableCell className={classes.tokenList} component="th" scope="row" onClick={addMultichartInfo(row.linkAddress)}>
-                  <span className={classes.uppper}>{row.name}</span>
-                  <div className={classes.otherName}>{row.name}</div>
+                <StyledTableCell component="th" scope="row">
+                  <Link
+                    to={{
+                      pathname: `/tokens/${row.linkAddress}`,
+                      state: row.linkAddress,
+                    }}
+                    onClick={() => dispatch({ type: 'SET_TOKENADDRESS', payload: row.linkAddress })}
+                    className={classes.linkToken}
+                  >
+                    <span className={classes.uppper}>{row.name}</span>
+                    <div className={classes.otherName}>{row.name}</div>
+                  </Link>
                 </StyledTableCell>
               </StyledTableRow>
             ))}

@@ -13,6 +13,7 @@
     "@testing-library/user-event": "^12.1.10",
     "abi-decoder": "^2.4.0",
     "babel-cli": "^6.26.0",
+    "bscscan-api": "^1.0.1",
     "classnames": "^2.3.1",
     "cors": "^2.8.5",
     "ethereum-input-data-decoder": "^0.3.2",

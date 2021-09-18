@@ -6,9 +6,10 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import { Link } from 'react-router-dom';
 import StarIcon from '@material-ui/icons/Star';
+import { useDispatch } from 'react-redux'
 import { removeLocalTokenInfo } from '../../PooCoin/util';
-import { storeLocalMultichart } from '../../PooCoin/util';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -57,13 +58,16 @@ const useStyles = makeStyles({
     color: '#f7b500!important',
     cursor: 'pointer'
   },
-  tokenList: {
-    cursor: 'pointer',
+  linkToken: {
+    '&:hover': {
+      color: 'white',
+    }
   }
 });
 
-export default function CustomizedTables(props) {
+export default function CustomizedTables() {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [reload, setReloading] = useState(1);
 
   const rows = JSON.parse(localStorage.getItem('starred'))
@@ -76,12 +80,6 @@ export default function CustomizedTables(props) {
     removeLocalTokenInfo(starredData)
     reloadComponent()
   }
-
-  const addMultichartInfo = tokenAddress => () => {
-    storeLocalMultichart(tokenAddress);
-    props.onSymbol()
-  }
-
   return (
     <TableContainer>
       <Table className={classes.table} aria-label="customized table">
@@ -93,24 +91,31 @@ export default function CustomizedTables(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {Object.keys(rows).map((key) => (
-            <StyledTableRow key={key}>
-              <StyledTableCell className={classes.tokenList} component="th" scope="row" onClick={addMultichartInfo(key)}>
-                {rows[key].name}&nbsp;
-                <span className={'textSuccess'}>${parseFloat(rows[key].amount).toFixed(4)}</span>
-                <br />
-                <span className={'textMuted'}>{rows[key].name}</span>
-              </StyledTableCell>
-              <StyledTableCell>
-                <span>0.00</span>
-                <br />
-                <span className={'textSuccess'}>$0.00</span>
-              </StyledTableCell>
-              <StyledTableCell>
-                <StarIcon className={classes.starredFillIcon} onClick={removeStarredData(key)} />
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
+          {rows != null &&
+            Object.keys(rows).map((key) => (
+              <StyledTableRow key={key}>
+                <StyledTableCell component="th" scope="row">
+                  <Link
+                    to={`/tokens/${key}`}
+                    onClick={() => dispatch({ type: 'SET_TOKENADDRESS', payload: key })}
+                    className={classes.linkToken}
+                  >
+                    {rows[key].name}&nbsp;
+                    <span className={'textSuccess'}>${parseFloat(rows[key].amount).toFixed(4)}</span>
+                    <br />
+                    <span className={'textMuted'}>{rows[key].name}</span>
+                  </Link>
+                </StyledTableCell>
+                <StyledTableCell>
+                  <span>0.00</span>
+                  <br />
+                  <span className={'textSuccess'}>$0.00</span>
+                </StyledTableCell>
+                <StyledTableCell>
+                  <StarIcon className={classes.starredFillIcon} onClick={removeStarredData(key)} />
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>

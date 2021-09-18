@@ -6,12 +6,13 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
 import StarOutlineIcon from "@material-ui/icons/StarOutline";
+import StarIcon from '@material-ui/icons/Star';
 import { Link } from "react-router-dom";
 import { vettedValues } from "../../PooCoin/index.js";
 import { CircularProgress } from "@material-ui/core";
 import { useDispatch } from 'react-redux'
+import { storeLocalTokenInfo, checkLocalTokenInfo, removeLocalTokenInfo } from '../../PooCoin/util';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -38,17 +39,6 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-const rows = Array.from(Array(10).keys()).map((item) => {
-  return {
-    name: "THOREUM",
-    othername: "Thoreum",
-    id: "0x580de58c1bd593a43dadcf0a739d504621817c05",
-    tokenMoney: "0.0000",
-    balanceMoney: "0.00",
-    calories: "0.00",
-  };
-});
-
 const useStyles = makeStyles({
   table: {
     minWidth: 100,
@@ -66,11 +56,37 @@ const useStyles = makeStyles({
     color: "#b2b5be",
     marginTop: '20px'
   },
+  starredIcon: {
+    cursor: 'pointer'
+  },
+  starredFillIcon: {
+    color: '#f7b500!important',
+    cursor: 'pointer'
+  },
+  linkToken: {
+    '&:hover': {
+      color: 'white',
+    }
+  }
 });
 
 function VettedTable(props) {
   const values = props.values;
+  const classes = props.className;
   const dispatch = useDispatch();
+
+  const addVettedData = vettedData => () => {
+    checkLocalTokenInfo(vettedData.linkAddress)
+      ?
+      removeLocalTokenInfo(vettedData.linkAddress)
+      :
+      storeLocalTokenInfo(vettedData.linkAddress, vettedData.name, vettedData.amount)
+    props.reloadData()
+  }
+
+  const dispatchTokenInfo = (tokenAddress) => () => {
+    dispatch({ type: 'SET_TOKENADDRESS', payload: tokenAddress });
+  }
   return values.map((item, index) => (
     <StyledTableRow key={index}>
       <StyledTableCell component="th" scope="row">
@@ -79,7 +95,8 @@ function VettedTable(props) {
             pathname: `/tokens/${item.linkAddress}`,
             state: item.linkAddress,
           }}
-          onClick={() => dispatch({ type: 'SET_TOKENADDRESS', payload: item.linkAddress })}
+          onClick={dispatchTokenInfo(item.linkAddress)}
+          className={classes.linkToken}
         >
           {item.name}&nbsp;
           <span className={"textSuccess"}>${item.amount.toFixed(4)}</span>
@@ -93,7 +110,12 @@ function VettedTable(props) {
         <span className={"textSuccess"}>$0.00</span>
       </StyledTableCell>
       <StyledTableCell>
-        <StarOutlineIcon />
+        {
+          checkLocalTokenInfo(item.linkAddress) == true ?
+            <StarIcon className={classes.starredFillIcon} onClick={addVettedData(item)} />
+            :
+            <StarOutlineIcon className={classes.starredIcon} onClick={addVettedData(item)} />
+        }
       </StyledTableCell>
     </StyledTableRow>
   ));
@@ -102,6 +124,8 @@ function VettedTable(props) {
 export default function CustomizedTables() {
   const [vettedData, setVettedData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [reload, setReloading] = useState(1);
+  const classes = useStyles();
 
   const setVettedValues = (data) => {
     if (data.length == 0) {
@@ -116,8 +140,9 @@ export default function CustomizedTables() {
     vettedValues(setVettedValues);
   }, []);
 
-  const classes = useStyles();
-
+  const reloadComponent = () => {
+    reload == 1 ? setReloading(0) : setReloading(1)
+  }
   return (
     <div>
       <TableContainer>
@@ -134,7 +159,7 @@ export default function CustomizedTables() {
             </TableRow>
           </TableHead>
           <TableBody>
-            <VettedTable values={vettedData} />
+            <VettedTable className={classes} values={vettedData} reloadData={reloadComponent} />
           </TableBody>
         </Table>
       </TableContainer>

@@ -1538,12 +1538,13 @@ textarea.tv-textarea {
 .tv-close-panel {
 	width: 5px;
 	height: 25px;
-	border-color: #dadde0;
-	border-width: 1px 0;
-	border-style: solid;
-	background-color: #f1f3f6;
+	/* border-color: #dadde0; */
+	/* border-width: 1px 0; */
+	/* border-style: solid; */
+	background-color:#1976d2;
 	background-position: 50% 50%;
-	background-repeat: no-repeat
+	background-repeat: no-repeat;
+	border-radius: 25px;
 }
 
 html.theme-dark .tv-close-panel {
@@ -1689,7 +1690,7 @@ textarea {
 }
 
 .chart-page {
-	background: transparent;
+	background: #f1f3f6
 }
 
 html.theme-dark .chart-page {
@@ -1698,8 +1699,8 @@ html.theme-dark .chart-page {
 
 .chart-page .chart-container {
 	border: 1px solid;
-	border-color: #dadde0;
-	background: transparent;
+	/* border-color: #dadde0; */
+	background: #fff
 }
 
 html.theme-dark .chart-page .chart-container {
@@ -7864,7 +7865,7 @@ html.theme-dark.feature-no-touch .tv-control-input[disabled]:hover {
 
 .chart-top-toolbar .space-single,
 .header-chart-panel .space-single {
-	padding: 0 4px 0 0
+	padding: 0 0 0 0
 }
 
 .header-chart-panel--compact .group.header-group-back-button,
@@ -7880,7 +7881,7 @@ html.theme-dark.feature-no-touch .tv-control-input[disabled]:hover {
 .header-chart-panel--compact .layout-toggle-container,
 .header-chart-panel--compact .save-load-buttons .title,
 .header-chart-panel--compact .save-load-buttons .titled .separator {
-	display: none
+	/* display: none */
 }
 
 .bottom-widgetbar-content.backtesting .button,
@@ -7893,7 +7894,7 @@ html.theme-dark.feature-no-touch .tv-control-input[disabled]:hover {
 	cursor: default;
 	padding: 7px 12px;
 	border: 1px solid;
-	border-color: #dadde0;
+	/* border-color: #dadde0; */
 	height: 14px;
 	background: transparent;
 	color: #555;
@@ -8954,21 +8955,21 @@ html.theme-dark .save-load-buttons .title {
 	position: relative;
 	height: 14px;
 	vertical-align: top;
-	color: #4a4a4a;
+	color: #7d7d7d;
 	font-size: 11px;
 	font-weight: 700;
-	background: #fff;
+	background: transparent;
 	border: 1px solid;
-	border-color: #dadde0;
+	/* border-color: #dadde0; */
 	border-width: 1px 1px 1px 0;
 	padding: 7px 12px;
 	cursor: default
 }
 
 html.theme-dark .favored-list-container span {
-	border-color: #363c4e;
-	background: #131722;
-	color: #758696
+	border-color: #4a4a4a;
+	/* background: #131722; */
+	color: #c5cbce
 }
 
 .favored-list-container span.active,
@@ -8983,18 +8984,18 @@ html.theme-dark .favored-list-container span.active,
 html.theme-dark .favored-list-container span.selected,
 html.theme-dark.feature-no-touch .favored-list-container span:active,
 html.theme-dark.feature-touch .favored-list-container span:active {
-	color: #3bb3e4;
+	color: #4a4a4a;
 	background: #1c2030
 }
 
 .feature-no-touch .favored-list-container span:hover {
-	background: #f2f3f5;
-	color: #4c525e
+	background: #4a4a4a;
+	color: #7d7d7d
 }
 
 html.theme-dark.feature-no-touch .favored-list-container span:hover {
-	color: #f7f8fa;
-	background: #131722
+	color: #7d7d7d;
+	background: #4a4a4a
 }
 
 .favored-list-container span.disabled,
@@ -9021,7 +9022,7 @@ html.theme-dark.feature-touch .favored-list-container span.disabled:active {
 
 .favored-list-container span.submenu {
 	position: relative;
-	display: inline-flex;
+	display: none;
 	align-items: center;
 	padding: 0;
 	width: 20px;
@@ -9100,7 +9101,7 @@ html.theme-dark .favored-list-container span.submenu.active {
 .feature-touch .header-chart-panel .button.disabled:active,
 .header-chart-panel .button.disabled,
 .header-chart-panel .button.disabled.active {
-	background: #f1f3f6;
+	/* background: #f1f3f6; */
 	box-shadow: none
 }
 
@@ -11588,7 +11589,7 @@ html.theme-dark .published-charts-tooltip.right:after {
 	width: 100%;
 	left: 0;
 	bottom: 0;
-	background-color: transparent;
+	background-color: #e5e5e8;
 	overflow: hidden
 }
 
@@ -13630,7 +13631,7 @@ a.getimage .icon {
 
 .on-widget .getimage .icon {
 	background-image: none;
-	fill: rgba(0, 0, 0, .5)
+	fill: #7d7d7d;
 }
 
 .on-widget .open-popup {
@@ -13936,18 +13937,18 @@ html.theme-dark .onchart-tv-logo a:visited {
 @media only screen and (max-width:900px) {
 	.header-chart-panel .save-load-buttons .separator,
 	.header-chart-panel .save-load-buttons .title {
-		display: none!important
+		/* display: none!important */
 	}
 }
 
 @media only screen and (max-width:750px) {
 	.charts-popup-list .item.save-load-chart-title {
-		display: block
+		/* display: block */
 	}
 	.header-chart-panel .save-load-buttons .load,
 	.header-chart-panel .save-load-buttons .save {
-		padding-left: 7px;
-		padding-right: 7px
+		/* padding-left: 7px; */
+		/* padding-right: 7px */
 	}
 	.header-chart-panel .group.header-group-back-button,
 	.header-chart-panel .group.header-group-compare,
@@ -13956,25 +13957,25 @@ html.theme-dark .onchart-tv-logo a:visited {
 	.header-chart-panel .group.header-group-select-layout,
 	.header-chart-panel .group.header-group-undo-redo,
 	.header-chart-panel .layout-toggle-container {
-		display: none!important
+		/* display: none!important */
 	}
 }
 
 @media only screen and (max-width:567px) {
 	.header-chart-panel .group.header-group-bars-style {
-		display: none!important
+		/* display: none!important */
 	}
 }
 
 @media only screen and (max-width:410px) {
 	.header-chart-panel .group.header-group-indicators {
-		display: none!important
+		/* display: none!important */
 	}
 }
 
 @media only screen and (max-width:340px) {
 	.header-chart-panel .group.header-group-fullscreen {
-		display: none!important
+		/* display: none!important */
 	}
 }
 
@@ -16248,7 +16249,9 @@ html.theme-dark .drawingToolbar-2CoOuCv8- {
 	left: 100%;
 	height: 31px;
 	width: 5px;
-	cursor: pointer
+	cursor: pointer;
+	border-radius: 25px;
+	background-color: #1976d2;
 }
 
 .toggleButton-2o6YKJ1g- svg {
@@ -16257,7 +16260,7 @@ html.theme-dark .drawingToolbar-2CoOuCv8- {
 	top: 9px;
 	width: 4px;
 	height: 13px;
-	fill: #c8c8c8;
+	fill: #c9cbcd;
 	transition: fill .35s ease
 }
 

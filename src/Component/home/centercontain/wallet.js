@@ -1,89 +1,164 @@
-import React from 'react';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import StarOutlineIcon from '@material-ui/icons/StarOutline';
+import React, { useState, useEffect } from "react";
+import { withStyles, makeStyles } from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import { getWalletData } from "../../../PooCoin";
+import { useSelector, useDispatch } from 'react-redux';
+import { CircularProgress } from "@material-ui/core";
+import { useWallet } from 'use-wallet'
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    backgroundColor: theme.palette.common.black,
+    // backgroundColor: theme.palette.common.black,
+    backgroundColor: "#262626",
     color: theme.palette.common.white,
-    borderColor: '#262626'
+    // padding: '0 0 0 10px',
+    borderColor: "#262626",
+    padding: 0,
   },
   body: {
     fontSize: 12,
+    lineHeight: 1.43,
+    // padding: 0,
+    // paddingLeft: 10,
+    color: "#fff",
+    borderColor: "#262626",
+    maxHeight: 300,
+    overflow: "auto",
     padding: 0,
-    paddingLeft: 10,
-    color: '#fff',
-    backgroundColor: '#303030',
-    borderColor: '#262626' 
   },
 }))(TableCell);
 
 const StyledTableRow = withStyles((theme) => ({
   root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
+    "&:nth-of-type(odd)": {
+      backgroundColor: "#141414",
+    },
+    "&:nth-of-type(even)": {
+      backgroundColor: "#141722",
     },
   },
 }))(TableRow);
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('POOCOIN', 159),
-  createData('KABOSU', 237),
-  createData('GABECOIN', 262),
-  createData('THOREUM', 305),
-];
-
 const useStyles = makeStyles({
   table: {
     minWidth: 100,
-    fontSize: '0.875rem',
-    padding: '10px !important',
-    color: '#fff'
+    maxHeight: 200,
+    overflow: "auto",
+    float: "right",
+    fontSize: "14px !important",
+    fontFamily: '"Lato",sans-serif',
+    paddingTop: "0px",
   },
-  tableTh: {
-    padding: 0,
-    fontSize: '0.8125rem',
-    paddingLeft: 10,
-    backgroundColor: '#262626'
-  }
+  row: {
+    color: "#28a745 !important",
+    textAlign: 'right',
+    '& a': {
+      color: '#3eb8ff',
+    }
+  },
+  tableBody: {
+    maxHeight: 300,
+    overflow: "auto",
+  },
+  th1: {
+    textAlign: "right",
+    paddingRight: '10px',
+    fontSize: '15px',
+  },
+  th2: {
+    textAlign: "right",
+    paddingRight: '10px',
+    fontSize: '15px',
+  },
+  CircularProgress: {
+    color: "#b2b5be",
+    marginTop: '20px',
+  },
+  title: {
+    color: 'white',
+    textAlign: 'left',
+  },
 });
 
 export default function CustomizedTables() {
   const classes = useStyles();
+  const { account } = useWallet()
+  const [walletData, setWalletData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const tokenAddress = useSelector((state) => state.tokenAddress)
+
+  const setWalletValues = (data) => {
+    if (data.length == 0) {
+      setLoading(true)
+    } else {
+      setLoading(false)
+      setWalletData(data);
+    }
+  };
+
+  useEffect(() => {
+    if (account == null) {
+      setLoading(true)
+      setWalletData(null)
+    } else {
+      getWalletData(tokenAddress, account, setWalletValues);
+    }
+  }, [account]);
 
   return (
-    <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell className={classes.tableTh}>Tokens</StyledTableCell>
-            <StyledTableCell className={classes.tableTh}>Balance</StyledTableCell>
-            <StyledTableCell className={classes.tableTh}></StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <StyledTableRow key={row.name}>
-              <StyledTableCell component="th" scope="row">
-                {row.name}
-              </StyledTableCell>
-              <StyledTableCell>{row.calories}</StyledTableCell>
-              <StyledTableCell><StarOutlineIcon /></StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <div>
+      <TableContainer>
+        {
+          account != null &&
+          <div className={classes.title}>
+            <a target="_blank" className={'textBlue'} href={`https://bscscan.com/token/${tokenAddress}?a=${account}`}>BSCScan wallet tx</a>
+          </div>
+        }
+        <Table className={classes.table} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell className={classes.th1}>Tokens</StyledTableCell>
+              <StyledTableCell className={classes.th2}>Price</StyledTableCell>
+              <StyledTableCell className={classes.th2}>Current value</StyledTableCell>
+              <StyledTableCell className={classes.th2}>Date/Time</StyledTableCell>
+              <StyledTableCell className={classes.th2}>Tx</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody className={classes.tableBody}>
+            {walletData != null &&
+              walletData.map((row, index) => (
+                <StyledTableRow key={index} className={classes.row}>
+                  <StyledTableCell className={classes.th1}
+                    component="th"
+                    scope="row"
+                  >
+                    {row.tokens}
+                  </StyledTableCell>
+                  <StyledTableCell className={classes.th1}>
+                    ${(row.price).toFixed(2)}
+                  </StyledTableCell>
+                  <StyledTableCell className={classes.th1}>
+                    {row.currentValue}
+                  </StyledTableCell>
+                  <StyledTableCell className={classes.th1}>
+                    {row.date}
+                  </StyledTableCell>
+                  <StyledTableCell className={classes.th1}>
+                    {row.tx}
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {loading && (
+        <CircularProgress size={20} className={classes.CircularProgress} />
+      )}
+    </div>
   );
 }

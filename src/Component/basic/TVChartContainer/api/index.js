@@ -1,5 +1,6 @@
 import historyProvider from './historyProvider'
-
+import { getTokenName } from '../../../../actions';
+import { getBNBLpaddress } from '../../../../actions';
 const supportedResolutions = ["1", "3", "5", "15", "30", "60", "120", "240", "D"]
 
 const config = {
@@ -12,18 +13,29 @@ export default {
 
 	},
 	searchSymbols: (userInput, exchange, symbolType, onResultReadyCallback) => {
+
 	},
-	resolveSymbol: (symbolName, onSymbolResolvedCallback, onResolveErrorCallback) => {
-		// expects a symbolInfo object in response
+	resolveSymbol: async (symbolName, onSymbolResolvedCallback, onResolveErrorCallback) => {
+		let newSymbolName;
+		let tokenAddress;
 		var split_data = symbolName.split('/')
+		if (!split_data[0].includes(':')) {
+			let response_ = await getBNBLpaddress(split_data[0]);
+			tokenAddress = response_.data;
+			let response = await getTokenName(split_data[0])
+			newSymbolName = response.data[0].name + '/' + split_data[1];
+		} else {
+			newSymbolName = symbolName;
+		}
+		var new_split_data = newSymbolName.split('/');
 		var symbol_stub = {
-			name: symbolName,
+			name: newSymbolName,
 			description: '',
 			type: 'crypto',
 			session: '24x7',
 			timezone: 'Etc/UTC',
-			ticker: symbolName,
-			exchange: split_data[0],
+			ticker: tokenAddress,
+			exchange: new_split_data[0],
 			minmov: 1,
 			pricescale: 100000000,
 			has_intraday: true,
@@ -33,11 +45,11 @@ export default {
 			data_status: 'streaming',
 		}
 
-		if (split_data[1].match(/USD/)) {
+		if (new_split_data[1].match(/USD/)) {
 			symbol_stub.pricescale = 100000
 		}
 
-		if (split_data[1].match(/BNB/)) {
+		if (new_split_data[1].match(/BNB/)) {
 			symbol_stub.pricescale = 10000
 		}
 
@@ -50,8 +62,6 @@ export default {
 
 	},
 	getBars: function (symbolInfo, resolution, from, to, onHistoryCallback, onErrorCallback, firstDataRequest) {
-		// console.log('function args',arguments)
-		// console.log(`Requesting bars between ${new Date(from * 1000).toISOString()} and ${new Date(to * 1000).toISOString()}`)
 		historyProvider.getBars(symbolInfo, resolution, from, to, firstDataRequest)
 			.then(bars => {
 				if (bars.length) {

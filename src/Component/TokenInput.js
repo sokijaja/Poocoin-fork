@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Container, TextField, InputAdornment, OutlinedInput } from '@material-ui/core';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { Button, OutlinedInput } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,17 +41,18 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function TokenInput() {
+export default function TokenInput({ inputHandle }) {
   const classes = useStyles();
   const [token, setToken] = useState("");
 
   const onTokenChange = (event) => {
     setToken(event.target.value);
   }
+
   return (
     <div className={classes.Input}>
       <OutlinedInput value={token} placeholder="Token Address..." name="webSite" onChange={onTokenChange} autoComplete="off" className={classes.tokenInput} style={{ fontSize: '13px!important' }} />
-      <Button variant="contained" className={classes.button}>Go</Button>
+      <Button variant="contained" onClick={() => { inputHandle(token) }} className={classes.button}>Go</Button>
     </div>
   )
 }

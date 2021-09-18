@@ -28,5 +28,14 @@
     "address": "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
     "name": "Binance-Peg Ethereum Token",
     "symbol": "ETH"
+  },
+  "POOCOIN": {
+    "address": "0xB27ADAfFB9fEa1801459a1a81B17218288c097cc",
+    "name": "POOCOIN",
+    "symbol": "POOCOIN"
+  },
+  "BURNADDRESS": {
+    "address": "0x000000000000000000000000000000000000dead",
+    "name": "BURN"
   }
 }

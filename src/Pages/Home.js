@@ -4,11 +4,15 @@ import Input from "../Component/basic/input";
 import TokenSelect from "../Component/TokenSelect";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
+import { useHistory } from "react-router";
+import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles({
   root: {
     textAlign: "center",
     color: "black",
+  },
+  content: {
   },
   title: {
     fontSize: "2.5em",
@@ -52,11 +56,29 @@ const useStyles = makeStyles({
     height: "auto",
     padding: '20px',
     color: 'black',
+  },
+  tLink: {
+    color: 'blue',
+    fontSize: '1.5rem',
+    textDecoration: 'underline',
   }
 });
 
 export default function Home() {
   const classes = useStyles();
+  const history = useHistory();
+  const dispatch = useDispatch();
+
+  const inputHandle = (tokenAddress) => {
+    history.push(`/tokens/${tokenAddress}`);
+    dispatch({ type: 'SET_TOKENADDRESS', payload: tokenAddress })
+  };
+
+  const handleTokenPropsChange = (tokenInfo) => {
+    const tokenAddress = tokenInfo.address;
+    history.push(`/tokens/${tokenAddress}`);
+    dispatch({ type: 'SET_TOKENADDRESS', payload: tokenAddress })
+  };
 
   return (
     <div className={classes.root}>
@@ -66,21 +88,22 @@ export default function Home() {
           View price charts for any token in your wallet (binance smart chain)
         </div>
         <div className={classes.bottomText}>
-          Telegram public chat:
-          <a className={'textBlue fs5 linkText'}>
-            {" "}
-            http://t.me/poocointokenchat{" "}
+          Telegram public chat: &nbsp;
+          <a className={classes.tLink} target="_blank">
+            http://t.me/poocointokenchat
           </a>
         </div>
       </div>
-      <div className={classes.tokenSelect}>
-        <TokenSelect />
-      </div>
-      <div className={classes.rightSide}>
-        <div className={classes.inputWidth}>
-          <Input />
+      <div className={classes.content}>
+        <div className={classes.tokenSelect}>
+          <TokenSelect inputHandle={inputHandle} tokenProps={handleTokenPropsChange} />
         </div>
-        <Tab className={classes.tabContainer} />
+        <div className={classes.rightSide}>
+          <div className={classes.inputWidth}>
+            <Input />
+          </div>
+          <Tab className={classes.tabContainer} />
+        </div>
       </div>
     </div>
   );

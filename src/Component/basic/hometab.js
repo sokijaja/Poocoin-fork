@@ -1,14 +1,14 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import Box from "@material-ui/core/Box";
 import PropTypes from "prop-types";
 import Link from "@material-ui/core/Link";
 import TableTab from "../home/tabletab";
-import HistoryTable from "../multichart/history";
-import StarredTable from "../multichart/starred";
+import HistoryTable from "../home/history";
+import StarredTable from "../home/starred";
+import Wallet from "../home/wallet"
+import { useWallet } from "use-wallet";
 
 const useStyles = makeStyles({
   root: {
@@ -46,6 +46,8 @@ const useStyles = makeStyles({
     color: "#fff",
   },
   walletLink: {
+    textAlign: 'right',
+    cursor: 'pointer',
     // float: 'right'
   },
   promotedLink: {
@@ -79,6 +81,7 @@ TabPanel.propTypes = {
 
 export default function CenteredTabs() {
   const classes = useStyles();
+  const { account, connect, reset, status } = useWallet()
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -107,12 +110,17 @@ export default function CenteredTabs() {
         <TableTab className={classes.tableTab} />
       </TabPanel>
       <TabPanel value={value} index={1} className={classes.tabpanel}>
-        <div className={classes.walletLink}>
-          <Link to="">Restore Hidden</Link>
-        </div>
-        <div></div>
-        <div className={classes.walletContainer}>
-          Connect your wallet to see your tokens.
+        <div>
+          <div className={classes.walletLink}>
+            <Link to="">Restore Hidden</Link>
+          </div>
+          {account == null ?
+            <div className={classes.walletContainer}>
+              Connect your wallet to see your tokens.
+            </div>
+            :
+            <Wallet />
+          }
         </div>
       </TabPanel>
       <TabPanel value={value} index={2} className={classes.tabpanel}>
