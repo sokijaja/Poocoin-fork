@@ -7,7 +7,8 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import StarOutlineIcon from "@material-ui/icons/StarOutline";
+import { useSelector } from 'react-redux';
+import { getTransactionList } from "../../../PooCoin";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -118,6 +119,8 @@ const useStyles = makeStyles({
 
 export default function CustomizedTables() {
   const classes = useStyles();
+  const tokenAddress = useSelector((state) => state.tokenAddress)
+  getTransactionList();
 
   return (
     <TableContainer component={Paper}>

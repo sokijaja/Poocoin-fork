@@ -116,7 +116,7 @@ export default function CenteredTabs({ symbol, onSymbol }) {
               Connect your wallet to see your tokens.
             </div>
             :
-            <Wallet />
+            <Wallet onSymbol={onSymbol} />
           }
         </div>
       </TabPanel>

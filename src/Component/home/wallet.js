@@ -35,16 +35,6 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-const rows = Array.from(Array(1).keys()).map(item => {
-  return {
-    name: "THOREUM",
-    othername: "Thoreum",
-    id: "0x580de58c1bd593a43dadcf0a739d504621817c05",
-    tokenMoney: "0.0000",
-    balanceMoney: "0.00",
-    calories: '0.00'
-  }
-})
 const useStyles = makeStyles({
   table: {
     minWidth: 100,
@@ -100,12 +90,13 @@ const useStyles = makeStyles({
   }
 });
 
-export default function CustomizedTables(props) {
+export default function CustomizedTables() {
   const classes = useStyles();
   const [open, setModalOpen] = useState(false);
   const { account } = useWallet()
   const [walletOwnTokens, setWalletOwnToken] = useState();
   const [loading, setLoading] = useState(true);
+  const [reload, setReloading] = useState(1);
   const dispatch = useDispatch();
 
   const dispatchTokenInfo = (tokenAddress) => () => {
@@ -116,7 +107,7 @@ export default function CustomizedTables(props) {
   };
 
   useEffect(() => {
-    getOwnToken_wallet('0x3ef72Bc909A073b6F02353EDBcBbd98Fd40d44CC', setWalletOwnTokenData);
+    getOwnToken_wallet(account, setWalletOwnTokenData);
   })
 
   const setWalletOwnTokenData = (data) => {
@@ -132,13 +123,17 @@ export default function CustomizedTables(props) {
     setModalOpen(true);
   }
 
+  const reloadComponent = () => {
+    reload == 1 ? setReloading(0) : setReloading(1)
+  }
+
   const addWalletTokenData = walletTokenData => () => {
     checkLocalTokenInfo(walletTokenData.currency.address)
       ?
       removeLocalTokenInfo(walletTokenData.currency.address)
       :
       storeLocalTokenInfo(walletTokenData.currency.address, walletTokenData.currency.symbol, walletTokenData.value)
-    props.reloadData()
+    reloadComponent()
   }
 
   return (

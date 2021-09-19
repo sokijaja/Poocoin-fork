@@ -5,7 +5,7 @@ const Web3 = require("web3");
 const BigNumber = require("bignumber.js");
 import erc20_abi from '../config/abi/erc20.json';
 import router_abi from '../config/abi/router.json';
-import { getOwnToken } from './bitquery';
+import { getOwnToken, getPriceByTime, getTransactionListData } from './bitquery';
 import DefaultTokens from '../config/default_tokens.json';
 
 const topHolderAddress = "0x1ecd8ed7ffd03f38863f3b86ef3b9807a1999ff8";
@@ -779,4 +779,32 @@ export const getOwnToken_wallet = async (accountAddress, setWalletTokenData) => 
     }
   }
   setWalletTokenData(currencies);
+}
+
+export const getTransactionList = async (accountAddress, setWalletTokenData) => {
+  const transactionLists = await getTransactionListData();
+  console.log(transactionLists);
+  const transaction = [];
+  for (let i = 0; i < transactionLists.length; i++) {
+    if (transactionLists[i].buyCurrency.address == '0x580dE58c1BD593A43DaDcF0A739d504621817c05') {
+      console.log(transactionLists[i].any);
+      const tokenPrice = await getPriceByTime('0x580dE58c1BD593A43DaDcF0A739d504621817c05');
+      transaction.push({
+        "tokenNum": parseInt(transactionLists[i].buyAmount),
+        "tokenSymbol": transactionLists[i].buyCurrency.symbol,
+        "coinNum": parseFloat(transactionLists[i].sellAmount).toFixed(4),
+        "coinSymbol": transactionLists[i].sellCurrency.symbol,
+      })
+    } else {
+      console.log(new Date(transactionLists[i].any).toUTCString());
+      const tokenPrice = await getPriceByTime('0x580dE58c1BD593A43DaDcF0A739d504621817c05');
+      transaction.push({
+        "tokenNum": parseInt(transactionLists[i].sellAmount),
+        "tokenSymbol": transactionLists[i].sellCurrency.symbol,
+        "coinNum": parseFloat(transactionLists[i].buyAmount).toFixed(4),
+        "coinSymbol": transactionLists[i].buyCurrency.symbol,
+      })
+    }
+    console.log(transaction);
+  }
 }
