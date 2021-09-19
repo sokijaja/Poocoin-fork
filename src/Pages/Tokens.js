@@ -16,7 +16,7 @@ import Chart2 from "../Component/basic/chart";
 import TableTab from "../Component/home/centercontain/tabletab";
 import TokenSelect from "../Component/TokenSelect";
 import Select from "react-select";
-import { getAmountsOut, getRate } from "../PooCoin";
+import { getAmountsOut } from "../PooCoin";
 import { useHistory, useParams } from "react-router";
 import { getLpinfo } from "../actions";
 import { useSelector, useDispatch } from 'react-redux';

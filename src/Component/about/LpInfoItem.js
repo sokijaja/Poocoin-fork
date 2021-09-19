@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { getRate } from "../../PooCoin/index";
+import { getAmountsOut } from "../../PooCoin/index";
 import { getReserve } from "../../PooCoin/index";
 import { numberWithCommas } from "../../PooCoin/util";
+import DefaultToken from "../../config/default_tokens.json";
 
 const useStyles = makeStyles({
   root: {
@@ -27,7 +28,7 @@ export default function LpInfoItem(props) {
     getReserve(lpdataInfo.value[2], lpdataInfo.value[3]).then((reserveData) => {
       setLpInfo({ label: lpdataInfo.label, symbol: lpdataInfo.value[1], tokenAddress: lpdataInfo.value[0], lpAddress: lpdataInfo.value[2], reserve: reserveData });
     });
-    getRate(lpdataInfo.value[0], '0x55d398326f99059ff775485246999027b3197955', setPriceRate);
+    getAmountsOut(1, lpdataInfo.value[0], DefaultToken.USDT.address, setPriceRate);
   }, []);
 
   const lpMarketcap = numberWithCommas(parseInt(priceRate * lpInfo.reserve));
