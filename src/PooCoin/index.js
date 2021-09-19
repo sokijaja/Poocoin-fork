@@ -7,6 +7,7 @@ import erc20_abi from '../config/abi/erc20.json';
 import router_abi from '../config/abi/router.json';
 import { getOwnToken, getPriceByTime, getTransactionListData } from './bitquery';
 import DefaultTokens from '../config/default_tokens.json';
+import { numberWithCommas } from './util';
 
 const topHolderAddress = "0x1ecd8ed7ffd03f38863f3b86ef3b9807a1999ff8";
 const profileAddress = "0xba90d15d6384e8223bb4d96fe9efb0f06194fb39";
@@ -829,30 +830,60 @@ export const getOwnToken_wallet = async (accountAddress, setWalletTokenData) => 
   setWalletTokenData(currencies);
 }
 
-export const getTransactionList = async (accountAddress, setWalletTokenData) => {
-  const transactionLists = await getTransactionListData();
-  console.log(transactionLists);
-  const transaction = [];
-  for (let i = 0; i < transactionLists.length; i++) {
-    if (transactionLists[i].buyCurrency.address == '0x580dE58c1BD593A43DaDcF0A739d504621817c05') {
-      console.log(transactionLists[i].any);
-      const tokenPrice = await getPriceByTime('0x580dE58c1BD593A43DaDcF0A739d504621817c05');
-      transaction.push({
-        "tokenNum": parseInt(transactionLists[i].buyAmount),
-        "tokenSymbol": transactionLists[i].buyCurrency.symbol,
-        "coinNum": parseFloat(transactionLists[i].sellAmount).toFixed(4),
-        "coinSymbol": transactionLists[i].sellCurrency.symbol,
-      })
-    } else {
-      console.log(new Date(transactionLists[i].any).toUTCString());
-      const tokenPrice = await getPriceByTime('0x580dE58c1BD593A43DaDcF0A739d504621817c05');
-      transaction.push({
-        "tokenNum": parseInt(transactionLists[i].sellAmount),
-        "tokenSymbol": transactionLists[i].sellCurrency.symbol,
-        "coinNum": parseFloat(transactionLists[i].buyAmount).toFixed(4),
-        "coinSymbol": transactionLists[i].buyCurrency.symbol,
-      })
+export const getTransactionList = async (tokenAddress, setTransactionListData) => {
+  if (tokenAddress != null) {
+    const transactionLists = await getTransactionListData(tokenAddress);
+    const transaction = [];
+    for (let i = 0; i < transactionLists.length; i++) {
+      try {
+        let time = new Date(transactionLists[i].any);
+        let time_str = time.toISOString().split('.')
+        let hour = time.getHours()
+        let minute = time.getMinutes()
+        let second = time.getSeconds()
+
+        var sAMPM = "AM";
+        var iHourCheck = parseInt(hour);
+        if (iHourCheck > 12) {
+          sAMPM = "PM";
+          hour = iHourCheck - 12;
+        }
+        else if (iHourCheck === 0) {
+          hour = "12";
+        }
+        const transactionTime = hour + ":" + minute + ":" + second
+        const tokenPrice = await getPriceByTime(tokenAddress, time_str[0]);
+        if (transactionLists[i].buyCurrency.address == tokenAddress.toLowerCase()) {
+          transaction.push({
+            "tokenNum": numberWithCommas(parseInt(transactionLists[i].buyAmount)),
+            "tokenSymbol": transactionLists[i].buyCurrency.symbol,
+            "coinNum": transactionLists[i].sellAmount,
+            "coinSymbol": transactionLists[i].sellCurrency.symbol,
+            "tokenPrice": tokenPrice,
+            "transactionTime": transactionTime,
+            "AMPM": sAMPM,
+            "coinPrice": parseInt(transactionLists[i].buyAmount) * tokenPrice,
+            "status": "buy",
+            "txHash": transactionLists[i].transaction.hash
+          })
+        } else if (transactionLists[i].sellCurrency.address == tokenAddress.toLowerCase()) {
+          transaction.push({
+            "tokenNum": numberWithCommas(parseInt(transactionLists[i].sellAmount)),
+            "tokenSymbol": transactionLists[i].sellCurrency.symbol,
+            "coinNum": transactionLists[i].buyAmount,
+            "coinSymbol": transactionLists[i].buyCurrency.symbol,
+            "tokenPrice": tokenPrice,
+            "transactionTime": transactionTime,
+            "AMPM": sAMPM,
+            "coinPrice": parseInt(transactionLists[i].sellAmount) * tokenPrice,
+            "status": "sell",
+            "txHash": transactionLists[i].transaction.hash
+          })
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
-    console.log(transaction);
+    setTransactionListData(transaction)
   }
 }

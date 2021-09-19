@@ -1,3 +1,5 @@
+import defaultToken from '../config/default_tokens.json'
+
 export const getOwnToken = async (accountAddress) => {
   const QUERY = `{
   ethereum(network: bsc) {
@@ -37,9 +39,9 @@ export const getTransactionListData = async (tokenAddress) => {
   const QUERY = `{
     ethereum(network: bsc) {
       dexTrades(
-        options: {limit: 10, desc: "block.height"}
+        options: {limit: 20, desc: "block.height"}
         exchangeName: {in: ["Pancake", "Pancake v2"]}
-        any: {baseCurrency: {is: "0x580dE58c1BD593A43DaDcF0A739d504621817c05"}}
+        any: {baseCurrency: {is: "${tokenAddress}"}}
       ) {
         transaction {
           hash
@@ -81,15 +83,15 @@ export const getTransactionListData = async (tokenAddress) => {
   return currency;
 }
 
-export const getPriceByTime = async (tokenAddress) => {
+export const getPriceByTime = async (tokenAddress, time) => {
   const QUERY = `{
     ethereum(network: bsc) {
       dexTrades(
         options: {desc: ["block.height", "tradeIndex"], limit: 1}
         exchangeName: {in: ["Pancake", "Pancake v2"]}
-        baseCurrency: {is: "0x580dE58c1BD593A43DaDcF0A739d504621817c05"}
-        quoteCurrency: {is: "0xe9e7cea3dedca5984780bafc599bd69add087d56"}
-        date: {since: "2019-07-17T35:04+00:00"}
+        baseCurrency: {is: "${tokenAddress}"}
+        quoteCurrency: {is: "${defaultToken.BUSD.address}"}
+        time: {before: "${time}"}
       ) {
         transaction {
           hash
