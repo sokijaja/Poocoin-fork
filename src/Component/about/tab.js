@@ -85,7 +85,7 @@ export default function CenteredTabs(props) {
   const setTotalSupply = async () => {
     if (currentTokenAddress != undefined) {
       let totalSupplyData = await getTotalSupply(currentTokenAddress)
-      setTotal(totalSupplyData);
+      setTotal(parseInt(totalSupplyData));
     }
   }
   const [value, setValue] = React.useState(0);

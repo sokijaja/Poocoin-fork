@@ -16,7 +16,7 @@ import Chart2 from "../Component/basic/chart";
 import TableTab from "../Component/home/centercontain/tabletab";
 import TokenSelect from "../Component/TokenSelect";
 import Select from "react-select";
-import { getAmountsOut, getRate } from "../PooCoin";
+import { getAmountsOut } from "../PooCoin";
 import { useHistory, useParams } from "react-router";
 import { getLpinfo } from "../actions";
 import { useSelector, useDispatch } from 'react-redux';
@@ -100,7 +100,7 @@ export default function Tokens(props) {
   const [currentTokenInfo, setCurrentTokenInfo] = useState({});
   const [showTrade, setShowTrade] = useState(false);
   const [selectData, setSelectData] = useState([]);
-  const [convertSymbol, setConvertSymbol] = useState('BNB');
+  const [coinAddress, setCoinAddress] = useState(DefaultTokens.WBNB.address);
 
   const tokenAddress = useSelector((state) => state.tokenAddress)
   const dispatch = useDispatch();
@@ -124,7 +124,7 @@ export default function Tokens(props) {
 
             let selectdata_json = {};
             selectdata_json["label"] = "Pc v2 " + data.lpInfos[idx].tokenSymbol0 + "/" + data.lpInfos[idx].tokenSymbol1;
-            selectdata_json["value"] = data.lpInfos[idx].tokenSymbol1;
+            selectdata_json["value"] = data.lpInfos[idx].token1;
             selectOptionData.push(selectdata_json)
           } else {
             let combined_json = {};
@@ -135,7 +135,7 @@ export default function Tokens(props) {
 
             let selectdata_json = {};
             selectdata_json["label"] = "Pc v2 " + data.lpInfos[idx].tokenSymbol1 + "/" + data.lpInfos[idx].tokenSymbol0;
-            selectdata_json["value"] = data.lpInfos[idx].tokenSymbol0;
+            selectdata_json["value"] = data.lpInfos[idx].token0;
             selectOptionData.push(selectdata_json)
           }
         }
@@ -147,67 +147,12 @@ export default function Tokens(props) {
     //Get Lpaddress from current token address and BUSD token address
     getAmountsOut(1, tokenAddress, DefaultTokens.BUSD.address, setPriceRateData);
   }, [tokenAddress])
-
   const handleChange = () => {
     setShowMode(!showMode);
   };
   const handleChangeLeft = () => {
     setShowMode(!showMode);
   };
-
-  const QUERY = ` 
-{
-  ethereum(network: bsc) {
-    dexTrades(
-      options: {limit: 100, asc: "timeInterval.minute"}
-      date: {since: "2021-09-10"}
-      exchangeName: {is: "Uniswap"}
-      baseCurrency: {is: "0x910985ffa7101bf5801dd2e91555c465efd9aab3"}
-      quoteCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}
-    ) {
-      timeInterval {
-        minute(count: 5)
-      }
-      baseCurrency {
-        symbol
-        address
-      }
-      baseAmount
-      quoteCurrency {
-        symbol
-        address
-      }
-      quoteAmount
-      trades: count
-      quotePrice
-      maximum_price: quotePrice(calculate: maximum)
-      minimum_price: quotePrice(calculate: minimum)
-      open_price: minimum(of: block, get: quote_price)
-      close_price: maximum(of: block, get: quote_price)
-    }
-  }
-}
-`;
-
-  // -------- Endpoint ----------------------
-  const endpoint = "https://graphql.bitquery.io/";
-
-  // Function which fetches the data from the API
-  async function fetchData() {
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        query: QUERY
-      })
-    });
-
-    const data = await response.json();
-    console.log(data);
-  }
-  fetchData();
 
   const handleTokenPropsChange = (tokenInfo) => {
     const tokenAddress = tokenInfo.address;
@@ -231,8 +176,7 @@ export default function Tokens(props) {
     }
   }
   const tokenSelect = (event) => {
-    console.log(event.value);
-    setConvertSymbol(event.value)
+    setCoinAddress(event.value)
   };
   let centerContainer = (
     <div>
@@ -302,7 +246,7 @@ export default function Tokens(props) {
       <Grid xs={12} style={{ marginTop: 20 }} item>
         <div>{tradeContent}</div>
         <div className={classes.chartPan} >
-          <Chart2 tokenAddress={tokenAddress} convertSymbol={convertSymbol} height="500px" />
+          <Chart2 tokenAddress={tokenAddress} coinAddress={coinAddress} height="500px" />
         </div>
         <br />
         <TableTab />

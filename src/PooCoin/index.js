@@ -5,7 +5,9 @@ const Web3 = require("web3");
 const BigNumber = require("bignumber.js");
 import erc20_abi from '../config/abi/erc20.json';
 import router_abi from '../config/abi/router.json';
-import default_tokens from '../config/default_tokens.json';
+import { getOwnToken, getPriceByTime, getTransactionListData } from './bitquery';
+import DefaultTokens from '../config/default_tokens.json';
+import { numberWithCommas } from './util';
 
 const topHolderAddress = "0x1ecd8ed7ffd03f38863f3b86ef3b9807a1999ff8";
 const profileAddress = "0xba90d15d6384e8223bb4d96fe9efb0f06194fb39";
@@ -90,13 +92,13 @@ const pancakeswapRouterContract = new web3.eth.Contract(router_abi, pancakeswap_
 // get Amount out
 export const getAmountsOut = async (amount, tokenIn, tokenOut, updateAmountsOut) => {
   try {
-    
-    if (tokenIn == default_tokens.BNB.address) {
-      tokenIn = default_tokens.WBNB.address;
+
+    if (tokenIn == DefaultTokens.BNB.address) {
+      tokenIn = DefaultTokens.WBNB.address;
     }
 
-    if (tokenOut == default_tokens.BNB.address) {
-      tokenOut = default_tokens.WBNB.address;
+    if (tokenOut == DefaultTokens.BNB.address) {
+      tokenOut = DefaultTokens.WBNB.address;
     }
 
     const tokenInContract = new web3.eth.Contract(erc20_abi, tokenIn);
@@ -659,10 +661,10 @@ export const bnbBalance = (wallet_address, setBnbBalanceData) => {
     }).catch(err => {
       console.log(err);
     })
-  }catch(e) {
+  } catch (e) {
     console.log(e);
   }
-  
+
 }
 
 export const tokenSwap = async (ethereum, amount, tokenIn, tokenOut, account, miniumAmountOut, callback) => {
@@ -670,13 +672,13 @@ export const tokenSwap = async (ethereum, amount, tokenIn, tokenOut, account, mi
     var mweb3 = new Web3(ethereum);
     var contract = new mweb3.eth.Contract(router_abi, pancakeswap_router);
     contract.setProvider(ethereum);
-    
-    if (tokenIn == default_tokens.BNB.address) {
-      tokenIn = default_tokens.WBNB.address;
+
+    if (tokenIn == DefaultTokens.BNB.address) {
+      tokenIn = DefaultTokens.WBNB.address;
     }
 
-    if (tokenOut == default_tokens.BNB.address) {
-      tokenOut = default_tokens.WBNB.address;
+    if (tokenOut == DefaultTokens.BNB.address) {
+      tokenOut = DefaultTokens.WBNB.address;
     }
 
     const tokenInContract = new web3.eth.Contract(erc20_abi, tokenIn);
@@ -687,27 +689,27 @@ export const tokenSwap = async (ethereum, amount, tokenIn, tokenOut, account, mi
     const amount_in = toBigNum(amount, tokenIn_decimals);
     const amount_out = parseInt(toBigNum(miniumAmountOut, tokenOut_decimals)).toString();
 
-     console.log(amount_out);
-    if (tokenIn == default_tokens.WBNB.address) {
+    console.log(amount_out);
+    if (tokenIn == DefaultTokens.WBNB.address) {
       var tx = await contract.methods.swapExactETHForTokens(amount_out, [tokenIn, tokenOut], account, Date.now() + 1000 * 60 * 10)
-      .send({
-        from: account,
-        value: amount_in
-      });
-    } else if (tokenOut == default_tokens.WBNB.address){
+        .send({
+          from: account,
+          value: amount_in
+        });
+    } else if (tokenOut == DefaultTokens.WBNB.address) {
       var tx = await contract.methods.swapExactTokensForETH(amount_in, amount_out, [tokenIn, tokenOut], account, Date.now() + 1000 * 60 * 10)
-      .send({
-        from: account
-      });
+        .send({
+          from: account
+        });
     } else {
       var tx = await contract.methods.swapExactTokensForTokens(amount_in, amount_out, [tokenIn, tokenOut], account, Date.now() + 1000 * 60 * 10)
-      .send({
-        from: account
-      });
+        .send({
+          from: account
+        });
       console.log(tx);
       callback(tx);
     }
-    
+
   } catch (err) {
     console.log(err);
   }
@@ -757,11 +759,6 @@ const toBigNum = (num, decimals) => {
   return new BigNumber(num).times(new BigNumber(10).pow(new BigNumber(decimals)));
 }
 
-export const getWalletToken = async (address, apiKey) => {
-  fetch(`https://bscscan.com/token/0x580de58c1bd593a43dadcf0a739d504621817c05`).then((e) => {
-  })
-}
-
 export const getBuyersData = async (tokenAddress, currentTimeInfo, previousTimeInfo, setBuyersValues) => {
   const currentDate = currentTimeInfo.year + "-" + currentTimeInfo.fullmonth + "-" + currentTimeInfo.day + "T" + currentTimeInfo.fullhour + ":" + currentTimeInfo.minute + ":00.000Z"
 
@@ -785,8 +782,120 @@ export const getSellersData = async (tokenAddress, currentTimeInfo, previousTime
 }
 
 export const getWalletData = async (tokenAddress, account, setWalletValues) => {
-  await fetch(`https://api1.poocoin.app/wallet-tx?address=${tokenAddress}&wallet=${account}`)
-    .then(res => res.json())
-    .then(data => { setWalletValues(data) })
-    .catch(err => console.log(err))
+  // await fetch(`https://api1.poocoin.app/wallet-tx?address=${tokenAddress}&wallet=${account}`)
+  //   .then(res => res.json())
+  //   .then(data => { setWalletValues(data) })
+  //   .catch(err => console.log(err))
+  const data = await fetch(`https://api1.poocoin.app/wallet-tx?address=0x580dE58c1BD593A43DaDcF0A739d504621817c05&wallet=0x1660cd15544fdf176677079a0675c8c59f020e84`)
+}
+
+export const getOwnToken_wallet = async (accountAddress, setWalletTokenData) => {
+  const currencies = await getOwnToken(accountAddress);
+  for (let i = 0; i < currencies.length; i++) {
+    const currencyAddress = currencies[i].currency.address;
+    if (currencyAddress != '-') {
+      try {
+        //own token contract
+        const tokenIn_decimals = await getDecimals(currencyAddress)
+        //BUSD token contract
+        const tokenOut_decimals = await getDecimals(DefaultTokens.USDT.address)
+
+        const amount_in = toBigNum(1, tokenIn_decimals);
+        const amount_out = await pancakeswapRouterContract.methods
+          .getAmountsOut(amount_in, [currencyAddress, DefaultTokens.USDT.address])
+          .call();
+        const tokenRate = toHuman(amount_out[1], tokenOut_decimals)
+        currencies[i]['rate'] = tokenRate.toFixed(4);
+
+      } catch (err) {
+        const tokenRate = 0;
+        currencies[i]['rate'] = tokenRate.toFixed(4);
+        continue;
+      }
+    } else {
+      //own token contract
+      const tokenIn_decimals = await getDecimals(DefaultTokens.WBNB.address)
+      //BUSD token contract
+      const tokenOut_decimals = await getDecimals(DefaultTokens.USDT.address)
+
+      const amount_in = toBigNum(1, tokenIn_decimals);
+      const amount_out = await pancakeswapRouterContract.methods
+        .getAmountsOut(amount_in, [DefaultTokens.WBNB.address, DefaultTokens.USDT.address])
+        .call();
+      const tokenRate = toHuman(amount_out[1], tokenOut_decimals)
+
+      currencies[i]['rate'] = tokenRate.toFixed(4);
+      currencies[i].currency['address'] = DefaultTokens.WBNB.address;
+    }
+  }
+  setWalletTokenData(currencies);
+}
+
+export const getTransactionList = async (tokenAddress, setTransactionListData) => {
+  if (tokenAddress != null) {
+    const transactionLists = await getTransactionListData(tokenAddress);
+    const transaction = [];
+    for (let i = 0; i < transactionLists.length; i++) {
+      try {
+        let time = new Date(transactionLists[i].any);
+        let time_str = time.toISOString().split('.')
+        let hour = time.getHours()
+        let minute = time.getMinutes()
+        let second = time.getSeconds()
+
+        var sAMPM = "AM";
+        var iHourCheck = parseInt(hour);
+        if (iHourCheck > 12) {
+          sAMPM = "PM";
+          hour = iHourCheck - 12;
+        }
+        else if (iHourCheck === 0) {
+          hour = "12";
+        }
+        const transactionTime = hour + ":" + minute + ":" + second
+
+        const tokenPrice = await getPriceByTime(tokenAddress, time_str[0]);
+
+        let exchangeName = transactionLists[i].exchange.fullName;
+        if (exchangeName == "Pancake") {
+          exchangeName = "Pc v1"
+        } else if (exchangeName == "Pancake v2") {
+          exchangeName = "Pc v2"
+        }
+
+        if (transactionLists[i].buyCurrency.address == tokenAddress.toLowerCase()) {
+          transaction.push({
+            "tokenNum": numberWithCommas(parseInt(transactionLists[i].buyAmount)),
+            "tokenSymbol": transactionLists[i].buyCurrency.symbol,
+            "coinNum": transactionLists[i].sellAmount,
+            "coinSymbol": transactionLists[i].sellCurrency.symbol,
+            "tokenPrice": tokenPrice,
+            "transactionTime": transactionTime,
+            "AMPM": sAMPM,
+            "coinPrice": parseInt(transactionLists[i].buyAmount) * tokenPrice,
+            "status": "buy",
+            "txHash": transactionLists[i].transaction.hash,
+            "exchangeName": exchangeName
+          })
+        } else if (transactionLists[i].sellCurrency.address == tokenAddress.toLowerCase()) {
+          transaction.push({
+            "tokenNum": numberWithCommas(parseInt(transactionLists[i].sellAmount)),
+            "tokenSymbol": transactionLists[i].sellCurrency.symbol,
+            "coinNum": transactionLists[i].buyAmount,
+            "coinSymbol": transactionLists[i].buyCurrency.symbol,
+            "tokenPrice": tokenPrice,
+            "transactionTime": transactionTime,
+            "AMPM": sAMPM,
+            "coinPrice": parseInt(transactionLists[i].sellAmount) * tokenPrice,
+            "status": "sell",
+            "txHash": transactionLists[i].transaction.hash,
+            "exchangeName": exchangeName
+          })
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    setTransactionListData(transaction)
+  }
 }

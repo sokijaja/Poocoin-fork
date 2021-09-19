@@ -213,7 +213,9 @@ export default function CustomizedTables() {
     useEffect(() => {
         getSellersData(tokenAddress, currentTimeInfo, previousTimeInfo, setSellersValues);
     }, []);
+
     const currentDate = currentTimeInfo.month + "/" + currentTimeInfo.day + "/" + currentTimeInfo.year + "," + currentTimeInfo.hour + ":" + currentTimeInfo.minute + " " + currentTimeInfo.ap;
+
     const previousDate = previousTimeInfo.month + "/" + previousTimeInfo.day + "/" + previousTimeInfo.year + "," + previousTimeInfo.hour + ":" + previousTimeInfo.minute + " " + previousTimeInfo.ap;
 
     return (

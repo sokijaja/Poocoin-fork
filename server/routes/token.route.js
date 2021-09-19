@@ -36,18 +36,18 @@ router.get("/getTokenName", async (req, res) => {
 });
 
 //Get tokenName from current token address
-router.get("/getName", async (req, res) => {
+router.get("/getSymbol", async (req, res) => {
   try {
     let query = req.query.tokenAddress;
-    let tokenName;
+    let symbolName;
     if (query.length > 1) {
-      tokenName = await tokenSchema
+      symbolName = await tokenSchema
         .find({
           token: { $regex: query, $options: "i" },
         })
-        .select("name")
+        .select("symbol")
         .limit(50);
-      res.json(tokenName);
+      res.json(symbolName);
       // console.log(tokenName);
     }
   } catch (err) {
@@ -141,15 +141,16 @@ router.get("/getLpinfo", async (req, res) => {
 });
 
 //Get Lpaddress from current token address and BNB token address
-router.get("/getBNBLpaddress", async (req, res) => {
+router.get("/getLpaddress", async (req, res) => {
   try {
     let tokenAddress = req.query.tokenAddress;
+    let coinAddress = req.query.coinAddress;
     let lpaddress;
     if (tokenAddress != null) {
       lpaddress = await lpSchema.findOne({
         $or: [
-          { $and: [{ token0: tokenAddress }, { token1: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c' }] },
-          { $and: [{ token1: tokenAddress }, { token0: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c' }] },
+          { $and: [{ token0: tokenAddress }, { token1: coinAddress }] },
+          { $and: [{ token1: tokenAddress }, { token0: coinAddress }] },
         ],
       });
       res.json(lpaddress.lp_address);

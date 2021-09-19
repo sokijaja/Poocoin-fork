@@ -1,6 +1,6 @@
 import historyProvider from './historyProvider'
-import { getTokenName } from '../../../../actions';
-import { getBNBLpaddress } from '../../../../actions';
+import { getSymbolName } from '../../../../actions';
+import { getLpaddress } from '../../../../actions';
 const supportedResolutions = ["1", "3", "5", "15", "30", "60", "120", "240", "D"]
 
 const config = {
@@ -17,13 +17,20 @@ export default {
 	},
 	resolveSymbol: async (symbolName, onSymbolResolvedCallback, onResolveErrorCallback) => {
 		let newSymbolName;
-		let tokenAddress;
-		var split_data = symbolName.split('/')
+		let lpAddress;
+		var split_data = symbolName.split('/')	//description tokenaddress:tokenaddress/coinaddress or tokenname/coinaddress
+
 		if (!split_data[0].includes(':')) {
-			let response_ = await getBNBLpaddress(split_data[0]);
-			tokenAddress = response_.data;
-			let response = await getTokenName(split_data[0])
-			newSymbolName = response.data[0].name + '/' + split_data[1];
+			let response_ = await getLpaddress(split_data[0], split_data[1]);
+			lpAddress = response_.data;
+			//get coinsymbol from symbolName (tokenaddress:tokenaddress/coinaddress)
+			var coinSymbol_res = await getSymbolName(split_data[1]);
+			var coinSymbol = coinSymbol_res.data[0].symbol;
+			if (coinSymbol == "WBNB") {
+				coinSymbol = "BNB"
+			}
+			let response = await getSymbolName(split_data[0])
+			newSymbolName = response.data[0].symbol + '/' + coinSymbol;
 		} else {
 			newSymbolName = symbolName;
 		}
@@ -34,7 +41,7 @@ export default {
 			type: 'crypto',
 			session: '24x7',
 			timezone: 'Etc/UTC',
-			ticker: tokenAddress,
+			ticker: lpAddress,
 			exchange: new_split_data[0],
 			minmov: 1,
 			pricescale: 100000000,

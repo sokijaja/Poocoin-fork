@@ -67,6 +67,8 @@ const useStyles = makeStyles((theme) => ({
     color: 'white',
   },
   updown: {
+    visibility: 'hidden',
+
     borderWidth: 0,
     margin: 15,
     marginBottom: 0,
@@ -149,7 +151,7 @@ function getModalStyle() {
 }
 
 export default function Trade() {
-  
+
   const classes = useStyles();
 
   // select swap version
@@ -236,7 +238,7 @@ export default function Trade() {
   // update amounts out callback
   const updateAmountsOut = (amount_out) => {
     setToAmount(amount_out);
-    setMinimumReceived(amount_out * (100 - slippage)  / 100);
+    setMinimumReceived(amount_out * (100 - slippage) / 100);
     const from_price = amount_out / fromAmount;
     setPrice0(from_price);
     setPrice1(1 / from_price);
@@ -262,18 +264,18 @@ export default function Trade() {
   }
 
   const onFromTokenChange = async (token, token_symbol) => {
-    
-    setFromToken(token); 
+
+    setFromToken(token);
     setFromTokenSymbol(token_symbol);
 
     if (token == DefaultTokens.BNB.address)
       bnbBalance(account, setFromTokenBalanceData);
     else
-      tokenBalance(account, token, setFromTokenBalanceData); 
+      tokenBalance(account, token, setFromTokenBalanceData);
   }
- 
+
   const onToTokenChange = async (token, token_symbol) => {
-    setToToken(token); 
+    setToToken(token);
     setToTokenSymbol(token_symbol);
 
     if (token == DefaultTokens.BNB.address)
@@ -306,7 +308,7 @@ export default function Trade() {
   const swapcallback = () => {
 
   }
-  
+
   // approve token
   const onApprove = () => {
     approveToken(ethereum, fromToken, fromAmount, account);
@@ -319,7 +321,7 @@ export default function Trade() {
 
   const requireApprove = () => {
     if (account) {
-        return fromAmount > allowance || allowance === 0;
+      return fromAmount > allowance || allowance === 0;
     }
     return false;
   }
@@ -455,13 +457,13 @@ export default function Trade() {
         />
         {
           swapInfoEnable ?
-          <Container className={classes.swapInfo}>
-            <Typography className={classes.swapInfoText}>Minimum Received: {minimumReceived.toFixed(8)}</Typography>
-            <Typography className={classes.swapInfoText}>Price Impact: {priceImpact}</Typography>
-            <Typography className={classes.swapInfoText}>Price: {parseFloat(price0).toFixed(8)} {toTokenSymbol}/{fromTokenSymbol}</Typography>
-            <Typography className={classes.swapInfoText}>Price: {parseFloat(price1).toFixed(8)} {fromTokenSymbol}/{toTokenSymbol}</Typography>
-          </Container> 
-          : ""
+            <Container className={classes.swapInfo}>
+              <Typography className={classes.swapInfoText}>Minimum Received: {minimumReceived.toFixed(8)}</Typography>
+              <Typography className={classes.swapInfoText}>Price Impact: {priceImpact}</Typography>
+              <Typography className={classes.swapInfoText}>Price: {parseFloat(price0).toFixed(8)} {toTokenSymbol}/{fromTokenSymbol}</Typography>
+              <Typography className={classes.swapInfoText}>Price: {parseFloat(price1).toFixed(8)} {fromTokenSymbol}/{toTokenSymbol}</Typography>
+            </Container>
+            : ""
         }
         <div className={classes.label}>
           {!account && <span>Connect your wallet</span>}

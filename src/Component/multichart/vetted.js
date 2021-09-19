@@ -8,10 +8,8 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import StarOutlineIcon from "@material-ui/icons/StarOutline";
 import StarIcon from '@material-ui/icons/Star';
-import { Link } from "react-router-dom";
 import { vettedValues } from "../../PooCoin/index.js";
 import { CircularProgress } from "@material-ui/core";
-import { useDispatch } from 'react-redux'
 import { storeLocalTokenInfo, checkLocalTokenInfo, removeLocalTokenInfo } from '../../PooCoin/util';
 import { storeLocalMultichart } from "../../PooCoin/util";
 

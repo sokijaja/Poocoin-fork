@@ -6,8 +6,8 @@ import Collapse from '@material-ui/core/Collapse';
 import CloseIcon from '@material-ui/icons/Close';
 import Chart from '../basic/chart';
 import '../../css/multichart.css';
-import { getBNBLpaddress } from '../../actions';
 import { initLocalMultichart } from '../../PooCoin/util';
+import DefaultTokens from "../../config/default_tokens.json"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,7 +54,7 @@ export default function TransitionAlerts({ tokenAddress, index }) {
 
   if (tokenAddress != null) {
     chart = (
-      <Chart tokenAddress={tokenAddress} height="280px" />
+      <Chart tokenAddress={tokenAddress} coinAddress={DefaultTokens.WBNB.address} height="280px" />
     );
   }
 

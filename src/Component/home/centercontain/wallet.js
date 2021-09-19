@@ -82,6 +82,7 @@ const useStyles = makeStyles({
   title: {
     color: 'white',
     textAlign: 'left',
+    marginLeft: '20px',
   },
 });
 
