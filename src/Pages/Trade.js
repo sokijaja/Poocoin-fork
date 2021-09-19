@@ -253,8 +253,10 @@ export default function Trade() {
     if (ethereum && account && from_token_address)
       getAllowance(ethereum, account, from_token_address, updateAllowance);
 
+    updateAmountsOut(0);
+    updateTokenPrice(0);
     if (fromAmount && fromAmount > 0 && from_token_address && toToken) {
-      getAmountsOut(fromAmount, from_token_address, toToken, account, updateAmountsOut);
+      getAmountsOut(fromAmount, from_token_address, toToken, updateAmountsOut);
       getRate(from_token_address, toToken, updateTokenPrice);
     }
   }
@@ -312,7 +314,7 @@ export default function Trade() {
 
   // swap tokens
   const onSwap = () => {
-    tokenSwap(ethereum, fromAmount, fromToken, toToken, account, slippage, swapcallback);
+    tokenSwap(ethereum, fromAmount, fromToken, toToken, account, minimumReceived, swapcallback);
   }
 
   const requireApprove = () => {
@@ -340,6 +342,9 @@ export default function Trade() {
   const [modalOpen, setModalOpen] = React.useState(false);
 
   const [modalStyle] = React.useState(getModalStyle);
+
+  const swapInfoEnable = minimumReceived > 0 && fromAmount && fromAmount > 0 && fromToken && toToken ? true : false;
+  const swapButtonDisable = (fromAmount < fromBalance) && swapInfoEnable ? false : true;
 
   const handleOpen = () => {
     setModalOpen(true);
@@ -439,7 +444,7 @@ export default function Trade() {
           id="standard-start-adornment"
           InputProps={{
             disableUnderline: true,
-            value: toAmount > 0 ? toAmount.toFixed(8) : toAmount,
+            value: toAmount > 0 ? parseFloat(toAmount).toFixed(8) : toAmount,
             placeholder: '0.0',
             onChange: onChangeToAmount,
             endAdornment:
@@ -449,12 +454,12 @@ export default function Trade() {
           }}
         />
         {
-          fromAmount && fromAmount > 0 && fromToken && toToken ?
+          swapInfoEnable ?
           <Container className={classes.swapInfo}>
             <Typography className={classes.swapInfoText}>Minimum Received: {minimumReceived.toFixed(8)}</Typography>
             <Typography className={classes.swapInfoText}>Price Impact: {priceImpact}</Typography>
-            <Typography className={classes.swapInfoText}>Price: {price0.toFixed(8)} {toTokenSymbol}/{fromTokenSymbol}</Typography>
-            <Typography className={classes.swapInfoText}>Price: {price1.toFixed(8)} {fromTokenSymbol}/{toTokenSymbol}</Typography>
+            <Typography className={classes.swapInfoText}>Price: {parseFloat(price0).toFixed(8)} {toTokenSymbol}/{fromTokenSymbol}</Typography>
+            <Typography className={classes.swapInfoText}>Price: {parseFloat(price1).toFixed(8)} {fromTokenSymbol}/{toTokenSymbol}</Typography>
           </Container> 
           : ""
         }
@@ -470,7 +475,7 @@ export default function Trade() {
           {
             account && !requireApprove() && <Button
               variant={"contained"}
-              disabled={fromToken && toToken && fromAmount ? false : true}
+              disabled={swapButtonDisable}
               className={classes.swapBtn}
               onClick={() => onSwap()}
             >Swap</Button>

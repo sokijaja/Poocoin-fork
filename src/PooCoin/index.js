@@ -19,12 +19,15 @@ const topics =
 // pancakeswap v2 router addresss
 const pancakeswap_router = "0x10ED43C718714eb63d5aA57B78B54704E256024E";
 
-// const provider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed.binance.org");
-const provider = new ethers.providers.WebSocketProvider(
-  "wss://bsc-ws-node.nariox.org:443"
-);
+const provider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed.binance.org");
+// const provider = new ethers.providers.WebSocketProvider(
+//   "wss://bsc-ws-node.nariox.org:443"
+// );
+// var web3 = new Web3(
+//   new Web3.providers.WebsocketProvider("wss://bsc-ws-node.nariox.org:443")
+// );
 var web3 = new Web3(
-  new Web3.providers.WebsocketProvider("wss://bsc-ws-node.nariox.org:443")
+  new Web3.providers.HttpProvider("https://bsc-dataseed.binance.org")
 );
 
 const abi = [
@@ -88,6 +91,15 @@ const pancakeswapRouterContract = new web3.eth.Contract(router_abi, pancakeswap_
 // get Amount out
 export const getAmountsOut = async (amount, tokenIn, tokenOut, updateAmountsOut) => {
   try {
+
+    if (tokenIn == DefaultTokens.BNB.address) {
+      tokenIn = DefaultTokens.WBNB.address;
+    }
+
+    if (tokenOut == DefaultTokens.BNB.address) {
+      tokenOut = DefaultTokens.WBNB.address;
+    }
+
     const tokenInContract = new web3.eth.Contract(erc20_abi, tokenIn);
     const tokenIn_decimals = await tokenInContract.methods.decimals().call();
     const tokenOutContract = new web3.eth.Contract(erc20_abi, tokenOut);
@@ -642,25 +654,61 @@ export const tokenBalance = async (wallet_address, token_address, setTokenBalanc
 
 export const bnbBalance = (wallet_address, setBnbBalanceData) => {
 
-  web3.eth.getBalance(wallet_address).then(balance => {
-    setBnbBalanceData(web3.utils.fromWei(balance.toString(), "ether"));
-  }).catch(err => {
-    console.log(err);
-  })
+  try {
+    web3.eth.getBalance(wallet_address).then(balance => {
+      setBnbBalanceData(web3.utils.fromWei(balance.toString(), "ether"));
+    }).catch(err => {
+      console.log(err);
+    })
+  } catch (e) {
+    console.log(e);
+  }
+
 }
 
-export const tokenSwap = async (ethereum, amount, tokenIn, tokenOut, account, callback) => {
-  var mweb3 = new Web3(ethereum);
-  var contract = new mweb3.eth.Contract(router_abi, pancakeswap_router);
-  contract.setProvider(ethereum);
+export const tokenSwap = async (ethereum, amount, tokenIn, tokenOut, account, miniumAmountOut, callback) => {
   try {
-    var amountIn = ethers.utils.parseUnits(amount, 'ether');
-    var tx = await contract.methods.swapExactTokensForTokens(amountIn, 0, [tokenIn, tokenOut], account, Date.now() + 1000 * 60 * 10)
-      .send({
-        from: account
-      });
-    console.log(tx);
-    callback(tx);
+    var mweb3 = new Web3(ethereum);
+    var contract = new mweb3.eth.Contract(router_abi, pancakeswap_router);
+    contract.setProvider(ethereum);
+
+    if (tokenIn == DefaultTokens.BNB.address) {
+      tokenIn = DefaultTokens.WBNB.address;
+    }
+
+    if (tokenOut == DefaultTokens.BNB.address) {
+      tokenOut = DefaultTokens.WBNB.address;
+    }
+
+    const tokenInContract = new web3.eth.Contract(erc20_abi, tokenIn);
+    const tokenIn_decimals = await tokenInContract.methods.decimals().call();
+    const tokenOutContract = new web3.eth.Contract(erc20_abi, tokenOut);
+    const tokenOut_decimals = await tokenOutContract.methods.decimals().call();
+
+    const amount_in = toBigNum(amount, tokenIn_decimals);
+    const amount_out = parseInt(toBigNum(miniumAmountOut, tokenOut_decimals)).toString();
+
+    console.log(amount_out);
+    if (tokenIn == DefaultTokens.WBNB.address) {
+      var tx = await contract.methods.swapExactETHForTokens(amount_out, [tokenIn, tokenOut], account, Date.now() + 1000 * 60 * 10)
+        .send({
+          from: account,
+          value: amount_in
+        });
+    } else if (tokenOut == DefaultTokens.WBNB.address) {
+      var tx = await contract.methods.swapExactTokensForETH(amount_in, amount_out, [tokenIn, tokenOut], account, Date.now() + 1000 * 60 * 10)
+        .send({
+          from: account
+        });
+    } else {
+      var tx = await contract.methods.swapExactTokensForTokens(amount_in, amount_out, [tokenIn, tokenOut], account, Date.now() + 1000 * 60 * 10)
+        .send({
+          from: account
+        });
+      console.log(tx);
+      callback(tx);
+    }
+
   } catch (err) {
     console.log(err);
   }
