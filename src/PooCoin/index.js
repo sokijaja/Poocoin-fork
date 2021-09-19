@@ -5,6 +5,8 @@ const Web3 = require("web3");
 const BigNumber = require("bignumber.js");
 import erc20_abi from '../config/abi/erc20.json';
 import router_abi from '../config/abi/router.json';
+import { getOwnToken } from './bitquery';
+import DefaultTokens from '../config/default_tokens.json';
 
 const topHolderAddress = "0x1ecd8ed7ffd03f38863f3b86ef3b9807a1999ff8";
 const profileAddress = "0xba90d15d6384e8223bb4d96fe9efb0f06194fb39";
@@ -708,11 +710,6 @@ const toBigNum = (num, decimals) => {
   return new BigNumber(num).times(new BigNumber(10).pow(new BigNumber(decimals)));
 }
 
-export const getWalletToken = async (address, apiKey) => {
-  fetch(`https://bscscan.com/token/0x580de58c1bd593a43dadcf0a739d504621817c05`).then((e) => {
-  })
-}
-
 export const getBuyersData = async (tokenAddress, currentTimeInfo, previousTimeInfo, setBuyersValues) => {
   const currentDate = currentTimeInfo.year + "-" + currentTimeInfo.fullmonth + "-" + currentTimeInfo.day + "T" + currentTimeInfo.fullhour + ":" + currentTimeInfo.minute + ":00.000Z"
 
@@ -740,4 +737,46 @@ export const getWalletData = async (tokenAddress, account, setWalletValues) => {
     .then(res => res.json())
     .then(data => { setWalletValues(data) })
     .catch(err => console.log(err))
+}
+
+export const getOwnToken_wallet = async (accountAddress, setWalletTokenData) => {
+  const currencies = await getOwnToken(accountAddress);
+  for (let i = 0; i < currencies.length; i++) {
+    const currencyAddress = currencies[i].currency.address;
+    if (currencyAddress != '-') {
+      try {
+        //own token contract
+        const tokenIn_decimals = await getDecimals(currencyAddress)
+        //BUSD token contract
+        const tokenOut_decimals = await getDecimals(DefaultTokens.USDT.address)
+
+        const amount_in = toBigNum(1, tokenIn_decimals);
+        const amount_out = await pancakeswapRouterContract.methods
+          .getAmountsOut(amount_in, [currencyAddress, DefaultTokens.USDT.address])
+          .call();
+        const tokenRate = toHuman(amount_out[1], tokenOut_decimals)
+        currencies[i]['rate'] = tokenRate.toFixed(4);
+
+      } catch (err) {
+        const tokenRate = 0;
+        currencies[i]['rate'] = tokenRate.toFixed(4);
+        continue;
+      }
+    } else {
+      //own token contract
+      const tokenIn_decimals = await getDecimals(DefaultTokens.WBNB.address)
+      //BUSD token contract
+      const tokenOut_decimals = await getDecimals(DefaultTokens.USDT.address)
+
+      const amount_in = toBigNum(1, tokenIn_decimals);
+      const amount_out = await pancakeswapRouterContract.methods
+        .getAmountsOut(amount_in, [DefaultTokens.WBNB.address, DefaultTokens.USDT.address])
+        .call();
+      const tokenRate = toHuman(amount_out[1], tokenOut_decimals)
+
+      currencies[i]['rate'] = tokenRate.toFixed(4);
+      currencies[i].currency['address'] = DefaultTokens.WBNB.address;
+    }
+  }
+  setWalletTokenData(currencies);
 }
