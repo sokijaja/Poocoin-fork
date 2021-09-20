@@ -9,17 +9,17 @@ export const getLpinfo = (tokenId) => {
 }
 
 //Get Lpaddress from current token address and BNB token address
-export const getBNBLpaddress = async (currentTokenAddress) => {
+export const getLpaddress = async (currentTokenAddress, coinAddress) => {
     return await axios
-        .get("/token/getBNBLpaddress", {
-            params: { tokenAddress: currentTokenAddress },
+        .get("/token/getLpaddress", {
+            params: { tokenAddress: currentTokenAddress, coinAddress: coinAddress },
         })
 }
 
 //Get tokenName from current token address 
-export const getTokenName = async (currentTokenAddress) => {
+export const getSymbolName = async (currentTokenAddress) => {
     return await axios
-        .get("/token/getName", {
+        .get("/token/getSymbol", {
             params: { tokenAddress: currentTokenAddress },
         })
 }

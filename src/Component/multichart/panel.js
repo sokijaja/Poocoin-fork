@@ -6,7 +6,6 @@ import Collapse from '@material-ui/core/Collapse';
 import CloseIcon from '@material-ui/icons/Close';
 import Chart from '../basic/chart';
 import '../../css/multichart.css';
-import { getBNBLpaddress } from '../../actions';
 import { initLocalMultichart } from '../../PooCoin/util';
 
 const useStyles = makeStyles((theme) => ({

@@ -137,8 +137,6 @@ export default function CustomizedTables() {
   }
 
   useEffect(() => {
-    console.log('----------');
-    console.log(tokenAddress);
     getTransactionList(tokenAddress, setTransactionData);
   }, [tokenAddress])
 

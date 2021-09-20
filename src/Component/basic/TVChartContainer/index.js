@@ -14,7 +14,7 @@ const useStyles = makeStyles({
 	}
 });
 export default function TVChartContainer(props) {
-	const { tokenAddress, convertSymbol, height } = props;
+	const { tokenAddress, coinAddress, height } = props;
 	const classes = useStyles();
 	const containerId = 'tv_chart_container' + '_' + Math.random();
 	useEffect(() => {
@@ -24,12 +24,12 @@ export default function TVChartContainer(props) {
 		widget.onChartReady(() => {
 			console.log("Chart has loaded!");
 		});
-	}, [tokenAddress, convertSymbol])
+	}, [tokenAddress, coinAddress])
 	const widgetOptions = {
 		width: '100%',
 		height: height,
 		debug: false,
-		symbol: tokenAddress + '/' + convertSymbol,
+		symbol: tokenAddress + '/' + coinAddress,
 		datafeed: Datafeed,
 		interval: '15',
 		container_id: containerId,

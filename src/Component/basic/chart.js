@@ -34,7 +34,7 @@ export default function Chart(props) {
   }
   return (
     <div className={classes.TradingView}>
-      <TVChartContainer tokenAddress={props.tokenAddress} convertSymbol={props.convertSymbol} height={props.height} />
+      <TVChartContainer tokenAddress={props.tokenAddress} coinAddress={props.coinAddress} height={props.height} />
       {/* <select
         value={coinName}
         onChange={handleChangeCoinName}

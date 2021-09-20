@@ -100,7 +100,7 @@ export default function Tokens(props) {
   const [currentTokenInfo, setCurrentTokenInfo] = useState({});
   const [showTrade, setShowTrade] = useState(false);
   const [selectData, setSelectData] = useState([]);
-  const [convertSymbol, setConvertSymbol] = useState('BNB');
+  const [coinAddress, setCoinAddress] = useState(DefaultTokens.WBNB.address);
 
   const tokenAddress = useSelector((state) => state.tokenAddress)
   const dispatch = useDispatch();
@@ -124,7 +124,7 @@ export default function Tokens(props) {
 
             let selectdata_json = {};
             selectdata_json["label"] = "Pc v2 " + data.lpInfos[idx].tokenSymbol0 + "/" + data.lpInfos[idx].tokenSymbol1;
-            selectdata_json["value"] = data.lpInfos[idx].tokenSymbol1;
+            selectdata_json["value"] = data.lpInfos[idx].token1;
             selectOptionData.push(selectdata_json)
           } else {
             let combined_json = {};
@@ -135,7 +135,7 @@ export default function Tokens(props) {
 
             let selectdata_json = {};
             selectdata_json["label"] = "Pc v2 " + data.lpInfos[idx].tokenSymbol1 + "/" + data.lpInfos[idx].tokenSymbol0;
-            selectdata_json["value"] = data.lpInfos[idx].tokenSymbol0;
+            selectdata_json["value"] = data.lpInfos[idx].token0;
             selectOptionData.push(selectdata_json)
           }
         }
@@ -147,7 +147,6 @@ export default function Tokens(props) {
     //Get Lpaddress from current token address and BUSD token address
     getAmountsOut(1, tokenAddress, DefaultTokens.BUSD.address, setPriceRateData);
   }, [tokenAddress])
-
   const handleChange = () => {
     setShowMode(!showMode);
   };
@@ -177,8 +176,7 @@ export default function Tokens(props) {
     }
   }
   const tokenSelect = (event) => {
-    console.log(event.value);
-    setConvertSymbol(event.value)
+    setCoinAddress(event.value)
   };
   let centerContainer = (
     <div>
@@ -248,7 +246,7 @@ export default function Tokens(props) {
       <Grid xs={12} style={{ marginTop: 20 }} item>
         <div>{tradeContent}</div>
         <div className={classes.chartPan} >
-          <Chart2 tokenAddress={tokenAddress} convertSymbol={convertSymbol} height="500px" />
+          <Chart2 tokenAddress={tokenAddress} coinAddress={coinAddress} height="500px" />
         </div>
         <br />
         <TableTab />
