@@ -31,6 +31,7 @@ import {
   ConnectionRejectedError,
   UseWalletProvider,
 } from 'use-wallet'
+import DefaultTokens from "../config/default_tokens.json";
 
 function Layout() {
 
@@ -98,7 +99,8 @@ function Layout() {
             <Route path="/swap" exact component={Trade} />
             <Route path="/promote" component={Advertise} />
             <Route path="/multichart" exact component={Multichart} />
-            <Route path="/about" exact component={About} />
+            <Route path='/about' exact component={() => <About tokenAddress={DefaultTokens.POOCOIN.address} />}
+            />
             <Route path="/trending" exact component={Trending} />
             <Route path="/rugcheck" exact component={RugCheck} />
             <Route path="/external-tools" exact component={ExternalTools} />

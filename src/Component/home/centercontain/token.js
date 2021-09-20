@@ -58,7 +58,13 @@ const useStyles = makeStyles({
   row: {
     color: "#28a745 !important",
   },
-  tokenInfo: {
+  tokenInfosell: {
+    color: "#dc3545!important",
+    textAlign: "right",
+    padding: '5px',
+    fontSize: '13px'
+  },
+  tokenInfobuy: {
     color: "#28a745 !important",
     textAlign: "right",
     padding: '5px',
@@ -140,6 +146,7 @@ export default function CustomizedTables() {
     getTransactionList(tokenAddress, setTransactionData);
   }, [tokenAddress])
 
+  console.log(transactionLists);
   return (
     <div>
       <TableContainer component={Paper}>
@@ -164,20 +171,20 @@ export default function CustomizedTables() {
                   <StyledTableCell
                     component="th"
                     scope="row"
-                    className={classes.tokenInfo}
+                    className={transactionList.status == "buy" ? classes.tokenInfobuy : classes.tokenInfosell}
                   >
                     {transactionList.tokenNum}
                     <div>{transactionList.tokenSymbol}</div>
                   </StyledTableCell>
-                  <StyledTableCell className={classes.tokenInfo}>
+                  <StyledTableCell className={transactionList.status == "buy" ? classes.tokenInfobuy : classes.tokenInfosell}>
                     ${transactionList.coinPrice}
                     <div>{transactionList.coinNum + transactionList.coinSymbol}</div>
                   </StyledTableCell>
-                  <StyledTableCell className={classes.tokenInfo}>
+                  <StyledTableCell className={transactionList.status == "buy" ? classes.tokenInfobuy : classes.tokenInfosell}>
                     ${transactionList.tokenPrice}
-                    <div>Pc v2</div>
+                    <div>{transactionList.exchangeName}</div>
                   </StyledTableCell>
-                  <StyledTableCell className={classes.tokenInfo}>
+                  <StyledTableCell className={transactionList.status == "buy" ? classes.tokenInfobuy : classes.tokenInfosell}>
                     {transactionList.transactionTime}
                     <div className={classes.tokenInfo}>{transactionList.AMPM}</div>
                   </StyledTableCell>

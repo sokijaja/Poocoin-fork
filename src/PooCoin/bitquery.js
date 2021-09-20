@@ -60,6 +60,9 @@ export const getTransactionListData = async (tokenAddress) => {
         buyAmount(calculate: maximum)
         sellAmount(calculate: maximum)
         any(of: time)
+        exchange {
+          fullName
+        }
       }
     }
 }`;

@@ -299,6 +299,8 @@ export default function Header(props) {
                 <Link className={classes.link} to="/">Charts</Link>
                 <Link className={classes.link} to="/swap">Trade</Link>
                 <Link className={classes.link} to="/multichart">Multi&nbsp;Chart</Link>
+                <Link className={classes.link} to="/about">About</Link>
+                <Link className={classes.link} to="/premium">Premium</Link>
                 {/* <a className={classes.link} href="/about">About</a>
                 <a className={classes.link} href="/tools">Tools</a><br />
                 <a className={classes.link} href="/premium">Premium</a>
