@@ -100,52 +100,60 @@ export default function Tokens(props) {
   const [currentTokenInfo, setCurrentTokenInfo] = useState({});
   const [showTrade, setShowTrade] = useState(false);
   const [selectData, setSelectData] = useState([]);
-  const [coinAddress, setCoinAddress] = useState(DefaultTokens.WBNB.address);
+  const [coinAddress, setCoinAddress] = useState();
+  const [firstCoinName, setFirstCoinName] = useState();
 
   const tokenAddress = useSelector((state) => state.tokenAddress)
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch({ type: 'SET_TOKENADDRESS', payload: props.match.params.id })
-
     //Get all info about current token from lpaddress and token table
-    getLpinfo(tokenAddress)
-      .then(data => {
-        const tokens = [];
-        const selectOptionData = [];
-        for (var idx in data.lpInfos) {
-          if (data.lpInfos[idx].token0 == tokenAddress) {
-            let combined_json = {};
-            combined_json["label"] = data.lpInfos[idx].tokenName1;
-            //0: other token address, 1: other token symbolName 2: lp address 3: token order 
-            let addrLpInfo = [data.lpInfos[idx].token1, data.lpInfos[idx].tokenSymbol1, data.lpInfos[idx].lp_address, 0];
-            combined_json["value"] = addrLpInfo;
-            tokens.push(combined_json);
+    if (tokenAddress != undefined) {
+      getLpinfo(tokenAddress)
+        .then(data => {
+          const tokens = [];
+          const selectOptionData = [];
+          for (var idx in data.lpInfos) {
+            if (data.lpInfos[idx].token0 == tokenAddress) {
+              let combined_json = {};
+              combined_json["label"] = data.lpInfos[idx].tokenName1;
+              //0: other token address, 1: other token symbolName 2: lp address 3: token order 
+              let addrLpInfo = [data.lpInfos[idx].token1, data.lpInfos[idx].tokenSymbol1, data.lpInfos[idx].lp_address, 0];
+              combined_json["value"] = addrLpInfo;
+              tokens.push(combined_json);
 
-            let selectdata_json = {};
-            selectdata_json["label"] = "Pc v2 " + data.lpInfos[idx].tokenSymbol0 + "/" + data.lpInfos[idx].tokenSymbol1;
-            selectdata_json["value"] = data.lpInfos[idx].token1;
-            selectOptionData.push(selectdata_json)
-          } else {
-            let combined_json = {};
-            combined_json["label"] = data.lpInfos[idx].tokenName0;
-            let addrLpInfo = [data.lpInfos[idx].token0, data.lpInfos[idx].tokenSymbol0, data.lpInfos[idx].lp_address, 1];
-            combined_json["value"] = addrLpInfo;
-            tokens.push(combined_json);
+              let selectdata_json = {};
+              selectdata_json["label"] = "Pc v2 " + data.lpInfos[idx].tokenSymbol0 + "/" + data.lpInfos[idx].tokenSymbol1;
+              selectdata_json["value"] = data.lpInfos[idx].token1;
+              selectOptionData.push(selectdata_json)
+            } else {
+              let combined_json = {};
+              combined_json["label"] = data.lpInfos[idx].tokenName0;
+              let addrLpInfo = [data.lpInfos[idx].token0, data.lpInfos[idx].tokenSymbol0, data.lpInfos[idx].lp_address, 1];
+              combined_json["value"] = addrLpInfo;
+              tokens.push(combined_json);
 
-            let selectdata_json = {};
-            selectdata_json["label"] = "Pc v2 " + data.lpInfos[idx].tokenSymbol1 + "/" + data.lpInfos[idx].tokenSymbol0;
-            selectdata_json["value"] = data.lpInfos[idx].token0;
-            selectOptionData.push(selectdata_json)
+              let selectdata_json = {};
+              selectdata_json["label"] = "Pc v2 " + data.lpInfos[idx].tokenSymbol1 + "/" + data.lpInfos[idx].tokenSymbol0;
+              selectdata_json["value"] = data.lpInfos[idx].token0;
+              selectOptionData.push(selectdata_json)
+            }
           }
-        }
-        setLpDatas(tokens);
-        setSelectData(selectOptionData)
-        setCurrentTokenInfo(data.tokenInfos)
-      })
+          if (tokens[0].value[1] == DefaultTokens.WBNB.symbol) {
+            setFirstCoinName(DefaultTokens.BNB.symbol)
+          } else {
+            setFirstCoinName(tokens[0].value[1])
+          }
+          setCoinAddress(tokens[0].value[0])
+          setLpDatas(tokens);
+          setSelectData(selectOptionData)
+          setCurrentTokenInfo(data.tokenInfos)
+        })
 
-    //Get Lpaddress from current token address and BUSD token address
-    getAmountsOut(1, tokenAddress, DefaultTokens.BUSD.address, setPriceRateData);
+      //Get Lpaddress from current token address and BUSD token address
+      getAmountsOut(1, tokenAddress, DefaultTokens.BUSD.address, setPriceRateData);
+    }
   }, [tokenAddress])
   const handleChange = () => {
     setShowMode(!showMode);
@@ -194,7 +202,7 @@ export default function Tokens(props) {
             >
               <img className={classes.img} src={logo} width="32" height="32" />
               <span>
-                {currentTokenInfo.name} ({currentTokenInfo.name}/BNB)
+                {currentTokenInfo.name} ({currentTokenInfo.name}/{firstCoinName})
                 <br /><span className={'textSuccess'}>${parseFloat(priceRateData).toFixed(14)}</span>
               </span>
             </p>
@@ -246,7 +254,10 @@ export default function Tokens(props) {
       <Grid xs={12} style={{ marginTop: 20 }} item>
         <div>{tradeContent}</div>
         <div className={classes.chartPan} >
-          <Chart2 tokenAddress={tokenAddress} coinAddress={coinAddress} height="500px" />
+          {
+            coinAddress != undefined &&
+            <Chart2 tokenAddress={tokenAddress} coinAddress={coinAddress} height="500px" />
+          }
         </div>
         <br />
         <TableTab />

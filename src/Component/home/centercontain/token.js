@@ -146,7 +146,6 @@ export default function CustomizedTables() {
     getTransactionList(tokenAddress, setTransactionData);
   }, [tokenAddress])
 
-  console.log(transactionLists);
   return (
     <div>
       <TableContainer component={Paper}>
