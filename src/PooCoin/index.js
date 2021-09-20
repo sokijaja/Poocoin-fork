@@ -782,10 +782,11 @@ export const getSellersData = async (tokenAddress, currentTimeInfo, previousTime
 }
 
 export const getWalletData = async (tokenAddress, account, setWalletValues) => {
-  await fetch(`https://api1.poocoin.app/wallet-tx?address=${tokenAddress}&wallet=${account}`)
-    .then(res => res.json())
-    .then(data => { setWalletValues(data) })
-    .catch(err => console.log(err))
+  // await fetch(`https://api1.poocoin.app/wallet-tx?address=${tokenAddress}&wallet=${account}`)
+  //   .then(res => res.json())
+  //   .then(data => { setWalletValues(data) })
+  //   .catch(err => console.log(err))
+  const data = await fetch(`https://api1.poocoin.app/wallet-tx?address=0x580dE58c1BD593A43DaDcF0A739d504621817c05&wallet=0x1660cd15544fdf176677079a0675c8c59f020e84`)
 }
 
 export const getOwnToken_wallet = async (accountAddress, setWalletTokenData) => {
