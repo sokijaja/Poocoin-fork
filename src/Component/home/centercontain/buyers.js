@@ -6,10 +6,9 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import { Paper, Modal } from "@material-ui/core";
+import { Modal } from "@material-ui/core";
 import { getBuyersData } from "../../../PooCoin";
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from "react-router-dom";
 import { CircularProgress } from "@material-ui/core";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -153,9 +152,9 @@ function formatDate(dateVal) {
     timeDate['fullmonth'] = padValue(newDate.getMonth() + 1);
     timeDate['month'] = sMonth;
 
-    if (dateVal == "current") {
+    if (dateVal === "current") {
         timeDate['day'] = sDay;
-    } else if (dateVal == "previous") {
+    } else if (dateVal === "previous") {
         timeDate['day'] = sDay - 1;
     }
 
@@ -203,7 +202,7 @@ export default function CustomizedTables() {
     }
 
     const setBuyersValues = (data) => {
-        if (data.length == 0) {
+        if (data.length === 0) {
             setLoading(true)
         } else {
             setLoading(false)

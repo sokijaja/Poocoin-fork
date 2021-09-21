@@ -134,7 +134,7 @@ export default function CustomizedTables() {
   }
 
   const setTransactionData = (data) => {
-    if (data.length == 0) {
+    if (data.length === 0) {
       setLoading(true)
     } else {
       setLoading(false)
@@ -170,20 +170,20 @@ export default function CustomizedTables() {
                   <StyledTableCell
                     component="th"
                     scope="row"
-                    className={transactionList.status == "buy" ? classes.tokenInfobuy : classes.tokenInfosell}
+                    className={transactionList.status === "buy" ? classes.tokenInfosell : classes.tokenInfobuy}
                   >
                     {transactionList.tokenNum}
                     <div>{transactionList.tokenSymbol}</div>
                   </StyledTableCell>
-                  <StyledTableCell className={transactionList.status == "buy" ? classes.tokenInfobuy : classes.tokenInfosell}>
+                  <StyledTableCell className={transactionList.status === "buy" ? classes.tokenInfosell : classes.tokenInfobuy}>
                     ${transactionList.coinPrice}
                     <div>{transactionList.coinNum + transactionList.coinSymbol}</div>
                   </StyledTableCell>
-                  <StyledTableCell className={transactionList.status == "buy" ? classes.tokenInfobuy : classes.tokenInfosell}>
+                  <StyledTableCell className={transactionList.status === "buy" ? classes.tokenInfosell : classes.tokenInfobuy}>
                     ${transactionList.tokenPrice}
                     <div>{transactionList.exchangeName}</div>
                   </StyledTableCell>
-                  <StyledTableCell className={transactionList.status == "buy" ? classes.tokenInfobuy : classes.tokenInfosell}>
+                  <StyledTableCell className={transactionList.status === "buy" ? classes.tokenInfosell : classes.tokenInfobuy}>
                     {transactionList.transactionTime}
                     <div className={classes.tokenInfo}>{transactionList.AMPM}</div>
                   </StyledTableCell>

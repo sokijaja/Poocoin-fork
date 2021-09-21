@@ -1,8 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import TVChartContainer from './TVChartContainer';
 import { coin } from '../../constants';
-import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles({
   root: {

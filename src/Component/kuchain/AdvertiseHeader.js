@@ -1,6 +1,6 @@
-import { React, useState, useEffect } from 'react';
+import { React, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom'
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import '../../css/advertise.css';
 import ToggleButton from '@material-ui/lab/ToggleButton';
@@ -23,8 +23,8 @@ export default function AdvertiseHeader() {
     const classes = useStyles();
     let location = useLocation();
     const [alignment, setAlignment] = useState();
-    if (alignment == undefined) {
-        if (location.pathname == '/kuchainpromote/banners') {
+    if (alignment === undefined) {
+        if (location.pathname === '/kuchainpromote/banners') {
             setAlignment('1');
         }
     }

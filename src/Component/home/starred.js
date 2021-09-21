@@ -73,7 +73,7 @@ export default function CustomizedTables() {
   const rows = JSON.parse(localStorage.getItem('starred'))
 
   const reloadComponent = () => {
-    reload == 1 ? setReloading(0) : setReloading(1)
+    reload === 1 ? setReloading(0) : setReloading(1)
   }
 
   const removeStarredData = starredData => () => {

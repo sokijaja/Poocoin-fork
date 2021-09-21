@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -107,7 +107,7 @@ function UnvettedTable(props) {
         </StyledTableCell>
         <StyledTableCell>
           {
-            checkLocalTokenInfo(item[0]) == true ?
+            checkLocalTokenInfo(item[0]) === true ?
               <StarIcon className={classes.starredFillIcon} onClick={addUnvettedData(item)} />
               :
               <StarOutlineIcon className={classes.starredIcon} onClick={addUnvettedData(item)} />
@@ -124,7 +124,7 @@ export default function CustomizedTables() {
   const [reload, setReloading] = useState(1);
   const classes = useStyles();
   const setUnvettedValues = (data) => {
-    if (data.length == 0) {
+    if (data.length === 0) {
       setLoading(true)
     } else {
       setLoading(false)
@@ -137,7 +137,7 @@ export default function CustomizedTables() {
   }, []);
 
   const reloadComponent = () => {
-    reload == 1 ? setReloading(0) : setReloading(1)
+    reload === 1 ? setReloading(0) : setReloading(1)
   }
   return (
     <div>

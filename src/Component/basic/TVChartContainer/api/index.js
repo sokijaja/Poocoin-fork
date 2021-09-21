@@ -26,7 +26,7 @@ export default {
 			//get coinsymbol from symbolName (tokenaddress:tokenaddress/coinaddress)
 			var coinSymbol_res = await getSymbolName(split_data[1]);
 			var coinSymbol = coinSymbol_res.data[0].symbol;
-			if (coinSymbol == "WBNB") {
+			if (coinSymbol === "WBNB") {
 				coinSymbol = "BNB"
 			}
 			let response = await getSymbolName(split_data[0])

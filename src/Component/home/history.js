@@ -70,7 +70,7 @@ export default function CustomizedTables() {
   const dispatch = useDispatch();
 
   const setVettedValues = (data) => {
-    if (data.length == 0) {
+    if (data.length === 0) {
       setLoading(true)
     } else {
       setLoading(false)

@@ -104,7 +104,7 @@ export default function CenteredTabs() {
           <div className={classes.walletLink}>
             <Link to="">Restore Hidden</Link>
           </div>
-          {account == null ?
+          {account === null ?
             <div className={classes.walletContainer}>
               Connect your wallet to see your tokens.
             </div>

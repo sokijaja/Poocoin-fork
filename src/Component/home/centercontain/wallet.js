@@ -7,7 +7,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import { getWalletData } from "../../../PooCoin";
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { CircularProgress } from "@material-ui/core";
 import { useWallet } from 'use-wallet'
 
@@ -94,7 +94,7 @@ export default function CustomizedTables() {
   const tokenAddress = useSelector((state) => state.tokenAddress)
 
   const setWalletValues = (data) => {
-    if (data.length == 0) {
+    if (data.length === 0) {
       setLoading(true)
     } else {
       setLoading(false)
@@ -103,7 +103,7 @@ export default function CustomizedTables() {
   };
 
   useEffect(() => {
-    if (account == null) {
+    if (account === null) {
       setLoading(true)
       setWalletData(null)
     } else {

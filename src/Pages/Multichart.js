@@ -147,7 +147,7 @@ export default function Multichart() {
         </div>
       </div>
       <Grid item xs={12} lg={12} container>
-        {multichartData.address != null &&
+        {multichartData != null &&
           multichartData.address.map((data, index) => (
             <Grid item xs={4} lg={4} style={{ padding: '5px' }} key={index}>
               <Panel tokenAddress={data} index={index} />

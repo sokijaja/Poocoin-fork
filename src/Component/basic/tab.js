@@ -78,7 +78,7 @@ TabPanel.propTypes = {
 };
 
 export default function CenteredTabs({ symbol, onSymbol }) {
-  const { account, connect, reset, status } = useWallet()
+  const { account } = useWallet()
 
   const classes = useStyles();
   const [value, setValue] = React.useState(0);

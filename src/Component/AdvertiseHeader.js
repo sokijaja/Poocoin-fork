@@ -23,20 +23,20 @@ export default function AdvertiseHeader() {
     const classes = useStyles();
     let location = useLocation();
     const [alignment, setAlignment] = useState();
-    if (alignment == undefined) {
-        if (location.pathname == '/promote/banners') {
+    if (alignment === undefined) {
+        if (location.pathname === '/promote/banners') {
             setAlignment('1');
-        } else if (location.pathname == "/promote/un-vetted") {
+        } else if (location.pathname === "/promote/un-vetted") {
             setAlignment('2');
-        } else if (location.pathname == '/promote/vetted') {
+        } else if (location.pathname === '/promote/vetted') {
             setAlignment('3');
-        } else if (location.pathname == '/promote/pricebot/poocoin') {
+        } else if (location.pathname === '/promote/pricebot/poocoin') {
             setAlignment('4');
-        } else if (location.pathname == '/promote/pricebot/achtools') {
+        } else if (location.pathname === '/promote/pricebot/achtools') {
             setAlignment('4');
-        } else if (location.pathname == '/promote/audits/shield-network') {
+        } else if (location.pathname === '/promote/audits/shield-network') {
             setAlignment('5');
-        } else if (location.pathname == '/promote/audits/ctdsec') {
+        } else if (location.pathname === '/promote/audits/ctdsec') {
             setAlignment('5');
         }
     }

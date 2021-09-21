@@ -63,6 +63,7 @@ export const getTransactionListData = async (tokenAddress) => {
         exchange {
           fullName
         }
+        tradeAmount(in: USD)
       }
     }
 }`;
@@ -76,12 +77,14 @@ export const getTransactionListData = async (tokenAddress) => {
     headers: {
       "Content-Type": "application/json",
     },
+    // headers: headers,
     body: JSON.stringify({
       query: QUERY
     })
   });
 
   const data = await response.json();
+  console.log(data);
   const currency = data.data.ethereum.dexTrades;
   return currency;
 }
@@ -133,6 +136,10 @@ export const getPriceByTime = async (tokenAddress, time) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      // "Access-Control-Allow-Origin": "*",
+      // "Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS",
+      // "Access-Control-Allow-Headers":
+      //   "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With",
     },
     body: JSON.stringify({
       query: QUERY
@@ -140,6 +147,7 @@ export const getPriceByTime = async (tokenAddress, time) => {
   });
 
   const data = await response.json();
+  console.log(data);
   const currency = data.data.ethereum.dexTrades[0].quotePrice;
   return currency;
 }

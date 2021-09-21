@@ -832,6 +832,8 @@ export const getOwnToken_wallet = async (accountAddress, setWalletTokenData) => 
 }
 
 export const getTransactionList = async (tokenAddress, setTransactionListData) => {
+  // const delay = ms => new Promise(res => setTimeout(res, ms));
+
   if (tokenAddress != null) {
     const transactionLists = await getTransactionListData(tokenAddress);
     const transaction = [];
@@ -853,9 +855,12 @@ export const getTransactionList = async (tokenAddress, setTransactionListData) =
           else if (iHourCheck === 0) {
             hour = "12";
           }
-          const transactionTime = hour + ":" + minute + ":" + second
-
+          let transactionTime = hour + ":" + minute + ":" + second
           const tokenPrice = await getPriceByTime(tokenAddress, time_str[0]);
+          // await delay(2000);
+
+          let coinPrice = transactionLists[i].tradeAmount;
+          // let tokenPrice = transactionLists[i].buyAmount / coinPrice;
 
           let exchangeName = transactionLists[i].exchange.fullName;
           if (exchangeName == "Pancake") {
@@ -873,7 +878,8 @@ export const getTransactionList = async (tokenAddress, setTransactionListData) =
               "tokenPrice": tokenPrice,
               "transactionTime": transactionTime,
               "AMPM": sAMPM,
-              "coinPrice": parseInt(transactionLists[i].buyAmount) * tokenPrice,
+              // "coinPrice": parseInt(transactionLists[i].buyAmount) * tokenPrice,
+              "coinPrice": coinPrice,
               "status": "buy",
               "txHash": transactionLists[i].transaction.hash,
               "exchangeName": exchangeName
@@ -887,7 +893,7 @@ export const getTransactionList = async (tokenAddress, setTransactionListData) =
               "tokenPrice": tokenPrice,
               "transactionTime": transactionTime,
               "AMPM": sAMPM,
-              "coinPrice": parseInt(transactionLists[i].sellAmount) * tokenPrice,
+              "coinPrice": coinPrice,
               "status": "sell",
               "txHash": transactionLists[i].transaction.hash,
               "exchangeName": exchangeName
