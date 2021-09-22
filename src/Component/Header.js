@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   appBarSolid: {
     backgroundColor: '#262626',
     boxShadow: 'none',
-    padding: 8,
+    padding: 15,
     textAlign: 'center',
     borderBottom: '3px solid #484e53',
     position: 'initial'

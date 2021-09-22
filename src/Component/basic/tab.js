@@ -88,7 +88,7 @@ export default function CenteredTabs({ symbol, onSymbol }) {
   };
 
   return (
-    <Paper className={classes.root}>
+    <div className={classes.root}>
       <Tabs
         value={value}
         onChange={handleChange}
@@ -126,6 +126,6 @@ export default function CenteredTabs({ symbol, onSymbol }) {
       <TabPanel value={value} index={3} className={classes.tabpanel}>
         <HistoryTable onSymbol={onSymbol} />
       </TabPanel>
-    </Paper>
+    </div>
   );
 }

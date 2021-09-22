@@ -146,6 +146,12 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: '"Lato",sans-serif',
     marginBottom: '8px'
   },
+  leftSide: {
+    padding: '10px',
+    [theme.breakpoints.down("xs")]: {
+      width: '100%'
+    }
+  },
 }));
 
 export default function About(props) {
@@ -319,10 +325,10 @@ export default function About(props) {
       </div>
       <div className={classes.centerContainer}>
         <Grid container item xs={12}>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4} sm={4} xl={4} className={classes.leftSide}>
             <Lefttab lpdata={lpDatas} currentTokenInfo={currentTokenInfo} />
           </Grid>
-          <Grid item xs={8}>
+          <Grid item xs={12} md={8} sm={8} xl={8}>
             {centerContainer}
           </Grid>
         </Grid>

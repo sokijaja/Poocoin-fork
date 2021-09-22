@@ -17,9 +17,9 @@ import { storeLocalMultichart } from "../PooCoin/util";
 const useStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
-      margin: theme.spacing(1),
       padding: 0
     },
+    backgroundColor: '#e9ecef !important'
   },
   input: {
     display: 'none',
@@ -49,6 +49,10 @@ const useStyles = makeStyles((theme) => ({
       '& .MuiGrid-grid-xs-4': {
         flexBasis: '100%',
         maxWidth: '100%'
+      },
+      width: '465px',
+      '& .row > .cell': {
+        display: 'none',
       }
     },
   },
@@ -62,6 +66,12 @@ const useStyles = makeStyles((theme) => ({
       position: 'relative',
       marginTop: '30px',
       marginLeft: '15%',
+    },
+    [theme.breakpoints.down("xs")]: {
+      position: 'relative',
+      marginTop: '4%',
+      marginLeft: '2%',
+      minWidth: '470px'
     },
   },
   searchInput: {
@@ -196,7 +206,7 @@ export default function Multichart() {
   }
 
   return (
-    <div>
+    <div className={classes.root}>
       {container}
     </div>
   );
