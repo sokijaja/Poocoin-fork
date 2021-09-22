@@ -21,8 +21,6 @@ import { useHistory, useParams } from "react-router";
 import { getLpinfo } from "../actions";
 import { useSelector, useDispatch } from 'react-redux';
 import DefaultTokens from '../config/default_tokens.json';
-import AccountBalanceWallet from "@material-ui/icons/AccountBalanceWallet";
-import { Link } from "react-router-dom";
 import PoocoinIcon from '../Images/poocoin512.png';
 
 const useStyles = makeStyles((theme) => ({
@@ -145,6 +143,12 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 500,
     fontFamily: '"Lato",sans-serif',
     marginBottom: '8px'
+  },
+  leftSide: {
+    padding: '10px',
+    [theme.breakpoints.down("xs")]: {
+      width: '100%'
+    }
   },
 }));
 
@@ -319,10 +323,10 @@ export default function About(props) {
       </div>
       <div className={classes.centerContainer}>
         <Grid container item xs={12}>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4} sm={4} xl={4} className={classes.leftSide}>
             <Lefttab lpdata={lpDatas} currentTokenInfo={currentTokenInfo} />
           </Grid>
-          <Grid item xs={8}>
+          <Grid item xs={12} md={8} sm={8} xl={8}>
             {centerContainer}
           </Grid>
         </Grid>

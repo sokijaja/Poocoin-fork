@@ -2,7 +2,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import ListItem from "@material-ui/core/ListItem";
 import Divider from "@material-ui/core/Divider";
 import BSC from "../../Images/bscscan.png";
 import LpInfoItem from "./lpInfoItem";
@@ -76,17 +75,15 @@ const SimpleList = ({ lpdata, totalSupply, currentTokenInfo }) => {
   const setBurnData = (data) => {
     setBurnBalance(data);
   }
-  const setPriceRate = (data) => {
-    setPriceRateData(data);
-  }
+
   useEffect(() => {
-    if (currentTokenAddress != undefined) {
+    if (currentTokenAddress !== undefined) {
       tokenBalance(DefaultTokens.BURNADDRESS.address, currentTokenAddress, setBurnData)
       getAmountsOut(1, currentTokenAddress, DefaultTokens.BUSD.address, setPriceRateData)
     }
   }, [currentTokenAddress])
 
-  if (totalSupply == undefined) {
+  if (totalSupply === undefined) {
     totalSupply = 0;
   }
   const realMarketCap = (parseFloat(totalSupply) - burnBalance) * parseFloat(priceRateData);

@@ -832,68 +832,75 @@ export const getOwnToken_wallet = async (accountAddress, setWalletTokenData) => 
 }
 
 export const getTransactionList = async (tokenAddress, setTransactionListData) => {
+  // const delay = ms => new Promise(res => setTimeout(res, ms));
+
   if (tokenAddress != null) {
     const transactionLists = await getTransactionListData(tokenAddress);
     const transaction = [];
-    for (let i = 0; i < transactionLists.length; i++) {
-      try {
-        let time = new Date(transactionLists[i].any);
-        let time_str = time.toISOString().split('.')
-        let hour = time.getHours()
-        let minute = time.getMinutes()
-        let second = time.getSeconds()
+    if (transactionLists != null) {
+      for (let i = 0; i < transactionLists.length; i++) {
+        try {
+          let time = new Date(transactionLists[i].any);
+          let time_str = time.toISOString().split('.')
+          let hour = time.getHours()
+          let minute = time.getMinutes()
+          let second = time.getSeconds()
 
-        var sAMPM = "AM";
-        var iHourCheck = parseInt(hour);
-        if (iHourCheck > 12) {
-          sAMPM = "PM";
-          hour = iHourCheck - 12;
-        }
-        else if (iHourCheck === 0) {
-          hour = "12";
-        }
-        const transactionTime = hour + ":" + minute + ":" + second
+          var sAMPM = "AM";
+          var iHourCheck = parseInt(hour);
+          if (iHourCheck > 12) {
+            sAMPM = "PM";
+            hour = iHourCheck - 12;
+          }
+          else if (iHourCheck === 0) {
+            hour = "12";
+          }
+          let transactionTime = hour + ":" + minute + ":" + second
+          // const tokenPrice = await getPriceByTime(tokenAddress, time_str[0]);
+          // await delay(2000);
 
-        const tokenPrice = await getPriceByTime(tokenAddress, time_str[0]);
+          let coinPrice = transactionLists[i].tradeAmount;
 
-        let exchangeName = transactionLists[i].exchange.fullName;
-        if (exchangeName == "Pancake") {
-          exchangeName = "Pc v1"
-        } else if (exchangeName == "Pancake v2") {
-          exchangeName = "Pc v2"
-        }
+          let exchangeName = transactionLists[i].exchange.fullName;
+          if (exchangeName == "Pancake") {
+            exchangeName = "Pc v1"
+          } else if (exchangeName == "Pancake v2") {
+            exchangeName = "Pc v2"
+          }
 
-        if (transactionLists[i].buyCurrency.address == tokenAddress.toLowerCase()) {
-          transaction.push({
-            "tokenNum": numberWithCommas(parseInt(transactionLists[i].buyAmount)),
-            "tokenSymbol": transactionLists[i].buyCurrency.symbol,
-            "coinNum": transactionLists[i].sellAmount,
-            "coinSymbol": transactionLists[i].sellCurrency.symbol,
-            "tokenPrice": tokenPrice,
-            "transactionTime": transactionTime,
-            "AMPM": sAMPM,
-            "coinPrice": parseInt(transactionLists[i].buyAmount) * tokenPrice,
-            "status": "buy",
-            "txHash": transactionLists[i].transaction.hash,
-            "exchangeName": exchangeName
-          })
-        } else if (transactionLists[i].sellCurrency.address == tokenAddress.toLowerCase()) {
-          transaction.push({
-            "tokenNum": numberWithCommas(parseInt(transactionLists[i].sellAmount)),
-            "tokenSymbol": transactionLists[i].sellCurrency.symbol,
-            "coinNum": transactionLists[i].buyAmount,
-            "coinSymbol": transactionLists[i].buyCurrency.symbol,
-            "tokenPrice": tokenPrice,
-            "transactionTime": transactionTime,
-            "AMPM": sAMPM,
-            "coinPrice": parseInt(transactionLists[i].sellAmount) * tokenPrice,
-            "status": "sell",
-            "txHash": transactionLists[i].transaction.hash,
-            "exchangeName": exchangeName
-          })
+          if (transactionLists[i].buyCurrency.address == tokenAddress.toLowerCase()) {
+            transaction.push({
+              "tokenNum": numberWithCommas(parseInt(transactionLists[i].buyAmount)),
+              "tokenSymbol": transactionLists[i].buyCurrency.symbol,
+              "coinNum": transactionLists[i].sellAmount,
+              "coinSymbol": transactionLists[i].sellCurrency.symbol,
+              // "tokenPrice": tokenPrice,
+              "transactionTime": transactionTime,
+              "AMPM": sAMPM,
+              // "coinPrice": parseInt(transactionLists[i].buyAmount) * tokenPrice,
+              "coinPrice": coinPrice,
+              "status": "buy",
+              "txHash": transactionLists[i].transaction.hash,
+              "exchangeName": exchangeName
+            })
+          } else if (transactionLists[i].sellCurrency.address == tokenAddress.toLowerCase()) {
+            transaction.push({
+              "tokenNum": numberWithCommas(parseInt(transactionLists[i].sellAmount)),
+              "tokenSymbol": transactionLists[i].sellCurrency.symbol,
+              "coinNum": transactionLists[i].buyAmount,
+              "coinSymbol": transactionLists[i].buyCurrency.symbol,
+              // "tokenPrice": tokenPrice,
+              "transactionTime": transactionTime,
+              "AMPM": sAMPM,
+              "coinPrice": coinPrice,
+              "status": "sell",
+              "txHash": transactionLists[i].transaction.hash,
+              "exchangeName": exchangeName
+            })
+          }
+        } catch (err) {
+          console.log(err);
         }
-      } catch (err) {
-        console.log(err);
       }
     }
     setTransactionListData(transaction)

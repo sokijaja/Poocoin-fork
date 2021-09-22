@@ -104,6 +104,7 @@ router.get("/getLpinfo", async (req, res) => {
         },
       ],
     });
+
     tokenName = await tokenSchema
       .findOne({
         token: token_address,

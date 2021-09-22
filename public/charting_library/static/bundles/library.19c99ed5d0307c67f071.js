@@ -32254,7 +32254,6 @@ webpackJsonp([12], [function (t, e, i) {
             var t = 0;
             return JSON.parse(urlParams.logo).image && (t = "C", o.enabled("link_to_tradingview") || (t = "D")), t
         }
-
         function e() {
             try {
                 return /^(192|172|10)\.[0-9][0-9][0-9]\.[0-9][0-9][0-9]\.[0-9][0-9][0-9]/.test(location.hostname) || /^.*((?:\.local)|localhost)$/.test(location.hostname)

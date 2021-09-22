@@ -47,7 +47,7 @@ function Layout() {
     localStorage.setItem("PoocoinChainId", chainId_);
   }
 
-  if (localChainId == null || isNaN(localChainId)) {
+  if (localChainId === null || isNaN(localChainId)) {
     localChainId = networkValue.Binance;
     localStorage.setItem("PoocoinChainId", localChainId);
   }
@@ -56,21 +56,21 @@ function Layout() {
 
   let rpcUrl;
   networkInfo.forEach(network => {
-    if (network.chainId == chainId) {
+    if (network.chainId === chainId) {
       rpcUrl = network.rpc;
     }
   });
 
   let connector;
-  if (connectId == connectType.metamask) {
+  if (connectId === connectType.metamask) {
     connector = ({
       walletconnect: { rpcUrl: rpcUrl }
     })
-  } else if (connectId == connectType.walletconnect) {
+  } else if (connectId === connectType.walletconnect) {
     connector = ({
       walletconnect: { rpcUrl: 'https://<Ethereum JSON RPC endpoint>' }
     })
-  } else if (connectId == connectType.binance) {
+  } else if (connectId === connectType.binance) {
     connector = ({
       bsc: {
         web3ReactConnector() {

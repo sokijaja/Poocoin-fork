@@ -108,7 +108,7 @@ export default function CustomizedTables() {
 
   useEffect(() => {
     getOwnToken_wallet(account, setWalletOwnTokenData);
-  })
+  }, [])
 
   const setWalletOwnTokenData = (data) => {
     if (data.length == 0) {
@@ -150,7 +150,7 @@ export default function CustomizedTables() {
           </div>
         </Grid>
       </Grid>
-      <TableContainer component={Paper}>
+      <TableContainer>
         <Table className={classes.table} aria-label="customized table">
           <TableHead>
             <TableRow>

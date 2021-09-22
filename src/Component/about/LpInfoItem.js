@@ -36,7 +36,7 @@ export default function LpInfoItem(props) {
   return (
     <div className={classes.root}>
       <a target="_blank" className={classes.linkTag} href="https://pancakeswap.finance/swap">Pc v2</a> | {props.currentTokenInfo.name}/{lpInfo.label} LP Holdings:<br />
-      {(lpInfo.reserve == undefined) ? 0 : parseFloat(lpInfo.reserve).toFixed(2) + lpInfo.symbol}<span className={'textSuccess'}>{(lpInfo.reserve == undefined) ? '($0)' : `(${lpMarketcap})`}</span> |<a target="_blank" className={classes.linkTag} href={`https://bscscan.com/token/${lpInfo.tokenAddress}?a=${lpInfo.lpAddress}#tokenAnalytics`}> Chart</a> | <a target="_blank" className={classes.linkTag} href={`https://bscscan.com/token/${lpInfo.lpAddress}`}>Holders</a>
+      {(lpInfo.reserve === undefined) ? 0 : parseFloat(lpInfo.reserve).toFixed(2) + lpInfo.symbol}<span className={'textSuccess'}>{(lpInfo.reserve === undefined) ? '($0)' : `(${lpMarketcap})`}</span> |<a target="_blank" className={classes.linkTag} href={`https://bscscan.com/token/${lpInfo.tokenAddress}?a=${lpInfo.lpAddress}#tokenAnalytics`}> Chart</a> | <a target="_blank" className={classes.linkTag} href={`https://bscscan.com/token/${lpInfo.lpAddress}`}>Holders</a>
     </div>
   );
 }

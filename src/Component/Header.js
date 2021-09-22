@@ -20,13 +20,16 @@ const useStyles = makeStyles((theme) => ({
   appBarSolid: {
     backgroundColor: '#262626',
     boxShadow: 'none',
-    padding: 8,
+    padding: 15,
     textAlign: 'center',
     borderBottom: '3px solid #484e53',
     position: 'initial'
   },
   Toolbar: {
     padding: "0px 50px 0px 50px",
+    [theme.breakpoints.down("xs")]: {
+      padding: '10px 0px 10px 30px',
+    },
   },
   linkGroup: {
     textAlign: 'center',
@@ -88,7 +91,14 @@ const useStyles = makeStyles((theme) => ({
   coinAmount: {
     color: '#adb5bd',
     textAlign: 'left',
-    fontSize: 14
+    fontSize: 14,
+    [theme.breakpoints.down("sm")]: {
+      textAlign: 'center'
+    },
+    [theme.breakpoints.down("xs")]: {
+      paddingRight: '50px',
+      textAlign: 'left',
+    },
   },
   amountColor: {
     color: '#28a745'
@@ -135,7 +145,7 @@ export default function Header(props) {
   const history = useHistory();
 
   let connectStatus = localStorage.getItem('PoocoinConnectStatus'); //status connect to metamask
-  if (connectStatus == null) {
+  if (connectStatus === null) {
     connectStatus = connectWalletStatus.disconnect;
     localStorage.setItem('PoocoinConnectStatus', connectWalletStatus.disconnect);
   }
@@ -149,11 +159,11 @@ export default function Header(props) {
   const dispatch = useDispatch();
 
   const handleNetworkChange = (event) => {                         //select network chain
-    if (event.target.value == networkValue.Binance) {
+    if (event.target.value === networkValue.Binance) {
       history.push('/')
-    } else if (event.target.value == networkValue.Polygon) {
+    } else if (event.target.value === networkValue.Polygon) {
       history.push('/polygon')
-    } else if (event.target.value == networkValue.Kuchain) {
+    } else if (event.target.value === networkValue.Kuchain) {
       history.push('/kuchain')
     }
     setNetwork(event.target.value);
@@ -164,7 +174,7 @@ export default function Header(props) {
   }
 
   const connectOrDisconnect = () => {                               //connect and disconnect button event
-    if (userDisconnected == connectWalletStatus.connect) {
+    if (userDisconnected === connectWalletStatus.connect) {
       setUserDisconnected(connectWalletStatus.disconnect);
       localStorage.setItem('PoocoinConnectStatus', connectWalletStatus.disconnect);
       reset();
@@ -185,7 +195,11 @@ export default function Header(props) {
     if (currentChainId != metamaskChainId) {
       await switchNetwork(currentChainId);                       //switch network in metamask
     } else {
-      connect('injected');
+      try {
+        connect('injected');
+      } catch (err) {
+        console.log(err);
+      }
       setUserDisconnected(connectWalletStatus.connect);          //connect btn
       localStorage.setItem('PoocoinConnectStatus', 1);
     }
@@ -193,8 +207,12 @@ export default function Header(props) {
   }
 
   useEffect(() => {
-    if (!account && userDisconnected == connectWalletStatus.connect) {
-      connect();
+    if (!account && userDisconnected === connectWalletStatus.connect) {
+      try {
+        connect();
+      } catch (err) {
+        console.log(err);
+      }
     }
     fetch('https://api.coingecko.com/api/v3/simple/price?ids=poocoin&vs_currencies=usd')
       .then(res => res.json())
@@ -208,7 +226,7 @@ export default function Header(props) {
 
   let coinAmount = '';
   let connectLabel = 'Connect';
-  if (account && userDisconnected == connectWalletStatus.connect) {
+  if (account && userDisconnected === connectWalletStatus.connect) {
     coinAmount = (
       <div>
         <Link to={`/swap?outputCurrency=${DefaultTokens.POOCOIN.address}`} className={classes.rightLink}>
@@ -267,7 +285,7 @@ export default function Header(props) {
                 </NativeSelect>
               </Grid>
               {
-                networkChainId == networkValue.Binance
+                networkChainId === networkValue.Binance
                   ?
                   <Grid item>
                     <Link
@@ -293,8 +311,8 @@ export default function Header(props) {
             </Grid>
           </Grid>
           {
-            networkChainId == networkValue.Binance &&
-            <Grid item md={5} sm={5} xl={5} container justifyContent={'center'} >
+            networkChainId === networkValue.Binance &&
+            <Grid item md={5} sm={12} xl={5} container justifyContent={'center'} >
               <div className={classes.linkGroup}>
                 <Link className={classes.link} to="/">Charts</Link>
                 <Link className={classes.link} to="/swap">Trade</Link>
@@ -310,7 +328,7 @@ export default function Header(props) {
             </Grid>
           }
           {
-            networkChainId == networkValue.Polygon &&
+            networkChainId === networkValue.Polygon &&
             <Grid item md={5} sm={5} xl={5} container justifyContent={'center'} >
               <div className={classes.linkGroup}>
                 <Link className={classes.link} to="/polygon">Charts</Link>
@@ -319,7 +337,7 @@ export default function Header(props) {
             </Grid>
           }
           {
-            networkChainId == networkValue.Kuchain &&
+            networkChainId === networkValue.Kuchain &&
             <Grid item md={5} sm={5} xl={5} container justifyContent={'center'} >
               <div className={classes.linkGroup}>
                 <Link className={classes.link} to="/kuchain">Charts</Link>
@@ -327,10 +345,10 @@ export default function Header(props) {
               </div>
             </Grid>
           }
-          <Grid item md={2} sm={12} xl={2} container className={classes.coinAmount}>
+          <Grid item md={2} sm={12} xl={2} className={classes.coinAmount}>
             {coinAmount}
           </Grid>
-          <Grid item md={1} sm={12} xl={1} container justifyContent={'center'}>
+          <Grid item md={1} sm={12} xl={1}>
             <Button variant="contained" className={classes.connect} onClick={connectOrDisconnect}>{connectLabel}</Button>
           </Grid>
         </Grid>
@@ -343,7 +361,7 @@ export default function Header(props) {
         <div className={classes.paper}>
           <button className={classes.connectBtn} onClick={connectMethod(connectType.metamask)}>Metamask/TrustWallet</button>
           <button className={classes.connectBtnDisable}>WalletConnect</button>
-          {network == networkValue.Binance && <button className={classes.connectBtnDisable} >Binance Chain Wallet</button>}
+          {network === networkValue.Binance && <button className={classes.connectBtnDisable} >Binance Chain Wallet</button>}
           <button className={classes.connectBtn} onClick={modalClose}>Close</button>
         </div>
       </Modal>

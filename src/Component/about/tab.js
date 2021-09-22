@@ -7,8 +7,7 @@ import PropTypes from "prop-types";
 import List from "./list";
 import { getTotalSupply } from "../../PooCoin/index.js";
 import { numberWithCommas } from '../../PooCoin/util';
-import { Divider } from "@material-ui/core";
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 // import { useState } from "react";
 
@@ -83,7 +82,7 @@ export default function CenteredTabs(props) {
   }, [currentTokenAddress]);
 
   const setTotalSupply = async () => {
-    if (currentTokenAddress != undefined) {
+    if (currentTokenAddress !== undefined) {
       let totalSupplyData = await getTotalSupply(currentTokenAddress)
       setTotal(parseInt(totalSupplyData));
     }

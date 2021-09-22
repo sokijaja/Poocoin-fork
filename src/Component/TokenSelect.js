@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import { Button, Icon } from "@material-ui/core";
 import TokenInput from "./TokenInput";
 import Select from "react-select";
-import { getSearchTokenName } from "../actions";
 // import { Field } from 'react-final-form'
 
 const useStyles = makeStyles((theme) => ({
