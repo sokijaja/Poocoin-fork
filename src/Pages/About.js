@@ -21,8 +21,6 @@ import { useHistory, useParams } from "react-router";
 import { getLpinfo } from "../actions";
 import { useSelector, useDispatch } from 'react-redux';
 import DefaultTokens from '../config/default_tokens.json';
-import AccountBalanceWallet from "@material-ui/icons/AccountBalanceWallet";
-import { Link } from "react-router-dom";
 import PoocoinIcon from '../Images/poocoin512.png';
 
 const useStyles = makeStyles((theme) => ({

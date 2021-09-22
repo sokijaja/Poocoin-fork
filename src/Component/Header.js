@@ -230,7 +230,7 @@ export default function Header(props) {
     coinAmount = (
       <div>
         <Link to={`/swap?outputCurrency=${DefaultTokens.POOCOIN.address}`} className={classes.rightLink}>
-          <div>Your <img src={PoocoinIcon} height="18" /> : {parseFloat(poocoinBalanceData).toFixed(2)} <span className={classes.amountColor}>${parseFloat(balance).toFixed(2)}</span></div>
+          <div>Your <img src={PoocoinIcon} height="18" /> : {poocoinBalanceData} <span className={classes.amountColor}>${parseFloat(balance).toFixed(2)}</span></div>
         </Link>
         <a target="_blank" href={`https://v1exchange.pancakeswap.finance/#/add/BNB/${DefaultTokens.POOCOIN.address}`} className={classes.rightLink}>
           <div>Your <img src={PoocoinIcon} height="18" /><img src={BNBIcon} height="15" /> LP V1: 0.00 <span className={classes.amountColor}>$0.00</span></div>

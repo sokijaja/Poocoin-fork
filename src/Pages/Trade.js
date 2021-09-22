@@ -15,6 +15,9 @@ import '../css/Trade.css';
 import { tokenBalance, bnbBalance, getRate, tokenSwap, approveToken, getAllowance, getAmountsOut } from '../PooCoin';
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: '#e9ecef !important'
+  },
   container: {
     margin: '20px auto 40px auto',
     backgroundColor: '#303032',
@@ -375,115 +378,117 @@ export default function Trade() {
     </div>
   );
   return (
-    <Container fixed className={classes.container}>
-      <div className={classes.options}>
-        <div>
-          <Button onClick={() => handleChange(0)} variant="contained" className={tabIndex == 0 ? classNames(classes.tabSelected, classes.button) : classNames(classes.tab, classes.button)}>Auto</Button>
-          <Button onClick={() => handleChange(1)} variant="contained" className={tabIndex == 1 ? classNames(classes.tabSelected, classes.button) : classNames(classes.tab, classes.button)}>Pancake V1</Button>
-          <Button onClick={() => handleChange(2)} variant="contained" className={tabIndex == 2 ? classNames(classes.tabSelected, classes.button) : classNames(classes.tab, classes.button)}>Pancake V2</Button>
+    <div className={classes.root}>
+      <Container fixed className={classes.container}>
+        <div className={classes.options}>
+          <div>
+            <Button onClick={() => handleChange(0)} variant="contained" className={tabIndex == 0 ? classNames(classes.tabSelected, classes.button) : classNames(classes.tab, classes.button)}>Auto</Button>
+            <Button onClick={() => handleChange(1)} variant="contained" className={tabIndex == 1 ? classNames(classes.tabSelected, classes.button) : classNames(classes.tab, classes.button)}>Pancake V1</Button>
+            <Button onClick={() => handleChange(2)} variant="contained" className={tabIndex == 2 ? classNames(classes.tabSelected, classes.button) : classNames(classes.tab, classes.button)}>Pancake V2</Button>
+          </div>
+          <div>
+            <Button variant="contained" className={classNames(classes.tab, classes.button)} onClick={handleOpen}><Icon>code</Icon></Button>
+            <Modal
+              open={modalOpen}
+              onClose={handleClose}
+              aria-labelledby="simple-modal-title"
+              aria-describedby="simple-modal-description"
+            >
+              {body}
+            </Modal>
+            <Button variant="contained" className={classNames(classes.tab, classes.button)} ><Icon>link</Icon></Button>
+          </div>
+        </div>
+        <div style={{ marginTop: '15px' }}>
+          {toPancakeSwap}
         </div>
         <div>
-          <Button variant="contained" className={classNames(classes.tab, classes.button)} onClick={handleOpen}><Icon>code</Icon></Button>
-          <Modal
-            open={modalOpen}
-            onClose={handleClose}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-          >
-            {body}
-          </Modal>
-          <Button variant="contained" className={classNames(classes.tab, classes.button)} ><Icon>link</Icon></Button>
-        </div>
-      </div>
-      <div style={{ marginTop: '15px' }}>
-        {toPancakeSwap}
-      </div>
-      <div>
-        <div className={classes.label}>
-          <span>Slippage</span>
-        </div>
-        <CssTextField
-          id="standard-start-adornment"
-          InputProps={{
-            disableUnderline: true,
-            value: slippage,
-            placeholder: '0.5',
-            onChange: onSlippageChange,
-            disabled: isAutoSlippage,
-            endAdornment:
-              <InputAdornment position="end">
-                <span style={{ color: 'white' }}>%</span>
-                <Button variant="contained" onClick={onAutoSlippage} className={autoSlippage}>Auto Slippage</Button>
-              </InputAdornment>,
-          }}
-        />
-        <div className={classes.label}>
-          <span>From ({fromTokenSymbol})</span>
-          <span>Balance: {fromBalance}</span>
-        </div>
-        <CssTextField
-          InputProps={{
-            disableUnderline: true,
-            value: fromAmount,
-            placeholder: '0.0',
-            onChange: onChangeFromAmount,
-            endAdornment:
-              <InputAdornment position="end">
-                <Button className={classes.button} onClick={() => onclickMaxBtn()}>MAX</Button>
-                {/* <Button className={classes.button}><img src={BTCB} width="23px"/>&nbsp;{fromToken}</Button> */}
-                <TokenModal css={classes.button} tokenChange={onFromTokenChange} />
-              </InputAdornment>
-          }}
-        />
-        <div style={{ textAlign: 'center' }}>
-          <Button variant="contained" className={classNames(classes.updown, classes.button)} onClick={() => onclickFromToChange()}><ArrowDownwardTwoToneIcon /></Button>
-        </div>
-        <div className={classes.tolabel}>
-          <span>To ({toTokenSymbol})</span>
-          <span>Balance: {toBalance}</span>
-        </div>
-        <CssTextField
-          id="standard-start-adornment"
-          InputProps={{
-            disableUnderline: true,
-            value: toAmount > 0 ? parseFloat(toAmount).toFixed(8) : toAmount,
-            placeholder: '0.0',
-            onChange: onChangeToAmount,
-            endAdornment:
-              <InputAdornment position="end">
-                <TokenModal css={classes.button} tokenChange={onToTokenChange} />
-              </InputAdornment>,
-          }}
-        />
-        {
-          swapInfoEnable ?
-            <Container className={classes.swapInfo}>
-              <Typography className={classes.swapInfoText}>Minimum Received: {minimumReceived.toFixed(8)}</Typography>
-              <Typography className={classes.swapInfoText}>Price Impact: {priceImpact}</Typography>
-              <Typography className={classes.swapInfoText}>Price: {parseFloat(price0).toFixed(8)} {toTokenSymbol}/{fromTokenSymbol}</Typography>
-              <Typography className={classes.swapInfoText}>Price: {parseFloat(price1).toFixed(8)} {fromTokenSymbol}/{toTokenSymbol}</Typography>
-            </Container>
-            : ""
-        }
-        <div className={classes.label}>
-          {!account && <span>Connect your wallet</span>}
+          <div className={classes.label}>
+            <span>Slippage</span>
+          </div>
+          <CssTextField
+            id="standard-start-adornment"
+            InputProps={{
+              disableUnderline: true,
+              value: slippage,
+              placeholder: '0.5',
+              onChange: onSlippageChange,
+              disabled: isAutoSlippage,
+              endAdornment:
+                <InputAdornment position="end">
+                  <span style={{ color: 'white' }}>%</span>
+                  <Button variant="contained" onClick={onAutoSlippage} className={autoSlippage}>Auto Slippage</Button>
+                </InputAdornment>,
+            }}
+          />
+          <div className={classes.label}>
+            <span>From ({fromTokenSymbol})</span>
+            <span>Balance: {fromBalance}</span>
+          </div>
+          <CssTextField
+            InputProps={{
+              disableUnderline: true,
+              value: fromAmount,
+              placeholder: '0.0',
+              onChange: onChangeFromAmount,
+              endAdornment:
+                <InputAdornment position="end">
+                  <Button className={classes.button} onClick={() => onclickMaxBtn()}>MAX</Button>
+                  {/* <Button className={classes.button}><img src={BTCB} width="23px"/>&nbsp;{fromToken}</Button> */}
+                  <TokenModal css={classes.button} tokenChange={onFromTokenChange} />
+                </InputAdornment>
+            }}
+          />
+          <div style={{ textAlign: 'center' }}>
+            <Button variant="contained" className={classNames(classes.updown, classes.button)} onClick={() => onclickFromToChange()}><ArrowDownwardTwoToneIcon /></Button>
+          </div>
+          <div className={classes.tolabel}>
+            <span>To ({toTokenSymbol})</span>
+            <span>Balance: {toBalance}</span>
+          </div>
+          <CssTextField
+            id="standard-start-adornment"
+            InputProps={{
+              disableUnderline: true,
+              value: toAmount > 0 ? parseFloat(toAmount).toFixed(8) : toAmount,
+              placeholder: '0.0',
+              onChange: onChangeToAmount,
+              endAdornment:
+                <InputAdornment position="end">
+                  <TokenModal css={classes.button} tokenChange={onToTokenChange} />
+                </InputAdornment>,
+            }}
+          />
           {
-            account && fromToken && requireApprove() && <Button
-              variant={"contained"}
-              className={classes.swapBtn}
-              onClick={() => onApprove()}
-            >Approve</Button>
+            swapInfoEnable ?
+              <Container className={classes.swapInfo}>
+                <Typography className={classes.swapInfoText}>Minimum Received: {minimumReceived.toFixed(8)}</Typography>
+                <Typography className={classes.swapInfoText}>Price Impact: {priceImpact}</Typography>
+                <Typography className={classes.swapInfoText}>Price: {parseFloat(price0).toFixed(8)} {toTokenSymbol}/{fromTokenSymbol}</Typography>
+                <Typography className={classes.swapInfoText}>Price: {parseFloat(price1).toFixed(8)} {fromTokenSymbol}/{toTokenSymbol}</Typography>
+              </Container>
+              : ""
           }
-          {
-            account && !requireApprove() && <Button
-              variant={"contained"}
-              disabled={swapButtonDisable}
-              className={classes.swapBtn}
-              onClick={() => onSwap()}
-            >Swap</Button>
-          }
+          <div className={classes.label}>
+            {!account && <span>Connect your wallet</span>}
+            {
+              account && fromToken && requireApprove() && <Button
+                variant={"contained"}
+                className={classes.swapBtn}
+                onClick={() => onApprove()}
+              >Approve</Button>
+            }
+            {
+              account && !requireApprove() && <Button
+                variant={"contained"}
+                disabled={swapButtonDisable}
+                className={classes.swapBtn}
+                onClick={() => onSwap()}
+              >Swap</Button>
+            }
+          </div>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </div>
   )
 }
