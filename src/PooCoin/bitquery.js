@@ -77,6 +77,7 @@ export const getTransactionListData = async (tokenAddress) => {
     headers: {
       "Content-Type": "application/json",
     },
+    mode: "cors",
     // headers: headers,
     body: JSON.stringify({
       query: QUERY
@@ -84,7 +85,6 @@ export const getTransactionListData = async (tokenAddress) => {
   });
 
   const data = await response.json();
-  console.log(data);
   const currency = data.data.ethereum.dexTrades;
   return currency;
 }
@@ -147,7 +147,6 @@ export const getPriceByTime = async (tokenAddress, time) => {
   });
 
   const data = await response.json();
-  console.log(data);
   const currency = data.data.ethereum.dexTrades[0].quotePrice;
   return currency;
 }

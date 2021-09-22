@@ -856,11 +856,10 @@ export const getTransactionList = async (tokenAddress, setTransactionListData) =
             hour = "12";
           }
           let transactionTime = hour + ":" + minute + ":" + second
-          const tokenPrice = await getPriceByTime(tokenAddress, time_str[0]);
+          // const tokenPrice = await getPriceByTime(tokenAddress, time_str[0]);
           // await delay(2000);
 
           let coinPrice = transactionLists[i].tradeAmount;
-          // let tokenPrice = transactionLists[i].buyAmount / coinPrice;
 
           let exchangeName = transactionLists[i].exchange.fullName;
           if (exchangeName == "Pancake") {
@@ -875,7 +874,7 @@ export const getTransactionList = async (tokenAddress, setTransactionListData) =
               "tokenSymbol": transactionLists[i].buyCurrency.symbol,
               "coinNum": transactionLists[i].sellAmount,
               "coinSymbol": transactionLists[i].sellCurrency.symbol,
-              "tokenPrice": tokenPrice,
+              // "tokenPrice": tokenPrice,
               "transactionTime": transactionTime,
               "AMPM": sAMPM,
               // "coinPrice": parseInt(transactionLists[i].buyAmount) * tokenPrice,
@@ -890,7 +889,7 @@ export const getTransactionList = async (tokenAddress, setTransactionListData) =
               "tokenSymbol": transactionLists[i].sellCurrency.symbol,
               "coinNum": transactionLists[i].buyAmount,
               "coinSymbol": transactionLists[i].buyCurrency.symbol,
-              "tokenPrice": tokenPrice,
+              // "tokenPrice": tokenPrice,
               "transactionTime": transactionTime,
               "AMPM": sAMPM,
               "coinPrice": coinPrice,

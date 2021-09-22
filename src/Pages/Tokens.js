@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     "& > *": {
       margin: "1px",
-      padding: "0px 30px 0px 0px",
     },
     backgroundColor: '#262626!important'
   },
@@ -45,6 +44,18 @@ const useStyles = makeStyles((theme) => ({
   },
   tabContainer: {
     minHeight: "700px !important",
+  },
+  centerContainer: {
+    padding: '10px',
+    [theme.breakpoints.down("xs")]: {
+      width: '440px',
+    }
+  },
+  leftSide: {
+    padding: '10px',
+    [theme.breakpoints.down("xs")]: {
+      width: '100%'
+    }
   },
   rightSide: {
     backgroundColor: "#303030",
@@ -88,6 +99,11 @@ const useStyles = makeStyles((theme) => ({
   chartPan: {
     display: 'inline-block',
     width: '100%',
+  },
+  contentHeader: {
+    [theme.breakpoints.down("xs")]: {
+      marginBottom: '10px'
+    }
   }
 }));
 
@@ -189,28 +205,32 @@ export default function Tokens(props) {
   let centerContainer = (
     <div>
       <div className={classes.headerContainer}>
-        <Grid container spacing={2}>
-          <Grid xs={6} item>
-            <p
-              style={{
-                display: "flex",
-                color: "white",
-                textAlign: "left",
-                margin: 0,
-                float: "left",
-              }}
-            >
-              <img className={classes.img} src={logo} width="32" height="32" />
-              <span>
-                {currentTokenInfo.name} ({currentTokenInfo.name}/{firstCoinName})
-                <br /><span className={'textSuccess'}>${parseFloat(priceRateData).toFixed(14)}</span>
-              </span>
-            </p>
-            <Grid style={{ float: "left" }}>
-              <TokenSelect inputHandle={inputHandle} tokenProps={handleTokenPropsChange} />
+        <Grid container>
+          <Grid xs={6} md={6} sm={6} item className={classes.contentHeader}>
+            <Grid container>
+              <Grid item xl={12}>
+                <p
+                  style={{
+                    display: "flex",
+                    color: "white",
+                    textAlign: "left",
+                    margin: 0,
+                    float: "left",
+                  }}
+                >
+                  <img className={classes.img} src={logo} width="32" height="32" />
+                  <span>
+                    {currentTokenInfo.name} ({currentTokenInfo.name}/{firstCoinName})
+                    <br /><span className={'textSuccess'}>${parseFloat(priceRateData).toFixed(14)}</span>
+                  </span>
+                </p>
+              </Grid>
+              <Grid xl={12} style={{ float: "left" }}>
+                <TokenSelect inputHandle={inputHandle} tokenProps={handleTokenPropsChange} />
+              </Grid>
             </Grid>
           </Grid>
-          <Grid xs={6} item className={classes.buttongrid}>
+          <Grid md={6} sm={6} item className={classes.buttongrid}>
             <div>
               <Button className={classes.button} target="_blank" href={`https://bscscan.com/token/${tokenAddress}`}>
                 <img src={Buttonicon} width="18" height="18" />
@@ -235,7 +255,6 @@ export default function Tokens(props) {
         <Grid
           item
           container
-          spacing={2}
           xs={12}
           style={{ marginTop: 15, flexFlow: "row" }}
         >
@@ -260,7 +279,7 @@ export default function Tokens(props) {
           }
         </div>
         <br />
-        <TableTab />
+        <TableTab tokenPrice={priceRateData} />
       </Grid>
     </div>
   );
@@ -269,14 +288,14 @@ export default function Tokens(props) {
 
   if (showMode) {
     container = (
-      <Grid container spacing={2}>
-        <Grid item xs={3}>
+      <Grid container>
+        <Grid item xs={12} sm={3} md={3} className={classes.leftSide}>
           <Lefttab lpdata={lpDatas} currentTokenInfo={currentTokenInfo} />
         </Grid>
-        <Grid item xs={6} style={{ marginTop: 5 }}>
+        <Grid item xs={12} sm={9} md={6} className={classes.centerContainer}>
           {centerContainer}
         </Grid>
-        <Grid item xs={3} className={classes.rightSide}>
+        <Grid item xs={12} sm={12} md={3} className={classes.rightSide}>
           <div className={classes.rightTitle}>Sponsored BSC Project</div>
           <div>
             <a
@@ -299,11 +318,11 @@ export default function Tokens(props) {
     );
   } else {
     container = (
-      <Grid container item xs={12}>
-        <Grid item xs={3}>
+      <Grid container item xs={12} md={12} sm={12} xl={12}>
+        <Grid item xs={12} md={3} sm={3} xl={3} className={classes.leftSide}>
           <Lefttab lpdata={lpDatas} currentTokenInfo={currentTokenInfo} />
         </Grid>
-        <Grid item xs={9}>
+        <Grid item xs={12} md={9} sm={9} xl={9} className={classes.centerContainer}>
           {centerContainer}
         </Grid>
       </Grid>

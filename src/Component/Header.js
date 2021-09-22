@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
   },
   Toolbar: {
     padding: "0px 50px 0px 50px",
+    [theme.breakpoints.down("xs")]: {
+      padding: '10px 0px 10px 30px',
+    },
   },
   linkGroup: {
     textAlign: 'center',
@@ -88,7 +91,14 @@ const useStyles = makeStyles((theme) => ({
   coinAmount: {
     color: '#adb5bd',
     textAlign: 'left',
-    fontSize: 14
+    fontSize: 14,
+    [theme.breakpoints.down("sm")]: {
+      textAlign: 'center'
+    },
+    [theme.breakpoints.down("xs")]: {
+      paddingRight: '50px',
+      textAlign: 'left',
+    },
   },
   amountColor: {
     color: '#28a745'
@@ -220,7 +230,7 @@ export default function Header(props) {
     coinAmount = (
       <div>
         <Link to={`/swap?outputCurrency=${DefaultTokens.POOCOIN.address}`} className={classes.rightLink}>
-          <div>Your <img src={PoocoinIcon} height="18" /> : {poocoinBalanceData} <span className={classes.amountColor}>${parseFloat(balance).toFixed(2)}</span></div>
+          <div>Your <img src={PoocoinIcon} height="18" /> : {parseFloat(poocoinBalanceData).toFixed(2)} <span className={classes.amountColor}>${parseFloat(balance).toFixed(2)}</span></div>
         </Link>
         <a target="_blank" href={`https://v1exchange.pancakeswap.finance/#/add/BNB/${DefaultTokens.POOCOIN.address}`} className={classes.rightLink}>
           <div>Your <img src={PoocoinIcon} height="18" /><img src={BNBIcon} height="15" /> LP V1: 0.00 <span className={classes.amountColor}>$0.00</span></div>
@@ -302,7 +312,7 @@ export default function Header(props) {
           </Grid>
           {
             networkChainId === networkValue.Binance &&
-            <Grid item md={5} sm={5} xl={5} container justifyContent={'center'} >
+            <Grid item md={5} sm={12} xl={5} container justifyContent={'center'} >
               <div className={classes.linkGroup}>
                 <Link className={classes.link} to="/">Charts</Link>
                 <Link className={classes.link} to="/swap">Trade</Link>
@@ -335,10 +345,10 @@ export default function Header(props) {
               </div>
             </Grid>
           }
-          <Grid item md={2} sm={12} xl={2} container className={classes.coinAmount}>
+          <Grid item md={2} sm={12} xl={2} className={classes.coinAmount}>
             {coinAmount}
           </Grid>
-          <Grid item md={1} sm={12} xl={1} container justifyContent={'center'}>
+          <Grid item md={1} sm={12} xl={1}>
             <Button variant="contained" className={classes.connect} onClick={connectOrDisconnect}>{connectLabel}</Button>
           </Grid>
         </Grid>

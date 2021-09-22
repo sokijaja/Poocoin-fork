@@ -53,7 +53,7 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-export default function CenteredTabs() {
+export default function CenteredTabs(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
@@ -77,7 +77,7 @@ export default function CenteredTabs() {
         <Tab label="Sellers" className={classes.tabTilteLength} />
       </Tabs>
       <TabPanel value={value} index={0} className={classes.tabpanel}>
-        <Token />
+        <Token tokenPrice={props.tokenPrice} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Wallet />

@@ -118,7 +118,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function CustomizedTables() {
+export default function CustomizedTables(props) {
   const classes = useStyles();
   const tokenAddress = useSelector((state) => state.tokenAddress)
   const [transactionLists, setTransactionLists] = useState();
@@ -180,7 +180,7 @@ export default function CustomizedTables() {
                     <div>{transactionList.coinNum + transactionList.coinSymbol}</div>
                   </StyledTableCell>
                   <StyledTableCell className={transactionList.status === "buy" ? classes.tokenInfosell : classes.tokenInfobuy}>
-                    ${transactionList.tokenPrice}
+                    ${props.tokenPrice}
                     <div>{transactionList.exchangeName}</div>
                   </StyledTableCell>
                   <StyledTableCell className={transactionList.status === "buy" ? classes.tokenInfosell : classes.tokenInfobuy}>
