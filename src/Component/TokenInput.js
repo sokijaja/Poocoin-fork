@@ -52,7 +52,7 @@ export default function TokenInput({ inputHandle }) {
   return (
     <div className={classes.Input}>
       <OutlinedInput value={token} placeholder="Token Address..." name="webSite" onChange={onTokenChange} autoComplete="off" className={classes.tokenInput} style={{ fontSize: '13px!important' }} />
-      <Button variant="contained" onClick={() => { inputHandle(token) }} className={classes.button}>Go</Button>
+      <Button variant="contained" onClick={() => { inputHandle(token.toLowerCase()) }} className={classes.button}>Go</Button>
     </div>
   )
 }

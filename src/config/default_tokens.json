@@ -5,7 +5,7 @@
     "symbol": "BNB"
   },
   "WBNB": {
-    "address": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+    "address": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
     "name": "Wrapped BNB",
     "symbol": "WBNB"
   },
@@ -30,7 +30,7 @@
     "symbol": "ETH"
   },
   "POOCOIN": {
-    "address": "0xB27ADAfFB9fEa1801459a1a81B17218288c097cc",
+    "address": "0xb27adaffb9fea1801459a1a81b17218288c097cc",
     "name": "POOCOIN",
     "symbol": "POOCOIN"
   },
