@@ -19,7 +19,6 @@ export default {
 		let newSymbolName;
 		let lpAddress;
 		var split_data = symbolName.split('/')	//description tokenaddress:tokenaddress/coinaddress or tokenname/coinaddress
-
 		if (!split_data[0].includes(':')) {
 			let response_ = await getLpaddress(split_data[0], split_data[1]);
 			lpAddress = response_.data;
@@ -52,13 +51,13 @@ export default {
 			data_status: 'streaming',
 		}
 
-		if (new_split_data[1].match(/USD/)) {
-			symbol_stub.pricescale = 100000
-		}
+		// if (new_split_data[1].match(/USD/)) {
+		// 	symbol_stub.pricescale = 100000
+		// }
 
-		if (new_split_data[1].match(/BNB/)) {
-			symbol_stub.pricescale = 10000
-		}
+		// if (new_split_data[1].match(/BNB/)) {
+		// 	symbol_stub.pricescale = 1000000
+		// }
 
 		setTimeout(function () {
 			onSymbolResolvedCallback(symbol_stub)

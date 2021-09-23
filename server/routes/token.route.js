@@ -25,7 +25,7 @@ router.get("/getTokenName", async (req, res) => {
     if (query.length > 1) {
       tokenName = await tokenSchema
         .find({
-          name: { $regex: query, $options: "i" },
+          name: { $regex: query.toLowerCase(), $options: "i" },
         })
         .limit(50);
       res.json(tokenName);
@@ -43,7 +43,7 @@ router.get("/getSymbol", async (req, res) => {
     if (query.length > 1) {
       symbolName = await tokenSchema
         .find({
-          token: { $regex: query, $options: "i" },
+          token: { $regex: query.toLowerCase(), $options: "i" },
         })
         .select("symbol")
         .limit(50);
@@ -87,18 +87,18 @@ router.get("/getLpinfo", async (req, res) => {
     let token_address = req.query.foo;
     let lpInfos = await lpSchema.find({
       $and: [
-        { $or: [{ token0: token_address }, { token1: token_address }] },
+        { $or: [{ token0: token_address.toLowerCase() }, { token1: token_address.toLowerCase() }] },
         {
           $or: [
             { token0: "0x2170ed0880ac9a755fd29b2688956bd959f933f8" },
             { token0: "0xe9e7cea3dedca5984780bafc599bd69add087d56" },
             { token0: "0x55d398326f99059ff775485246999027b3197955" },
-            { token0: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c" },
+            { token0: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c" },
             { token0: "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c" },
             { token1: "0x2170ed0880ac9a755fd29b2688956bd959f933f8" },
             { token1: "0xe9e7cea3dedca5984780bafc599bd69add087d56" },
             { token1: "0x55d398326f99059ff775485246999027b3197955" },
-            { token1: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c" },
+            { token1: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c" },
             { token1: "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c" },
           ],
         },
@@ -107,7 +107,7 @@ router.get("/getLpinfo", async (req, res) => {
 
     tokenName = await tokenSchema
       .findOne({
-        token: token_address,
+        token: token_address.toLowerCase(),
       })
     //token selected info
     let tokenInfo = { name: tokenName.name, symbol: tokenName.symbol };
@@ -115,11 +115,11 @@ router.get("/getLpinfo", async (req, res) => {
     for (let index = 0; index < lpInfos.length; index++) {
       tokenName0 = await tokenSchema
         .find({
-          token: lpInfos[index].token0,
+          token: lpInfos[index].token0.toLowerCase(),
         })
       tokenName1 = await tokenSchema
         .find({
-          token: lpInfos[index].token1,
+          token: lpInfos[index].token1.toLowerCase(),
         })
       if (tokenName0.length == 0 || tokenName1.length == 0) {
         continue;
@@ -144,14 +144,14 @@ router.get("/getLpinfo", async (req, res) => {
 //Get Lpaddress from current token address and BNB token address
 router.get("/getLpaddress", async (req, res) => {
   try {
-    let tokenAddress = req.query.tokenAddress;
-    let coinAddress = req.query.coinAddress;
+    let tokenAddress = req.query.tokenAddress.toLowerCase();
+    let coinAddress = req.query.coinAddress.toLowerCase();
     let lpaddress;
     if (tokenAddress != null) {
       lpaddress = await lpSchema.findOne({
         $or: [
-          { $and: [{ token0: tokenAddress }, { token1: coinAddress }] },
-          { $and: [{ token1: tokenAddress }, { token0: coinAddress }] },
+          { $and: [{ token0: tokenAddress.toLowerCase() }, { token1: coinAddress.toLowerCase() }] },
+          { $and: [{ token1: tokenAddress.toLowerCase() }, { token0: coinAddress.toLowerCase() }] },
         ],
       });
       res.json(lpaddress.lp_address);

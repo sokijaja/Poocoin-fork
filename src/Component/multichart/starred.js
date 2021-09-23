@@ -93,24 +93,25 @@ export default function CustomizedTables(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {Object.keys(rows).map((key) => (
-            <StyledTableRow key={key}>
-              <StyledTableCell className={classes.tokenList} component="th" scope="row" onClick={addMultichartInfo(key)}>
-                {rows[key].name}&nbsp;
-                <span className={'textSuccess'}>${parseFloat(rows[key].amount).toFixed(4)}</span>
-                <br />
-                <span className={'textMuted'}>{rows[key].name}</span>
-              </StyledTableCell>
-              <StyledTableCell>
-                <span>0.00</span>
-                <br />
-                <span className={'textSuccess'}>$0.00</span>
-              </StyledTableCell>
-              <StyledTableCell>
-                <StarIcon className={classes.starredFillIcon} onClick={removeStarredData(key)} />
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
+          {rows != null &&
+            Object.keys(rows).map((key) => (
+              <StyledTableRow key={key}>
+                <StyledTableCell className={classes.tokenList} component="th" scope="row" onClick={addMultichartInfo(key)}>
+                  {rows[key].name}&nbsp;
+                  <span className={'textSuccess'}>${parseFloat(rows[key].amount).toFixed(4)}</span>
+                  <br />
+                  <span className={'textMuted'}>{rows[key].name}</span>
+                </StyledTableCell>
+                <StyledTableCell>
+                  <span>0.00</span>
+                  <br />
+                  <span className={'textSuccess'}>$0.00</span>
+                </StyledTableCell>
+                <StyledTableCell>
+                  <StarIcon className={classes.starredFillIcon} onClick={removeStarredData(key)} />
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>

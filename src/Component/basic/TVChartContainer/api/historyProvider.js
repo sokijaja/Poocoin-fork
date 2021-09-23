@@ -23,9 +23,6 @@ export default {
 			// url: `${api_root}${url}`,
 			url: `${api_temp_root}`,
 			qs,
-			// headers: {
-			// 	// "Access-Control-Allow-Origin": "*",
-			// },
 		})
 			.then(data => {
 				if (data.Response && data.Response === 'Error') {

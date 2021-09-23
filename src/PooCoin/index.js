@@ -177,7 +177,7 @@ export const vettedValues = async (setVettedData) => {
             // item.price = getPriceBySymbol(res[0]);
             item.name = res[0];
             item.address = address[0];
-            item.linkAddress = res[1]; // token address, symbol address
+            item.linkAddress = res[1].toLowerCase(); // token address, symbol address
             item.amount = parseInt(address[1]) / 1000000000000000000;
 
             if (res[0] !== "") results.push(item);
@@ -206,7 +206,7 @@ export const unvettedValues = async (setUnvettedData) => {
   unvetted_contract.messageLength().then((count) => {
     for (var i = parseInt(count) - 1; i > parseInt(count) - 11; i--) {
       unvetted_contract.messages(i).then((address) => {
-        unvettedArray.push(address);
+        unvettedArray.push(address.toLowerCase());
       });
     }
 
@@ -792,7 +792,7 @@ export const getWalletData = async (tokenAddress, account, setWalletValues) => {
 export const getOwnToken_wallet = async (accountAddress, setWalletTokenData) => {
   const currencies = await getOwnToken(accountAddress);
   for (let i = 0; i < currencies.length; i++) {
-    const currencyAddress = currencies[i].currency.address;
+    const currencyAddress = currencies[i].currency.address.toLowerCase();
     if (currencyAddress != '-') {
       try {
         //own token contract
