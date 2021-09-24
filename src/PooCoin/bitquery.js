@@ -136,7 +136,7 @@ export const getPriceByTime = async (tokenAddress, time) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      // "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Origin": "*",
       // "Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS",
       // "Access-Control-Allow-Headers":
       //   "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With",
@@ -180,6 +180,53 @@ export const getTransactionOwnerToken = async () => {
           fullName
         }
         tradeAmount(in: USD)
+      }
+    }
+  }`;
+
+  // -------- Endpoint ----------------------
+  const endpoint = "https://graphql.bitquery.io/";
+
+  // Function which fetches the data from the API
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: QUERY
+    })
+  });
+
+  const data = await response.json();
+  const currency = data.data.ethereum.dexTrades;
+  return currency;
+}
+
+export const getChartInfo = async (tokenAddress, coinAddress) => {
+  const QUERY = `{
+    ethereum(network: bsc) {
+      dexTrades(
+        options: {limit: 320, desc: "timeInterval.minute"}
+        exchangeName: {is: "Pancake v2"}
+        baseCurrency: {is: "${tokenAddress}"}
+        quoteCurrency: {is: "${coinAddress}"}
+        date: {}
+      ) {
+        timeInterval {
+          minute(format: "%FT%TZ", count: 15)
+        }
+        volume: tradeAmount(in: USD)
+        high: quotePrice(calculate: maximum)
+        low: quotePrice(calculate: minimum)
+        open: minimum(of: block, get: quote_price)
+        close: maximum(of: block, get: quote_price)
+        baseCurrency {
+          name
+        }
+        quoteCurrency {
+          name
+        }
       }
     }
   }`;

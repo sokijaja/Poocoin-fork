@@ -5,6 +5,7 @@ import FormControl from "@material-ui/core/FormControl";
 import { Button, Icon } from "@material-ui/core";
 import TokenInput from "./TokenInput";
 import Select from "react-select";
+import Search from '@material-ui/icons/Search';
 // import { Field } from 'react-final-form'
 
 const useStyles = makeStyles((theme) => ({
@@ -113,7 +114,7 @@ export default function SimpleSelect({ tokenProps, inputHandle }) {
     <div style={{ display: "flex", width: 300 }}>
       {search}
       <Button className={classes.button} onClick={onOnlyToken}>
-        <Icon>edit</Icon>
+        <Search />
       </Button>
     </div>
   );
