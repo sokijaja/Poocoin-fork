@@ -154,6 +154,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function About(props) {
   const classes = useStyles();
+  const { tokenAddress } = props;
   const [showMode, setShowMode] = useState(1);
   const [priceRateData, setPriceRateData] = useState(0);
   const history = useHistory();
@@ -162,7 +163,7 @@ export default function About(props) {
   const [selectData, setSelectData] = useState([]);
   const [coinAddress, setCoinAddress] = useState(DefaultTokens.WBNB.address);
 
-  const tokenAddress = useSelector((state) => state.tokenAddress)
+  // const tokenAddress = useSelector((state) => state.tokenAddress)
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -235,7 +236,7 @@ export default function About(props) {
                 float: "left",
               }}
             >
-              <img className={classes.img} src={logo} width="32" height="32" />
+              <img className={classes.img} src={`https://r.poocoin.app/smartchain/assets/${tokenAddress}/logo.png`} width="32" height="32" />
               <span>
                 {currentTokenInfo.name} ({currentTokenInfo.name}/BNB)
                 <br /><span className={'textSuccess'}>${parseFloat(priceRateData).toFixed(14)}</span>

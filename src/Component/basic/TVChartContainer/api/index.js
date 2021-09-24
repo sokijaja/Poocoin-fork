@@ -31,7 +31,11 @@ export default {
 				coinSymbol = "BNB"
 			}
 			let response = await getSymbolName(split_data[0])
-			newSymbolName = response.data[0].symbol + '/' + coinSymbol;
+			if (response.data[0] == undefined) {
+				newSymbolName = 'undefined' + '/' + coinSymbol;
+			} else {
+				newSymbolName = response.data[0].symbol + '/' + coinSymbol;
+			}
 		} else {
 			newSymbolName = symbolName;
 		}

@@ -5,7 +5,6 @@ export default {
 
 	getBars: function (symbolInfo, resolution, from, to, first, limit) {
 		return getChartInfo(symbolInfo.ticker[0], symbolInfo.ticker[1]).then(data => {
-			console.log(data);
 			if (data.length) {
 				const bars = [];
 				let index = data.length - 1;

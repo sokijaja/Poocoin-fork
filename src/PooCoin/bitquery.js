@@ -77,8 +77,6 @@ export const getTransactionListData = async (tokenAddress) => {
     headers: {
       "Content-Type": "application/json",
     },
-    mode: "cors",
-    // headers: headers,
     body: JSON.stringify({
       query: QUERY
     })
@@ -216,7 +214,7 @@ export const getChartInfo = async (tokenAddress, coinAddress) => {
         timeInterval {
           minute(format: "%FT%TZ", count: 15)
         }
-        volume: tradeAmount(in: USD)
+        volume: quoteAmount
         high: quotePrice(calculate: maximum)
         low: quotePrice(calculate: minimum)
         open: minimum(of: block, get: quote_price)
@@ -238,6 +236,7 @@ export const getChartInfo = async (tokenAddress, coinAddress) => {
   const response = await fetch(endpoint, {
     method: "POST",
     headers: {
+      "Access-Control-Allow-Origin": "*",
       "Content-Type": "application/json",
     },
     body: JSON.stringify({

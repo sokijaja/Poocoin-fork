@@ -5,9 +5,7 @@ import Tab from "../Component/basic/hometab";
 import Lefttab from "../Component/about/tab";
 import Input from "../Component/basic/input";
 import { makeStyles } from "@material-ui/core/styles";
-import rightPoster from "../Images/moonstar3.gif";
 import Button from "@material-ui/core/Button";
-import logo from "../Images/TokenIcons/logo2.png";
 import Buttonicon from "../Images/bscscan.png";
 import LanguageIcon from "@material-ui/icons/Language";
 import TelegramIcon from "@material-ui/icons/Telegram";
@@ -62,11 +60,17 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 5,
     padding: 10,
   },
-  img: {
-    margin: "auto",
-    display: "block",
-    maxWidth: "100%",
-    maxHeight: "100%",
+  tokenImg: {
+    width: 32,
+    height: 32,
+    marginTop: '4px',
+    '& img[alt=img]': {
+      color: '#262626',
+    }
+  },
+  imgIcon: {
+    width: '100%',
+    height: '100%',
   },
   buttongrid: {
     textAlign: "-webkit-right",
@@ -128,10 +132,18 @@ export default function Tokens(props) {
     if (tokenAddress != undefined) {
       getLpinfo(tokenAddress)
         .then(data => {
+          if (data.lpInfos == null && data.tokenInfos == null) {
+            setFirstCoinName(null)
+            setCoinAddress(null)
+            setLpDatas(null);
+            setSelectData(null)
+            setCurrentTokenInfo(null)
+            return;
+          }
           const tokens = [];
           const selectOptionData = [];
           for (var idx in data.lpInfos) {
-            if (data.lpInfos[idx].token0 == tokenAddress) {
+            if (data.lpInfos[idx].token0 == data.tokenInfos.address) {
               let combined_json = {};
               combined_json["label"] = data.lpInfos[idx].tokenName1;
               //0: other token address, 1: other token symbolName 2: lp address 3: token order 
@@ -218,9 +230,13 @@ export default function Tokens(props) {
                     float: "left",
                   }}
                 >
-                  <img className={classes.img} src={logo} width="32" height="32" />
+                  <span className={classes.tokenImg}>
+                    {currentTokenInfo != null &&
+                      <img className={classes.imgIcon} src={`https://r.poocoin.app/smartchain/assets/${currentTokenInfo.address}/logo.png`} alt="img" />
+                    }
+                  </span>
                   <span>
-                    {currentTokenInfo.name} ({currentTokenInfo.name}/{firstCoinName})
+                    {currentTokenInfo == null ? null : currentTokenInfo.name} ({currentTokenInfo == null ? null : currentTokenInfo.name}/{firstCoinName})
                     <br /><span className={'textSuccess'}>${parseFloat(priceRateData).toFixed(14)}</span>
                   </span>
                 </p>
@@ -279,7 +295,10 @@ export default function Tokens(props) {
           }
         </div>
         <br />
-        <TableTab tokenPrice={priceRateData} />
+        {
+          lpDatas != null &&
+          <TableTab tokenPrice={priceRateData} />
+        }
       </Grid>
     </div>
   );
@@ -290,27 +309,16 @@ export default function Tokens(props) {
     container = (
       <Grid container>
         <Grid item xs={12} sm={3} md={3} className={classes.leftSide}>
-          <Lefttab lpdata={lpDatas} currentTokenInfo={currentTokenInfo} />
+          {
+            currentTokenInfo != null &&
+            <Lefttab lpdata={lpDatas} currentTokenInfo={currentTokenInfo} />
+          }
         </Grid>
         <Grid item xs={12} sm={9} md={6} className={classes.centerContainer}>
           {centerContainer}
         </Grid>
         <Grid item xs={12} sm={12} md={3} className={classes.rightSide}>
           <div className={classes.rightTitle}>Sponsored BSC Project</div>
-          <div>
-            <a
-              href="https://moonstartoken.com/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <img
-                className={"img-fluid"}
-                src={rightPoster}
-                width="350"
-                height="100"
-              />
-            </a>
-          </div>
           <Input className={classes.inputField} />
           <Tab className={classes.tabContainer} />
         </Grid>
@@ -320,7 +328,10 @@ export default function Tokens(props) {
     container = (
       <Grid container item xs={12} md={12} sm={12} xl={12}>
         <Grid item xs={12} md={3} sm={3} xl={3} className={classes.leftSide}>
-          <Lefttab lpdata={lpDatas} currentTokenInfo={currentTokenInfo} />
+          {
+            currentTokenInfo != null &&
+            <Lefttab lpdata={lpDatas} currentTokenInfo={currentTokenInfo} />
+          }
         </Grid>
         <Grid item xs={12} md={9} sm={9} xl={9} className={classes.centerContainer}>
           {centerContainer}
