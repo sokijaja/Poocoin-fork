@@ -90,6 +90,9 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: '500',
     color: theme.palette.common.white,
     backgroundColor: '#53CA42',
+    [theme.breakpoints.down("xs")]: {
+      textAlign: 'center',
+    },
   },
   coinAmount: {
     color: '#adb5bd',
@@ -99,7 +102,7 @@ const useStyles = makeStyles((theme) => ({
       textAlign: 'center'
     },
     [theme.breakpoints.down("xs")]: {
-      paddingRight: '50px',
+      paddingBottom: '20px',
       textAlign: 'left',
     },
   },
@@ -364,11 +367,12 @@ export default function Header(props) {
               </div>
             </Grid>
           }
-          <Grid item md={2} sm={12} xl={2} className={classes.coinAmount}>
+          <Grid item md={2} sm={12} xl={2} className={classes.coinAmount} container justifyContent={'center'}>
             {coinAmount}
           </Grid>
-          <Grid item md={1} sm={12} xl={1}>
-            <Button variant="contained" className={classes.connect} onClick={connectOrDisconnect}>{connectLabel}</Button>
+          <Grid item md={1} sm={12} xl={1} container justifyContent={'center'} >
+            <Button variant="contained" className={classes.connect} onClick={connectOrDisconnect}>{connectLabel}
+            </Button>
           </Grid>
         </Grid>
       </Toolbar>
