@@ -8,7 +8,7 @@ import { useWallet } from 'use-wallet'
 import PoocoinIcon from '../Images/poocoin512.png';
 import BNBIcon from '../Images/bnb1.png';
 import TelegramIcon from '../Images/telegram.svg';
-import { poocoinBalance } from '../PooCoin/index.js';
+import { poocoinBalance, poocoinLpv1, poocoinLpv2 } from '../PooCoin/index.js';
 import { connectType, networkValue } from '../constants';
 import { connectWalletStatus } from '../constants';
 import Web3 from 'web3'
@@ -162,6 +162,8 @@ export default function Header(props) {
 
   const { account, connect, reset, balance } = useWallet()
   const [poocoinBalanceData, setPoocoinBalanceData] = useState([]);
+  const [poocoinLpv1Data, setPoocoinLpv1Data] = useState([]);
+  const [poocoinLpv2Data, setPoocoinLpv2Data] = useState([]);
   const [priceData, setPriceData] = useState([]);
   const [network, setNetwork] = useState(localStorage.getItem('PoocoinChainId'));
   const dispatch = useDispatch();
@@ -195,6 +197,12 @@ export default function Header(props) {
   const poocoinBalanceValues = (data) => {
     setPoocoinBalanceData(data);
   }
+  const poocoinLpv1Values = (data) => {
+    setPoocoinLpv1Data(data);
+  }
+  const poocoinLpv2Values = (data) => {
+    setPoocoinLpv2Data(data);
+  }
 
   const connectMethod = value => async () => {
     await connectControl(value);                                //metamask, walletconnect, binance-chain
@@ -219,6 +227,8 @@ export default function Header(props) {
       try {
         connect();
         poocoinBalance(account, poocoinBalanceValues);
+        poocoinLpv1(account, poocoinLpv1Values);
+        poocoinLpv2(account, poocoinLpv2Values);
       } catch (err) {
         console.log(err);
       }
@@ -229,7 +239,7 @@ export default function Header(props) {
         setPriceData(data.poocoin.usd);
       })
       .catch(err => {
-
+        console.log(err)
       })
   }, [account, userDisconnected])
 
@@ -242,10 +252,10 @@ export default function Header(props) {
           <div>Your <img src={PoocoinIcon} height="18" /> : {poocoinBalanceData} <span className={classes.amountColor}>${parseFloat(poocoinBalanceData * priceData).toFixed(2)}</span></div>
         </Link>
         <a target="_blank" href={`https://v1exchange.pancakeswap.finance/#/add/BNB/${DefaultTokens.POOCOIN.address}`} className={classes.rightLink}>
-          <div>Your <img src={PoocoinIcon} height="18" /><img src={BNBIcon} height="15" /> LP V1: 0.00 <span className={classes.amountColor}>$0.00</span></div>
+          <div>Your <img src={PoocoinIcon} height="18" /><img src={BNBIcon} height="15" /> LP V1: {parseFloat(poocoinLpv1Data).toFixed(2)} <span className={classes.amountColor}>${parseFloat(poocoinLpv1Data * priceData).toFixed(2)}</span></div>
         </a>
         <a target="_blank" href={`https://pancakeswap.finance/add/BNB/${DefaultTokens.POOCOIN.address}`} className={classes.rightLink}>
-          <div>Your <img src={PoocoinIcon} height="18" /><img src={BNBIcon} height="15" /> LP V2: 0.00 <span className={classes.amountColor}>$0.00</span></div>
+          <div>Your <img src={PoocoinIcon} height="18" /><img src={BNBIcon} height="15" /> LP V2: {parseFloat(poocoinLpv2Data).toFixed(2)} <span className={classes.amountColor}>${parseFloat(poocoinLpv2Data * priceData).toFixed(2)}</span></div>
         </a>
       </div>
     );

@@ -145,7 +145,7 @@ const useStyles = makeStyles((theme) => ({
   },
   desc: {
     // color: '#f8f9fa',
-    fontSize: '2rem',
+    fontSize: '1.5rem',
     lineHeight: 1.2,
     fontWeight: 500,
     fontFamily: '"Lato",sans-serif',
@@ -169,6 +169,7 @@ export default function About(props) {
   const [currentTokenInfo, setCurrentTokenInfo] = useState({});
   const [selectData, setSelectData] = useState([]);
   const [coinAddress, setCoinAddress] = useState(DefaultTokens.WBNB.address);
+  const [priceData, setPriceData] = useState([]);
 
   // const tokenAddress = useSelector((state) => state.tokenAddress)
   const dispatch = useDispatch();
@@ -210,9 +211,16 @@ export default function About(props) {
         setSelectData(selectOptionData)
         setCurrentTokenInfo(data.tokenInfos)
       })
-
     //Get Lpaddress from current token address and BUSD token address
     getAmountsOut(1, tokenAddress, DefaultTokens.USDT.address, setPriceRateData);
+    fetch('https://api.coingecko.com/api/v3/simple/price?ids=poocoin&vs_currencies=usd')
+      .then(res => res.json())
+      .then(data => {
+        setPriceData(data.poocoin.usd);
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }, [tokenAddress])
 
   const handleTokenPropsChange = (tokenInfo) => {
@@ -315,7 +323,7 @@ export default function About(props) {
               <span style={{ borderRadius: '999px', backgroundColor: 'white', margin: '20px 10px 20px 10px' }}>
                 <img src={PoocoinIcon} height="70" className={classes.poocoinImg} />
               </span>
-              <span className={classes.value}> $3.2345235</span>
+              <span className={classes.value}> ${priceData}</span>
             </Grid>
           </div>
 

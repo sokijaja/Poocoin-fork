@@ -222,6 +222,24 @@ export const poocoinBalance = async (account, setPoocoinBalanceData) => {
   });
 };
 
+export const poocoinLpv1 = async (account, setLpBalanceData) => {
+  let lpv1Address = '0x746a3f1a3863cf839bf0702c083cCA888AbA6EE8'
+  const lpv1_contract = new ethers.Contract(lpv1Address, abi, provider);
+  if (account == null) account = myAccount;
+  lpv1_contract.balanceOf(account).then((balance) => {
+    setLpBalanceData(parseInt(balance));
+  });
+};
+
+export const poocoinLpv2 = async (account, setLpBalanceData) => {
+  let lpv2Address = '0x0c5DA0f07962dd0256c079248633f2b43CaD6f62'
+  const lpv2_contract = new ethers.Contract(lpv2Address, abi, provider);
+  if (account == null) account = myAccount;
+  lpv2_contract.balanceOf(account).then((balance) => {
+    setLpBalanceData(parseInt(balance));
+  });
+};
+
 let fromBlock = 0;
 let apeArray = [];
 
