@@ -19,6 +19,7 @@
     "dotenv": "^10.0.0",
     "ethereum-input-data-decoder": "^0.3.2",
     "ethers": "^5.4.4",
+    "http-proxy-middleware": "^2.0.1",
     "lightweight-charts": "^3.5.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
@@ -62,6 +63,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "proxy": "https://api1.poocoin.app"
+  }
 }

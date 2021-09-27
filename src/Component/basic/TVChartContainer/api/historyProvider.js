@@ -2,35 +2,22 @@ var rp = require('request-promise').defaults({ json: true })
 
 const history = {}
 
-const api_temp_root = 'https://api2.poocoin.app/candles-bsc?'
 const baseLp = '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16'
 let date = new Date().toISOString().split('.').shift() + '.000Z';
 export default {
 	history: history,
 
 	getBars: function (symbolInfo, resolution, from, to, first, limit) {
-		const qs = {
-			to: date,
-			limit: 321,
-			lpAddress: symbolInfo.ticker,
-			interval: '15m',
-			baseLp: baseLp
-		}
-
-		return rp({
-			// url: `${api_root}${url}`,
-			url: `${api_temp_root}`,
-			qs,
-			headers: {
-				"Content-Type": "application/json",
-				"access-control-allow-origin": "*"
-				// "Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS",
-				// "Access-Control-Allow-Headers":
-				//   "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With",
-			},
-		})
+		// const qs = {
+		// 	to: date,
+		// 	limit: 321,
+		// 	lpAddress: symbolInfo.ticker,
+		// 	interval: '15m',
+		// 	baseLp: baseLp
+		// }
+		return fetch(`/api2/candles-bsc?to=${date}&limit=321&lpAddress=${symbolInfo.ticker}&interval=15m&baseLp=${baseLp}`)
+			.then(res => res.json())
 			.then(data => {
-				console.log(data)
 				if (data.Response && data.Response === 'Error') {
 					return []
 				}

@@ -688,7 +688,6 @@ export const tokenSwap = async (ethereum, amount, tokenIn, tokenOut, account, mi
     const amount_in = toBigNum(amount, tokenIn_decimals);
     const amount_out = parseInt(toBigNum(miniumAmountOut, tokenOut_decimals)).toString();
 
-    console.log(amount_out);
     if (tokenIn == DefaultTokens.WBNB.address) {
       var tx = await contract.methods.swapExactETHForTokens(amount_out, [tokenIn, tokenOut], account, Date.now() + 1000 * 60 * 10)
         .send({
@@ -760,27 +759,25 @@ const toBigNum = (num, decimals) => {
 
 //tokens page transaction table - buyer
 export const getBuyersData = async (tokenAddress, currentTimeInfo, previousTimeInfo, setBuyersValues) => {
-  console.log(previousTimeInfo)
-  console.log(currentTimeInfo)
   const currentDate = currentTimeInfo.year + "-" + currentTimeInfo.fullmonth + "-" + currentTimeInfo.day + "T" + currentTimeInfo.fullhour + ":" + currentTimeInfo.minute + ":00.000Z"
 
   const previousDate = previousTimeInfo.year + "-" + previousTimeInfo.fullmonth + "-" + previousTimeInfo.day + "T" + previousTimeInfo.fullhour + ":" + previousTimeInfo.minute + ":00.000Z"
-
-  await fetch(`https://api1.poocoin.app/top-trades?address=${tokenAddress}&from= ${previousDate}&to= ${currentDate}&type= buy`)
+  fetch(`/api1/top-trades?address=${tokenAddress}&from=${previousDate}&to=${currentDate}&type=buy`)
     .then(res => res.json())
-    .then(data => { setBuyersValues(data) })
-    .catch(err => console.log(err))
+    .then(res => {
+      setBuyersValues(res)
+    });
 }
 
 export const getSellersData = async (tokenAddress, currentTimeInfo, previousTimeInfo, setSellersValues) => {
   const currentDate = currentTimeInfo.year + "-" + currentTimeInfo.fullmonth + "-" + currentTimeInfo.day + "T" + currentTimeInfo.fullhour + ":" + currentTimeInfo.minute + ":00.000Z"
 
   const previousDate = previousTimeInfo.year + "-" + previousTimeInfo.fullmonth + "-" + previousTimeInfo.day + "T" + previousTimeInfo.fullhour + ":" + previousTimeInfo.minute + ":00.000Z"
-
-  await fetch(`https://api1.poocoin.app/top-trades?address=${tokenAddress}&from=${previousDate}&to=${currentDate}&type=sell`)
+  fetch(`/api1/top-trades?address=${tokenAddress}&from=${previousDate}&to=${currentDate}&type=sell`)
     .then(res => res.json())
-    .then(data => { setSellersValues(data) })
-    .catch(err => console.log(err))
+    .then(res => {
+      setSellersValues(res)
+    });
 }
 
 export const getWalletData = async (tokenAddress, account, setWalletValues) => {
@@ -853,7 +850,6 @@ export const getOwnToken_wallet = async (accountAddress, setWalletTokenData) => 
 }
 
 export const getTransactionList = async (tokenAddress, setTransactionListData) => {
-  // const delay = ms => new Promise(res => setTimeout(res, ms));
   if (tokenAddress != null) {
     const transactionLists = await getTransactionListData(tokenAddress);
     const transaction = [];
