@@ -99,9 +99,10 @@ const SimpleList = ({ lpdata, totalSupply, currentTokenInfo }) => {
       <Divider className={'mb-3 mt-3'} />
       <div className={classes.SubList}>
         <div className={classes.list}>
-          {lpdata.map((row, index) =>
-            <LpInfoItem lpInfo={row} currentTokenInfo={currentTokenInfo} key={index} />
-          )}
+          {lpdata != null &&
+            lpdata.map((row, index) =>
+              <LpInfoItem lpInfo={row} currentTokenInfo={currentTokenInfo} key={index} />
+            )}
           {/* <LpInfoItem lpInfo={lpdata} /> */}
         </div>
       </div>

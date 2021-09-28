@@ -25,8 +25,9 @@ router.get("/getTokenName", async (req, res) => {
     if (query.length > 1) {
       tokenName = await tokenSchema
         .find({
-          name: { $regex: query.toLowerCase(), $options: "i" },
+          name: { $regex: query, $options: "i" },
         })
+        .collation({ locale: "en", strength: 2 })
         .limit(50);
       res.json(tokenName);
     }
@@ -43,8 +44,9 @@ router.get("/getSymbol", async (req, res) => {
     if (query.length > 1) {
       symbolName = await tokenSchema
         .find({
-          token: { $regex: query.toLowerCase(), $options: "i" },
+          token: { $regex: query, $options: "i" },
         })
+        .collation({ locale: "en", strength: 2 })
         .select("symbol")
         .limit(50);
       res.json(symbolName);
@@ -76,7 +78,7 @@ router.get("/getTokenProps", async (req, res) => {
           ],
         },
       ],
-    });
+    }).collation({ locale: "en", strength: 2 });
     res.json(tokenProps);
   } catch (err) { }
 });
@@ -87,7 +89,7 @@ router.get("/getLpinfo", async (req, res) => {
     let token_address = req.query.foo;
     let lpInfos = await lpSchema.find({
       $and: [
-        { $or: [{ token0: token_address.toLowerCase() }, { token1: token_address.toLowerCase() }] },
+        { $or: [{ token0: token_address }, { token1: token_address }] },
         {
           $or: [
             { token0: "0x2170ed0880ac9a755fd29b2688956bd959f933f8" },
@@ -103,24 +105,24 @@ router.get("/getLpinfo", async (req, res) => {
           ],
         },
       ],
-    });
+    }).collation({ locale: "en", strength: 2 });
 
     tokenName = await tokenSchema
       .findOne({
-        token: token_address.toLowerCase(),
-      })
+        token: token_address,
+      }).collation({ locale: "en", strength: 2 });
     //token selected info
-    let tokenInfo = { name: tokenName.name, symbol: tokenName.symbol };
+    let tokenInfo = { name: tokenName.name, symbol: tokenName.symbol, address: tokenName.token };
     let ret_arr = [];
     for (let index = 0; index < lpInfos.length; index++) {
       tokenName0 = await tokenSchema
         .find({
-          token: lpInfos[index].token0.toLowerCase(),
-        })
+          token: lpInfos[index].token0,
+        }).collation({ locale: "en", strength: 2 });
       tokenName1 = await tokenSchema
         .find({
-          token: lpInfos[index].token1.toLowerCase(),
-        })
+          token: lpInfos[index].token1,
+        }).collation({ locale: "en", strength: 2 });
       if (tokenName0.length == 0 || tokenName1.length == 0) {
         continue;
       }
@@ -138,22 +140,25 @@ router.get("/getLpinfo", async (req, res) => {
       ret_arr.push(item);
     }
     res.json({ lpInfos: ret_arr, tokenInfos: tokenInfo });
-  } catch (err) { console.log(err) }
+  } catch (err) {
+    res.json({ lpInfos: null, tokenInfos: null });
+    console.log(err);
+  }
 });
 
 //Get Lpaddress from current token address and BNB token address
 router.get("/getLpaddress", async (req, res) => {
   try {
-    let tokenAddress = req.query.tokenAddress.toLowerCase();
-    let coinAddress = req.query.coinAddress.toLowerCase();
+    let tokenAddress = req.query.tokenAddress;
+    let coinAddress = req.query.coinAddress;
     let lpaddress;
     if (tokenAddress != null) {
       lpaddress = await lpSchema.findOne({
         $or: [
-          { $and: [{ token0: tokenAddress.toLowerCase() }, { token1: coinAddress.toLowerCase() }] },
-          { $and: [{ token1: tokenAddress.toLowerCase() }, { token0: coinAddress.toLowerCase() }] },
+          { $and: [{ token0: tokenAddress }, { token1: coinAddress }] },
+          { $and: [{ token1: tokenAddress }, { token0: coinAddress }] },
         ],
-      });
+      }).collation({ locale: "en", strength: 2 });
       res.json(lpaddress.lp_address);
     }
   } catch (err) {
@@ -177,7 +182,7 @@ router.route("/getToken/:values").get(async (req, res) => {
 
   for (var i = 0; i < data.values.length; i++) {
     let token = await tokenSchema
-      .findOne({ token: data.values[i].from.toLowerCase() })
+      .findOne({ token: data.values[i].from })
       .collation({ locale: "en", strength: 2 });
 
     let temp = {};
@@ -203,7 +208,7 @@ router.route("/getTokenDevActivity/:values").get(async (req, res) => {
 
   for (var i = 0; i < data.values.length; i++) {
     let token = await tokenSchema
-      .findOne({ token: data.values[i].from.toLowerCase() })
+      .findOne({ token: data.values[i].from })
       .collation({ locale: "en", strength: 2 });
 
     let temp = {};

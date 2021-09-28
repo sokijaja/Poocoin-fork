@@ -22,13 +22,13 @@ const factoryAddress = "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73";
 const factoryContract = new ethers.Contract(factoryAddress, abi, provider);
 
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://192.168.112.98:27017";
+var url = "mongodb://localhost:27017";
 
 MongoClient.connect(url, function (err, db) {
     if (err) throw err;
 
     var dbo = db.db("poocoin");
-    dbo.collection("tokens").createIndex({ "token": 1 }, { unique: true });
+    dbo.collection("tokens1").createIndex({ "token": 1 }, { unique: true });
 
     factoryContract.allPairsLength().then(count => {
         setTimeout(async () => {
@@ -51,7 +51,7 @@ MongoClient.connect(url, function (err, db) {
                         record.token = token0;
 
                         try {
-                            await dbo.collection("tokens").insertOne(record, function (err, res) {
+                            await dbo.collection("tokens1").insertOne(record, function (err, res) {
                                 if (err) console.log(err);
                                 console.log("Number of documents inserted: " + i);
                                 // db.close();
@@ -59,16 +59,25 @@ MongoClient.connect(url, function (err, db) {
                         } catch (e) {
                             console.log(e);
                         }
+                        let token1 = await pairContract.token1();
 
-                        // let token1 = await pairContract.token1();
-                        // const token1Contract = new ethers.Contract(token1, abi, provider);
-                        // let token1Symbol = await token1Contract.symbol();
-                        // let token1name = await token1Contract.name();
+                        const token1Contract = new ethers.Contract(token1, abi, provider);
+                        let token1Symbol = await token1Contract.symbol();
+                        let token1name = await token1Contract.name();
 
-                        // record.name = token1name;
-                        // record.symbol = token1Symbol;
-                        // record.token = token1;
+                        record.name = token1name;
+                        record.symbol = token1Symbol;
+                        record.token = token1;
 
+                        try {
+                            await dbo.collection("tokens1").insertOne(record, function (err, res) {
+                                if (err) console.log(err);
+                                console.log("Number of documents inserted: " + i);
+                                // db.close();
+                            });
+                        } catch (e) {
+                            console.log(e);
+                        }
                     }, 1);
                 });
             }
