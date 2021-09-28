@@ -100,7 +100,6 @@ export const getAmountsOut = async (amount, tokenIn, tokenOut, updateAmountsOut)
     if (tokenOut == DefaultTokens.BNB.address) {
       tokenOut = DefaultTokens.WBNB.address;
     }
-    console.log(tokenIn);
     const tokenInContract = new web3.eth.Contract(erc20_abi, tokenIn);
     const tokenIn_decimals = await tokenInContract.methods.decimals().call();
     const tokenOutContract = new web3.eth.Contract(erc20_abi, tokenOut);

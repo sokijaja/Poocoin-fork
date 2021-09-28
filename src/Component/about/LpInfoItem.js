@@ -28,9 +28,12 @@ export default function LpInfoItem(props) {
     getReserve(lpdataInfo.value[2], lpdataInfo.value[3]).then((reserveData) => {
       setLpInfo({ label: lpdataInfo.label, symbol: lpdataInfo.value[1], tokenAddress: lpdataInfo.value[0], lpAddress: lpdataInfo.value[2], reserve: reserveData });
     });
-    getAmountsOut(1, lpdataInfo.value[0], DefaultToken.USDT.address, setPriceRate);
+    if (lpdataInfo.value[0] == DefaultToken.USDT.address) {
+      setPriceRate(1);
+    } else {
+      getAmountsOut(1, lpdataInfo.value[0], DefaultToken.USDT.address, setPriceRate);
+    }
   }, []);
-
   const lpMarketcap = numberWithCommas(parseInt(priceRate * lpInfo.reserve));
 
   return (
