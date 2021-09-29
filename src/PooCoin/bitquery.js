@@ -36,6 +36,7 @@ export const getOwnToken = async (accountAddress) => {
 }
 
 export const getTransactionListData = async (tokenAddress) => {
+  console.log(tokenAddress)
   // any: {baseCurrency: {is: "${tokenAddress}"}}
   const QUERY = `{
     ethereum(network: bsc) {
@@ -135,7 +136,6 @@ export const getPriceByTime = async (tokenAddress, time) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
       // "Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS",
       // "Access-Control-Allow-Headers":
       //   "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With",
@@ -237,7 +237,6 @@ export const getChartInfo = async (tokenAddress, coinAddress) => {
   const response = await fetch(endpoint, {
     method: "POST",
     headers: {
-      "Access-Control-Allow-Origin": "*",
       "Content-Type": "application/json",
     },
     body: JSON.stringify({

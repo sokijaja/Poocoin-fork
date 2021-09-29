@@ -758,12 +758,15 @@ const toBigNum = (num, decimals) => {
   return new BigNumber(num).times(new BigNumber(10).pow(new BigNumber(decimals)));
 }
 
+//tokens page transaction table - buyer
 export const getBuyersData = async (tokenAddress, currentTimeInfo, previousTimeInfo, setBuyersValues) => {
+  console.log(previousTimeInfo)
+  console.log(currentTimeInfo)
   const currentDate = currentTimeInfo.year + "-" + currentTimeInfo.fullmonth + "-" + currentTimeInfo.day + "T" + currentTimeInfo.fullhour + ":" + currentTimeInfo.minute + ":00.000Z"
 
   const previousDate = previousTimeInfo.year + "-" + previousTimeInfo.fullmonth + "-" + previousTimeInfo.day + "T" + previousTimeInfo.fullhour + ":" + previousTimeInfo.minute + ":00.000Z"
 
-  await fetch(`https://api1.poocoin.app/top-trades?address=${tokenAddress}&from=${previousDate}&to=${currentDate}&type=buy`)
+  await fetch(`https://api1.poocoin.app/top-trades?address=${tokenAddress}&from= ${previousDate}&to= ${currentDate}&type= buy`)
     .then(res => res.json())
     .then(data => { setBuyersValues(data) })
     .catch(err => console.log(err))
@@ -851,7 +854,6 @@ export const getOwnToken_wallet = async (accountAddress, setWalletTokenData) => 
 
 export const getTransactionList = async (tokenAddress, setTransactionListData) => {
   // const delay = ms => new Promise(res => setTimeout(res, ms));
-
   if (tokenAddress != null) {
     const transactionLists = await getTransactionListData(tokenAddress);
     const transaction = [];

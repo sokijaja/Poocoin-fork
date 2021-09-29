@@ -62,5 +62,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://192.168.112.98:5000"
+  "proxy": "https://api1.poocoin.app"
 }

@@ -68,7 +68,7 @@ export default function SimpleSelect({ tokenProps, inputHandle }) {
   useEffect(() => {
     if (inputText.length > 1) {
       axios
-        .get("/token/getTokenName", {
+        .get("http://192.168.112.98:5000/token/getTokenName", {
           params: { foo: inputText },
         })
         .then((res) => {

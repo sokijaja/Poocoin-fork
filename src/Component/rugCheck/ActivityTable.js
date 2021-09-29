@@ -76,9 +76,9 @@ const useStyles = makeStyles({
 });
 
 async function getTokenName(values) {
-   
-   const data = JSON.stringify({values: values});
-  return await axios.get("/token/getTokenDevActivity/" + data);
+
+  const data = JSON.stringify({ values: values });
+  return await axios.get("http://192.168.112.98:5000/token/getTokenDevActivity/" + data);
 }
 
 function DevActivityTable(props) {
@@ -88,7 +88,7 @@ function DevActivityTable(props) {
   return values.map((item, index) => (
     <StyledTableRow key={index}>
       <StyledTableCell component="th" scope="row">
-        {new Date().getMonth() + 1 + "/" + new Date().getDate() + "/" + new Date().getFullYear('Y')}<br/>
+        {new Date().getMonth() + 1 + "/" + new Date().getDate() + "/" + new Date().getFullYear('Y')}<br />
         {new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds()}
       </StyledTableCell>
       <StyledTableCell>
@@ -99,15 +99,15 @@ function DevActivityTable(props) {
       </StyledTableCell>
       <StyledTableCell >
         <a href={"https://bscscan.com/address/" + item.from_address} target="_blank" rel="noreferrer" className={classes.addressStyle}>
-        {item.from_address}
+          {item.from_address}
         </a>
       </StyledTableCell>
       <StyledTableCell>
-        
+
       </StyledTableCell>
       <StyledTableCell className={classes.txStyle}>
         <a href={"https://bscscan.com/tx/" + item.tx} target="_blank" rel="noreferrer" className={classes.txColor}>
-        {item.tx}
+          {item.tx}
         </a>
       </StyledTableCell>
     </StyledTableRow>
@@ -151,7 +151,7 @@ export default function CustomizedTables() {
           </TableRow>
         </TableHead>
         <TableBody>
-          <DevActivityTable values={devActivityData} classes={classes}/>
+          <DevActivityTable values={devActivityData} classes={classes} />
         </TableBody>
       </Table>
     </TableContainer>
