@@ -181,7 +181,7 @@ export default function Tokens(props) {
         })
 
       //Get Lpaddress from current token address and BUSD token address
-      getAmountsOut(1, tokenAddress, DefaultTokens.BUSD.address, setPriceRateData);
+      getAmountsOut(1, tokenAddress, DefaultTokens.USDT.address, setPriceRateData);
     }
   }, [tokenAddress])
   const handleChange = () => {

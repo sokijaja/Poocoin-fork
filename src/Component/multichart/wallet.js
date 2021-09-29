@@ -183,7 +183,7 @@ export default function CustomizedTables(props) {
                   <StyledTableCell>
                     <span>{walletOwnToken.value}</span>
                     <br />
-                    <span className={'textSuccess'}>${walletOwnToken.value}</span>
+                    <span className={'textSuccess'}>${walletOwnToken.rateAmount}</span>
                   </StyledTableCell>
                   <StyledTableCell>
                     {

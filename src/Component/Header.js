@@ -138,7 +138,12 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '14px',
     margin: '0px',
     padding: '0px',
-  }
+  },
+  headerIcon: {
+    [theme.breakpoints.down("xs")]: {
+      marginLeft: '10px'
+    },
+  },
 }));
 
 export default function Header(props) {
@@ -162,7 +167,6 @@ export default function Header(props) {
   const dispatch = useDispatch();
 
   const handleNetworkChange = (event) => {                         //select network chain
-    console.log(typeof networkValue.Binance);
     if (event.target.value == networkValue.Binance) {
       history.push('/')
     } else if (event.target.value == networkValue.Polygon) {
@@ -292,7 +296,7 @@ export default function Header(props) {
               {
                 networkChainId == networkValue.Binance
                   ?
-                  <Grid item>
+                  <Grid item className={classes.headerIcon}>
                     <Link
                       to={`/tokens/${DefaultTokens.POOCOIN.address}`}
                       onClick={() => dispatch({ type: 'SET_TOKENADDRESS', payload: DefaultTokens.POOCOIN.address })}

@@ -36,12 +36,13 @@ export const getOwnToken = async (accountAddress) => {
 }
 
 export const getTransactionListData = async (tokenAddress) => {
+  // any: {baseCurrency: {is: "${tokenAddress}"}}
   const QUERY = `{
     ethereum(network: bsc) {
       dexTrades(
         options: {limit: 20, desc: "block.height"}
         exchangeName: {in: ["Pancake", "Pancake v2"]}
-        any: {baseCurrency: {is: "${tokenAddress}"}}
+        baseCurrency: {is: "${tokenAddress}"}
       ) {
         transaction {
           hash

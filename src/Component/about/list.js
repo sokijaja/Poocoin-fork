@@ -79,7 +79,7 @@ const SimpleList = ({ lpdata, totalSupply, currentTokenInfo }) => {
   useEffect(() => {
     if (currentTokenAddress !== undefined) {
       tokenBalance(DefaultTokens.BURNADDRESS.address, currentTokenAddress, setBurnData)
-      getAmountsOut(1, currentTokenAddress, DefaultTokens.BUSD.address, setPriceRateData)
+      getAmountsOut(1, currentTokenAddress, DefaultTokens.USDT.address, setPriceRateData)
     }
   }, [currentTokenAddress])
 

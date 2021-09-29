@@ -33,7 +33,7 @@ const useStyles = makeStyles({
   },
   inputWidth: {
     width: "100%",
-    padding: "1em 0em 1em 1em",
+    padding: "1em 1em 1em 1em",
   },
   tabContainer: {
     minHeight: "700px !important",

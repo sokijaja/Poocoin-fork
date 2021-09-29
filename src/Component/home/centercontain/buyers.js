@@ -133,6 +133,7 @@ const useStyles = makeStyles({
     title: {
         color: 'white',
         textAlign: 'left',
+        marginLeft: 5,
     },
     dateTime: {
         color: '#adb5bd!important'
