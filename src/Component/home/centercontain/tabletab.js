@@ -1,6 +1,5 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import PropTypes from 'prop-types';
@@ -62,7 +61,7 @@ export default function CenteredTabs(props) {
   };
 
   return (
-    <Paper className={classes.root}>
+    <div className={classes.root}>
       <Tabs
         value={value}
         onChange={handleChange}
@@ -88,6 +87,6 @@ export default function CenteredTabs(props) {
       <TabPanel value={value} index={3}>
         <Sellers />
       </TabPanel>
-    </Paper>
+    </div>
   );
 }

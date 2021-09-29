@@ -17,9 +17,15 @@ import { storeLocalMultichart } from "../PooCoin/util";
 const useStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
-      padding: 0
+      paddingRight: 10
     },
-    backgroundColor: '#e9ecef !important'
+    backgroundColor: '#e9ecef !important',
+    color: "black",
+    [theme.breakpoints.down("xs")]: {
+      '& > *': {
+        paddingRight: 0
+      },
+    },
   },
   input: {
     display: 'none',
@@ -50,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
         flexBasis: '100%',
         maxWidth: '100%'
       },
-      width: '465px',
+      width: '100%',
       '& .row > .cell': {
         display: 'none',
       }
@@ -58,8 +64,8 @@ const useStyles = makeStyles((theme) => ({
   },
   rightSide: {
     backgroundColor: '#303030',
-    marginTop: 20,
-    padding: 0,
+    marginTop: 5,
+    padding: '30px 10px 10px 10px',
     position: 'relative',
     [theme.breakpoints.down("sm")]: {
       minWidth: '400px',
@@ -70,14 +76,18 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("xs")]: {
       position: 'relative',
       marginTop: '4%',
-      marginLeft: '2%',
-      minWidth: '470px'
+      marginLeft: '0%',
+      width: '100%',
+      minWidth: '300px'
     },
   },
   searchInput: {
-    paddingLeft: 30,
+    paddingLeft: 20,
     marginTop: 10,
     flexGrow: 1,
+    [theme.breakpoints.down("xs")]: {
+      paddingLeft: 5,
+    },
   },
   iconBtn: {
     backgroundColor: '#fff',
@@ -85,10 +95,16 @@ const useStyles = makeStyles((theme) => ({
     top: 10,
     float: 'left',
     marginRight: 10,
+    [theme.breakpoints.down("xs")]: {
+      marginRight: 0,
+    },
   },
   iconBtnRight: {
     backgroundColor: '#fff',
-    float: 'left'
+    float: 'left',
+    [theme.breakpoints.down("xs")]: {
+      marginLeft: 10,
+    },
   },
   iconPadding: {
     float: 'right',
@@ -172,22 +188,17 @@ export default function Multichart() {
 
   if (showMode) {
     container = (
-      <Grid className={classes.subContainer} container spacing={3} item xs={12}>
+      <Grid className={classes.subContainer} container item xs={12}>
         <Grid item xs={9} lg={9} md={8} sm={12}>
           {leftContainer}
         </Grid>
-        <Grid item xs={3} lg={3} md={4} sm={6} className={classes.rightSide}>
+        <Grid item xs={12} lg={3} md={4} sm={6} className={classes.rightSide}>
           <div className={classes.iconPaddingRight}>
             <IconButton color="primary" aria-label="upload picture" component="span" className={classes.iconBtnRight} onClick={handleChangeRight}>
               <FileCopyIcon />
             </IconButton>
           </div>
           <div className={classes.rightTitle}>Sponsored BSC Project</div>
-          <div>
-            <a href="https://moonstartoken.com/" target="_blank" rel="noreferrer">
-              <img className={'img-fluid'} src={rightPoster} width="350" height="100" />
-            </a>
-          </div>
           <div className={classes.inputWidth} >
             <Input />
           </div>
@@ -197,7 +208,7 @@ export default function Multichart() {
     )
   } else {
     container = (
-      <Grid container spacing={3} item xs={12}>
+      <Grid container item xs={12}>
         <Grid item xs={12}>
           {leftContainer}
         </Grid>

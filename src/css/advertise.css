@@ -37,7 +37,7 @@
 @media only screen and (max-width: 576px){
     .AdvertiseBody {
         font-family: 'sans-serif';
-        width: 450px;
+        width: 100%;
         display: inline-block;
     }
 }
