@@ -18,18 +18,30 @@ let lpSchema = require("../models/Lpaddresses");
 //   console.log(tokenName);
 //   res.json(tokenName);
 // });
+
+//search token information from token name and address
 router.get("/getTokenName", async (req, res) => {
   try {
     let query = req.query.foo;
-    let tokenName;
+    let tokenInfo;
     if (query.length > 1) {
-      tokenName = await tokenSchema
-        .find({
-          name: { $regex: query, $options: "i" },
-        })
-        .collation({ locale: "en", strength: 2 })
-        .limit(50);
-      res.json(tokenName);
+      if (query.substring(0, 2) == '0x') {
+        tokenInfo = await tokenSchema
+          .find({
+            token: { $regex: query, $options: "i" },
+          })
+          .collation({ locale: "en", strength: 2 })
+          .limit(50);
+        res.json(tokenInfo);
+      } else {
+        tokenInfo = await tokenSchema
+          .find({
+            name: { $regex: query, $options: "i" },
+          })
+          .collation({ locale: "en", strength: 2 })
+          .limit(50);
+        res.json(tokenInfo);
+      }
     }
   } catch (err) {
     // res.json(err);

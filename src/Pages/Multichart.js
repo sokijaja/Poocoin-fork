@@ -19,7 +19,8 @@ const useStyles = makeStyles((theme) => ({
     '& > *': {
       padding: 0
     },
-    backgroundColor: '#e9ecef !important'
+    backgroundColor: '#e9ecef !important',
+    color: "black",
   },
   input: {
     display: 'none',

@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
     "& > *": {
       margin: "1px",
       padding: "0px 30px 0px 0px",
+      color: "black",
     },
     backgroundColor: '#262626!important',
     textAlign: '-webkit-center',

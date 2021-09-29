@@ -113,9 +113,9 @@ export default function SimpleSelect({ tokenProps, inputHandle }) {
   return (
     <div style={{ display: "flex", width: 300 }}>
       {search}
-      <Button className={classes.button} onClick={onOnlyToken}>
+      {/* <Button className={classes.button} onClick={onOnlyToken}>
         <Search />
-      </Button>
+      </Button> */}
     </div>
   );
 }
