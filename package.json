@@ -16,6 +16,7 @@
     "bscscan-api": "^1.0.1",
     "classnames": "^2.3.1",
     "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
     "ethereum-input-data-decoder": "^0.3.2",
     "ethers": "^5.4.4",
     "lightweight-charts": "^3.5.0",
