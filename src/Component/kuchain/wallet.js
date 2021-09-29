@@ -77,25 +77,6 @@ export default function CustomizedTables() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <StyledTableRow key={row.name}>
-                <StyledTableCell component="th" scope="row">
-                  {row.id
-                    ? <Link to={`/tokens/${row.id}`}>
-                      {row.name}&nbsp;
-                      <span className={'textSuccess'}>${row.tokenMoney}</span>
-                      <br />
-                      <span className={'textMuted'}>{row.othername}</span>
-                    </Link>
-                    : row.name}
-                </StyledTableCell>
-                <StyledTableCell>
-                  <span>{row.calories}</span>
-                  <br />
-                  <span className={'textSuccess'}>${row.balanceMoney}</span></StyledTableCell>
-                <StyledTableCell><StarOutlineIcon /></StyledTableCell>
-              </StyledTableRow>
-            ))}
           </TableBody>
         </Table>
       </TableContainer>

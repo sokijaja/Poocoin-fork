@@ -35,12 +35,6 @@ const StyledTableRow = withStyles((theme) => ({
 
 const rows = Array.from(Array(1).keys()).map(item => {
   return {
-    name: "THOREUM",
-    othername: "Thoreum",
-    id: "0x580de58c1bd593a43dadcf0a739d504621817c05",
-    tokenMoney: "0.0000",
-    balanceMoney: "0.00",
-    calories: '0.00'
   }
 })
 const useStyles = makeStyles({
@@ -96,7 +90,7 @@ export default function CustomizedTables() {
           </div>
         </Grid>
       </Grid>
-      <TableContainer component={Paper}>
+      <TableContainer >
         <Table className={classes.table} aria-label="customized table">
           <TableHead>
             <TableRow>
@@ -106,26 +100,6 @@ export default function CustomizedTables() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <StyledTableRow key={row.name}>
-                <StyledTableCell component="th" scope="row">
-                  {row.id
-                    ? <Link to={`/tokens/${row.id}`}>
-                      {row.name}&nbsp;
-                      <span className={'textSuccess'}>${row.tokenMoney}</span>
-                      <br />
-                      <span className={'textMuted'}>{row.othername}</span>
-                    </Link>
-                    : row.name}
-                </StyledTableCell>
-                <StyledTableCell>
-                  <span>{row.calories}</span>
-                  <br />
-                  <span className={'textSuccess'}>${row.balanceMoney}</span>
-                </StyledTableCell>
-                <StyledTableCell><StarOutlineIcon /></StyledTableCell>
-              </StyledTableRow>
-            ))}
           </TableBody>
         </Table>
       </TableContainer>

@@ -38,7 +38,7 @@ const useStyles = makeStyles({
         margin: '17px auto 20px auto',
         backgroundColor: "#303030",
         maxWidth: 800,
-        minWidth: 500,
+        minWidth: 300,
         borderRadius: '8px',
         padding: '10px',
     },
@@ -52,6 +52,11 @@ const useStyles = makeStyles({
         height: "auto",
         padding: '20px',
         color: 'black',
+    },
+    tLink: {
+        color: 'blue',
+        fontSize: '1.5rem',
+        textDecoration: 'underline',
     }
 });
 
@@ -67,7 +72,7 @@ export default function PolygonHome() {
                 </div>
                 <div className={classes.bottomText}>
                     Telegram public chat:
-                    <a className={'textBlue fs5 linkText'}>
+                    <a className={classes.tLink}>
                         {" "}
                         http://t.me/poocointokenchat{" "}
                     </a>

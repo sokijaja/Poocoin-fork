@@ -42,7 +42,7 @@ const useStyles = makeStyles({
     margin: '17px auto 20px auto',
     backgroundColor: "#303030",
     maxWidth: 800,
-    minWidth: 500,
+    minWidth: 300,
     borderRadius: '8px',
     padding: '10px',
   },
@@ -61,6 +61,7 @@ const useStyles = makeStyles({
     color: 'blue',
     fontSize: '1.5rem',
     textDecoration: 'underline',
+    flexWrap: 'break-wrap',
   }
 });
 

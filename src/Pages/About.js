@@ -32,6 +32,11 @@ const useStyles = makeStyles((theme) => ({
     },
     backgroundColor: '#262626!important',
     textAlign: '-webkit-center',
+    [theme.breakpoints.down("xs")]: {
+      "& > *": {
+        padding: "0px 00px 0px 0px",
+      },
+    },
   },
   headerContent: {
     backgroundColor: '#ffc107',
@@ -75,9 +80,10 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 7,
     zIndex: 999,
   },
-  TokenSelect: {
-    backgroundColor: "white",
-    marginLeft: 10,
+  tokenSelect: {
+    [theme.breakpoints.down("xs")]: {
+      marginLeft: 10,
+    },
   },
   headerContainer: {
     height: "auto",
@@ -227,7 +233,7 @@ export default function About(props) {
     <div>
       <div className={classes.headerContainer}>
         <Grid container spacing={2}>
-          <Grid xs={6} item>
+          <Grid xs={12} sm={6} md={6} xl={6} item>
             <p
               style={{
                 display: "flex",
@@ -243,11 +249,11 @@ export default function About(props) {
                 <br /><span className={'textSuccess'}>${parseFloat(priceRateData).toFixed(14)}</span>
               </span>
             </p>
-            <Grid style={{ float: "left" }}>
+            <div className={classes.tokenSelect} style={{ float: "left" }}>
               <TokenSelect inputHandle={inputHandle} tokenProps={handleTokenPropsChange} />
-            </Grid>
+            </div>
           </Grid>
-          <Grid xs={6} item className={classes.buttongrid}>
+          <Grid xs={12} sm={6} md={6} xl={6} item className={classes.buttongrid}>
             <div>
               <Button className={classes.button} target="_blank" href={`https://bscscan.com/token/${tokenAddress}`}>
                 <img src={Buttonicon} width="18" height="18" />
@@ -270,7 +276,7 @@ export default function About(props) {
           container
           spacing={2}
           xs={12}
-          style={{ marginTop: 15, flexFlow: "row" }}
+          style={{ marginTop: 15, flexFlow: "row", marginLeft: 5 }}
         >
           <Button className={classes.button}>Reload</Button>
           <div className={classes.selectBox}>
@@ -284,7 +290,7 @@ export default function About(props) {
           <Switch />
         </Grid>
       </div>
-      <Grid xs={12} style={{ marginTop: 20 }} item>
+      <Grid xs={12} style={{ marginTop: 20, padding: 5 }} item>
         <div className={classes.chartPan} >
           <Chart2 tokenAddress={tokenAddress} coinAddress={coinAddress} height="500px" />
         </div>

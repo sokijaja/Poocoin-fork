@@ -37,7 +37,7 @@ const useStyles = makeStyles({
         margin: '17px auto 20px auto',
         backgroundColor: "#303030",
         maxWidth: 800,
-        minWidth: 500,
+        minWidth: 300,
         borderRadius: '8px',
         padding: '10px',
     },
@@ -51,6 +51,12 @@ const useStyles = makeStyles({
         height: "auto",
         padding: '20px',
         color: 'black',
+    },
+    tLink: {
+        color: 'blue',
+        fontSize: '1.7rem',
+        textDecoration: 'underline',
+        cursor: 'pointer',
     }
 });
 
@@ -65,11 +71,11 @@ export default function KuchainHome() {
                     View price charts for any token in your wallet (KuChain)
                 </div>
                 <div className={classes.centerText}>
-                    <a className={'textBlue fs6 linkText'} href="https://www.kucoin.com/ucenter/signup?rcode=rJTXAN8" target="_blank">Signup to KuCoin</a> to get onto the KuChain.
+                    <a className={classes.tLink} href="https://www.kucoin.com/ucenter/signup?rcode=rJTXAN8" target="_blank">Signup to KuCoin</a> to get onto the KuChain.
                 </div>
                 <div className={classes.bottomText}>
                     Telegram public chat:
-                    <a className={'textBlue fs5 linkText'}>
+                    <a className={classes.tLink}>
                         {" "}
                         http://t.me/poocointokenchat{" "}
                     </a>

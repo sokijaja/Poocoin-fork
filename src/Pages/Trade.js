@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: '24px',
     textAlign: 'start',
     borderRadius: '8px',
+    [theme.breakpoints.down("xs")]: {
+      width: '100%',
+    },
   },
   button: {
     color: 'white !important',

@@ -9,6 +9,13 @@ import Search from '@material-ui/icons/Search';
 // import { Field } from 'react-final-form'
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    width: 300,
+    [theme.breakpoints.down("xs")]: {
+      width: 250,
+    },
+  },
   formControl: {
     minWidth: 120,
     backgroundColor: "white",
@@ -111,7 +118,7 @@ export default function SimpleSelect({ tokenProps, inputHandle }) {
   else search = <TokenInput inputHandle={inputHandle}></TokenInput>;
 
   return (
-    <div style={{ display: "flex", width: 300 }}>
+    <div className={classes.root}>
       {search}
       {/* <Button className={classes.button} onClick={onOnlyToken}>
         <Search />
