@@ -805,10 +805,11 @@ export const getOwnToken_wallet = async (accountAddress, setWalletTokenData) => 
           .call();
         const tokenRate = toHuman(amount_out[1], tokenOut_decimals)
         currencies[i]['rate'] = tokenRate.toFixed(4);
-
+        currencies[i]['rateAmount'] = (tokenRate * currencies[i].value).toFixed(2);
       } catch (err) {
         const tokenRate = 0;
         currencies[i]['rate'] = tokenRate.toFixed(4);
+        currencies[i]['rateAmount'] = tokenRate.toFixed(4);
         continue;
       }
     } else {
@@ -824,8 +825,26 @@ export const getOwnToken_wallet = async (accountAddress, setWalletTokenData) => 
       const tokenRate = toHuman(amount_out[1], tokenOut_decimals)
 
       currencies[i]['rate'] = tokenRate.toFixed(4);
+      currencies[i]['rateAmount'] = (tokenRate * currencies[i].value).toFixed(2);
       currencies[i].currency['address'] = DefaultTokens.WBNB.address;
     }
+  }
+  if (currencies.length == 0) {
+    //own token contract
+    const tokenIn_decimals = await getDecimals(DefaultTokens.WBNB.address)
+    //BUSD token contract
+    const tokenOut_decimals = await getDecimals(DefaultTokens.USDT.address)
+
+    const amount_in = toBigNum(1, tokenIn_decimals);
+    const amount_out = await pancakeswapRouterContract.methods
+      .getAmountsOut(amount_in, [DefaultTokens.WBNB.address, DefaultTokens.USDT.address])
+      .call();
+    const tokenRate = toHuman(amount_out[1], tokenOut_decimals)
+
+    const tokenValue = 0;
+    const currencyData = { "address": DefaultTokens.WBNB.address, "symbol": "BNB" }
+    const tokenInfoArray = { "currency": currencyData, "rate": tokenRate.toFixed(4), "value": tokenValue.toFixed(2), "rateAmount": tokenValue.toFixed(2) }
+    currencies.push(tokenInfoArray)
   }
   setWalletTokenData(currencies);
 }

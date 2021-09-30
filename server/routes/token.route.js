@@ -100,23 +100,53 @@ router.get("/getLpinfo", async (req, res) => {
   try {
     let token_address = req.query.foo;
     let lpInfos = await lpSchema.find({
-      $and: [
-        { $or: [{ token0: token_address }, { token1: token_address }] },
+      $or: [
         {
-          $or: [
-            { token0: "0x2170ed0880ac9a755fd29b2688956bd959f933f8" },
-            { token0: "0xe9e7cea3dedca5984780bafc599bd69add087d56" },
-            { token0: "0x55d398326f99059ff775485246999027b3197955" },
-            { token0: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c" },
-            { token0: "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c" },
-            { token1: "0x2170ed0880ac9a755fd29b2688956bd959f933f8" },
-            { token1: "0xe9e7cea3dedca5984780bafc599bd69add087d56" },
-            { token1: "0x55d398326f99059ff775485246999027b3197955" },
-            { token1: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c" },
-            { token1: "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c" },
-          ],
+          $and: [
+            { token0: token_address },
+            {
+              $or: [
+                { token1: "0x2170ed0880ac9a755fd29b2688956bd959f933f8" },
+                { token1: "0xe9e7cea3dedca5984780bafc599bd69add087d56" },
+                { token1: "0x55d398326f99059ff775485246999027b3197955" },
+                { token1: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c" },
+                { token1: "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c" },
+              ]
+            }
+          ]
         },
-      ],
+        {
+          $and: [
+            { token1: token_address },
+            {
+              $or: [
+                { token0: "0x2170ed0880ac9a755fd29b2688956bd959f933f8" },
+                { token0: "0xe9e7cea3dedca5984780bafc599bd69add087d56" },
+                { token0: "0x55d398326f99059ff775485246999027b3197955" },
+                { token0: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c" },
+                { token0: "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c" },
+              ]
+            }
+          ]
+        }
+      ]
+      // $and: [
+      //   { $or: [{ token0: token_address }, { token1: token_address }] },
+      //   {
+      //     $or: [
+      //       { token0: "0x2170ed0880ac9a755fd29b2688956bd959f933f8" },
+      //       { token0: "0xe9e7cea3dedca5984780bafc599bd69add087d56" },
+      //       { token0: "0x55d398326f99059ff775485246999027b3197955" },
+      //       { token0: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c" },
+      //       { token0: "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c" },
+      //       { token1: "0x2170ed0880ac9a755fd29b2688956bd959f933f8" },
+      //       { token1: "0xe9e7cea3dedca5984780bafc599bd69add087d56" },
+      //       { token1: "0x55d398326f99059ff775485246999027b3197955" },
+      //       { token1: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c" },
+      //       { token1: "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c" },
+      //     ],
+      //   },
+      // ],
     }).collation({ locale: "en", strength: 2 });
 
     tokenName = await tokenSchema
@@ -126,6 +156,7 @@ router.get("/getLpinfo", async (req, res) => {
     //token selected info
     let tokenInfo = { name: tokenName.name, symbol: tokenName.symbol, address: tokenName.token };
     let ret_arr = [];
+
     for (let index = 0; index < lpInfos.length; index++) {
       tokenName0 = await tokenSchema
         .find({
