@@ -133,6 +133,7 @@ const useStyles = makeStyles({
     title: {
         color: 'white',
         textAlign: 'left',
+        marginLeft: 5.
     },
     dateTime: {
         color: '#adb5bd!important'
@@ -221,7 +222,7 @@ export default function CustomizedTables() {
         <div>
             <TableContainer>
                 <div className={classes.title}>
-                    <p>Biggest buyers from <span className={classes.dateTime}>{previousDate}</span> to <span className={classes.dateTime}>{currentDate}</span></p>
+                    <p>Biggest sellers from <span className={classes.dateTime}>{previousDate}</span> to <span className={classes.dateTime}>{currentDate}</span></p>
                 </div>
                 <Table className={classes.table} aria-label="customized table">
                     <TableHead>
