@@ -2,10 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
-import { Button, Icon } from "@material-ui/core";
 import TokenInput from "./TokenInput";
 import Select from "react-select";
-import Search from '@material-ui/icons/Search';
 // import { Field } from 'react-final-form'
 
 const useStyles = makeStyles((theme) => ({
@@ -68,7 +66,7 @@ export default function SimpleSelect({ tokenProps, inputHandle }) {
   useEffect(() => {
     if (inputText.length > 1) {
       axios
-        .get("/token/getTokenName", {
+        .get(`${process.env.REACT_APP_API}token/getTokenName`, {
           params: { foo: inputText },
         })
         .then((res) => {

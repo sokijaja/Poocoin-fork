@@ -94,7 +94,7 @@ async function getTokenName(values) {
 
   const data = JSON.stringify({ values: values });
 
-  return await axios.get('/token/getToken/' + data);
+  return await axios.get(`${process.env.REACT_APP_API}token/getToken/` + data);
 }
 
 function ApeTable(props) {

@@ -63,6 +63,9 @@ const useStyles = makeStyles({
   starredFillIcon: {
     color: '#f7b500!important',
     cursor: 'pointer'
+  },
+  tokenList: {
+    cursor: 'pointer',
   }
 });
 
@@ -85,7 +88,7 @@ function UnvettedTable(props) {
   return (
     values.map((item, index) =>
       <StyledTableRow key={index}>
-        <StyledTableCell component="th" scope="row" onClick={addMultichartInfo(item[0])}>
+        <StyledTableCell className={classes.tokenList} component="th" scope="row" onClick={addMultichartInfo(item[0])}>
           <span>{item[1].split('/')[3]} </span>
           <span className={"textSuccess"}>$0.0000</span>
           <br />
