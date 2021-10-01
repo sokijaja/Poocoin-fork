@@ -36,7 +36,6 @@ export const getOwnToken = async (accountAddress) => {
 }
 
 export const getTransactionListData = async (tokenAddress) => {
-  console.log(tokenAddress)
   // any: {baseCurrency: {is: "${tokenAddress}"}}
   const QUERY = `{
     ethereum(network: bsc) {
@@ -82,8 +81,10 @@ export const getTransactionListData = async (tokenAddress) => {
     body: JSON.stringify({
       query: QUERY
     })
-  });
-
+  }).catch(() => { return null });
+  if (response == null) {
+    return null;
+  }
   const data = await response.json();
   const currency = data.data.ethereum.dexTrades;
   return currency;

@@ -22,7 +22,8 @@ export default {
 		if (!split_data[0].includes(':')) {
 			let response_ = await getLpaddress(split_data[0], split_data[1]);
 			lpAddress = response_.data;
-
+			// lpAddress[0] = split_data[0]
+			// lpAddress[1] = split_data[1]
 			//get coinsymbol from symbolName (tokenaddress:tokenaddress/coinaddress)
 			var coinSymbol_res = await getSymbolName(split_data[1]);
 			var coinSymbol = coinSymbol_res.data[0].symbol;

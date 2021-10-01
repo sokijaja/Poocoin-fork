@@ -2,7 +2,6 @@ let express = require('express');
 let mongoose = require('mongoose');
 let cors = require('cors');
 let bodyParser = require('body-parser');
-
 // Express Route
 const tokenRoute = require('./routes/token.route')
 const lpaddrRoute = require('./routes/address.route')
@@ -28,7 +27,6 @@ app.use(bodyParser.urlencoded({
 app.use(cors());
 app.use('/token', tokenRoute)
 app.use('/lp_address', lpaddrRoute)
-
 
 // PORT
 const port = process.env.PORT || 5000;

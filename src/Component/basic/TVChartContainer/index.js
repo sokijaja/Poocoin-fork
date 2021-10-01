@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Datafeed from './api'
 import { makeStyles } from '@material-ui/core/styles';
-import { useSelector } from 'react-redux';
 
 function getLanguageFromURL() {
 	const regex = new RegExp('[\\?&]lang=([^&#]*)');

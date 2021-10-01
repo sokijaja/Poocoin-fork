@@ -2,7 +2,6 @@ import axios from 'axios';
 
 //Get all info about current token from lpaddress and token table
 export const getLpinfo = (tokenId) => {
-    console.log(process.env.REACT_APP_API)
     return axios
         .get(`${process.env.REACT_APP_API}token/getLpinfo`, {
             params: { foo: tokenId },
