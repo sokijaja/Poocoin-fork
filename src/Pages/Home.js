@@ -62,6 +62,7 @@ const useStyles = makeStyles({
     fontSize: '1.5rem',
     textDecoration: 'underline',
     flexWrap: 'break-wrap',
+    cursor: 'pointer',
   }
 });
 

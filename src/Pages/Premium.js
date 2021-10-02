@@ -150,9 +150,9 @@ export default function Tools() {
             POOCOIN/BNB LP
           </a>
           <br></br>
-          (approximately <strong>0.000010 POOCOIN/BNB LP</strong>created from 22.6297
+          (approximately <strong>0.000010 POOCOIN/BNB LP</strong> created from 22.6297 &nbsp;
           <a target="_blank" href="https://poocoin.app/swap?outputCurrency=0xB27ADAfFB9fEa1801459a1a81B17218288c097cc" className={classes.link}>
-            POOCOIN
+            POOCOIN &nbsp;
           </a>
           and 0.1652 BNB)<br></br>
           tokens in your wallet.
@@ -165,7 +165,7 @@ export default function Tools() {
           <br></br>
           (approximately <strong>0.000031 POOCOIN/BNB LP</strong> created from 66.9802
           <a target="_blank" href="https://poocoin.app/swap?outputCurrency=0xB27ADAfFB9fEa1801459a1a81B17218288c097cc" className={classes.link}>
-            POOCOIN
+            &nbsp;POOCOIN&nbsp;
           </a>
           and 0.4879 BNB)<br></br>
           tokens in your wallet.
@@ -178,7 +178,7 @@ export default function Tools() {
           <br></br>
           (approximately <strong>0.000204 POOCOIN/BNB LP</strong> created from 447.3085
           <a target="_blank" href="https://poocoin.app/swap?outputCurrency=0xB27ADAfFB9fEa1801459a1a81B17218288c097cc" className={classes.link}>
-            POOCOIN
+            &nbsp;POOCOIN&nbsp;
           </a>
           and 3.2544 BNB)<br></br>
           tokens in your wallet.
