@@ -2,13 +2,15 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Divider from "@material-ui/core/Divider";
+import { Divider, Modal } from "@material-ui/core";
 import BSC from "../../Images/bscscan.png";
 import LpInfoItem from "./lpInfoItem";
 import { tokenBalance, getAmountsOut } from "../../PooCoin";
 import { numberWithCommas } from "../../PooCoin/util";
 import { useSelector } from 'react-redux';
 import DefaultTokens from '../../config/default_tokens.json'
+import Error from '@material-ui/icons/Error';
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,7 +63,56 @@ const useStyles = makeStyles((theme) => ({
   },
   bitqueryIcon: {
     width: '80px',
-  }
+  },
+  modalLeft: {
+    textAlign: 'left',
+    color: '#3eb8ff !important',
+    cursor: 'pointer',
+  },
+  modalRight: {
+    textAlign: 'right',
+    cursor: 'pointer',
+    color: '#3eb8ff !important'
+  },
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#262626',
+  },
+  paper: {
+    backgroundColor: 'white',
+    border: 'none',
+    padding: '40px 30px 30px 30px',
+    display: 'grid',
+    borderRadius: '8px',
+    textAlign: 'center',
+    width: '40%',
+    position: 'relative',
+  },
+  presaleAd: {
+    textAlign: 'left',
+    margin: '20px 0px 20px 20px',
+    fontSize: '15px',
+  },
+  presaleAdIcon: {
+    color: '#f7b500!important',
+    fontWeight: 900,
+    fontSize: '1.25rem',
+    margin: '-2px 0px 0px 2px',
+    cursor: 'pointer',
+  },
+  closebtn: {
+    backgroundColor: 'white',
+    float: 'right',
+    fontSize: '3px',
+    border: 0,
+    borderRadius: '4px',
+    cursor: 'pointer',
+    position: 'absolute',
+    top: 5,
+    right: 5,
+  },
 }));
 
 const SimpleList = ({ lpdata, totalSupply, currentTokenInfo }) => {
@@ -71,7 +122,13 @@ const SimpleList = ({ lpdata, totalSupply, currentTokenInfo }) => {
   const [priceRateData, setPriceRateData] = useState(0);
   const currentTokenAddress = useSelector((state) => state.tokenAddress);
   const classes = useStyles();
-
+  const [open, setModalOpen] = useState(false);
+  const modalOpen = () => {
+    setModalOpen(true);
+  }
+  const modalClose = () => {
+    setModalOpen(false);
+  };
   const setBurnData = (data) => {
     setBurnBalance(data);
   }
@@ -137,6 +194,28 @@ const SimpleList = ({ lpdata, totalSupply, currentTokenInfo }) => {
           &nbsp;Bitquery Explorer
         </a>
       </div>
+      <Divider />
+      <div className={classes.presaleAd}>
+        <span>Presale Ad</span>
+        <Error className={classes.presaleAdIcon} onClick={modalOpen} />
+      </div>
+      <Modal
+        className={classes.modal}
+        open={open}
+        onClose={modalClose}
+      >
+        <div className={classes.paper}>
+          <button onClick={modalClose} className={classes.closebtn}>
+            <CloseIcon />
+          </button>
+          <p>
+            The ads in this spot may contain high-risk presales, some with whitelist applications required before the presale link has been revealed.
+          </p>
+          <p>
+            There is no reliable way to know the intentions of the devs in these presales. Poocoin does not know what the outcome will be or if it is a scam.
+          </p>
+        </div>
+      </Modal>
     </div>
   );
 };
