@@ -34,16 +34,6 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-const rows = Array.from(Array(1).keys()).map(item => {
-  return {
-    name: "THOREUM",
-    othername: "Thoreum",
-    id: "0x580de58c1bd593a43dadcf0a739d504621817c05",
-    tokenMoney: "0.0000",
-    balanceMoney: "0.00",
-    calories: '0.00'
-  }
-})
 const useStyles = makeStyles({
   table: {
     minWidth: 100,

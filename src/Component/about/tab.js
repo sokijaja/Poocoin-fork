@@ -5,6 +5,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import PropTypes from "prop-types";
 import List from "./list";
+import News from "./news";
 import { getTotalSupply } from "../../PooCoin/index.js";
 import { numberWithCommas } from '../../PooCoin/util';
 import { useSelector } from 'react-redux'
@@ -114,7 +115,11 @@ export default function CenteredTabs(props) {
         </div>
         <List lpdata={lpdata} totalSupply={totalSupply} currentTokenInfo={currentTokenInfo} />
       </TabPanel>
-      <TabPanel value={value} index={1}></TabPanel>
+      <TabPanel value={value} index={1} className={classes.tabpanel}>
+        <div className={classes.item}>
+          <News />
+        </div>
+      </TabPanel>
     </Paper>
   );
 }
