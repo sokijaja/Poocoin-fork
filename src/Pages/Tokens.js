@@ -133,7 +133,7 @@ export default function Tokens(props) {
     if (tokenAddress != undefined) {
       getLpinfo(tokenAddress)
         .then(data => {
-          if (data.lpInfos == null && data.tokenInfos == null) {
+          if (data.lpInfos == null || data.tokenInfos == null || data.lpInfos.length == 0 || data.tokenInfos.length == 0) {
             setFirstCoinName(null)
             setCoinAddress(null)
             setLpDatas(null);

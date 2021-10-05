@@ -22,7 +22,7 @@ const factoryAddress = "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73";
 const factoryContract = new ethers.Contract(factoryAddress, abi, provider);
 
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017";
+var url = "mongodb://192.168.112.98:27017";
 
 MongoClient.connect(url, function (err, db) {
     if (err) throw err;
@@ -33,7 +33,7 @@ MongoClient.connect(url, function (err, db) {
     factoryContract.allPairsLength().then(count => {
         setTimeout(async () => {
 
-            for (var i = 0; i < count; i++) {
+            for (var i = 410904; i < count; i++) {
                 await factoryContract.allPairs(i).then(pairAddress => {
                     setTimeout(async () => {
                         const pairContract = new ethers.Contract(pairAddress, abi, provider);
@@ -71,6 +71,23 @@ MongoClient.connect(url, function (err, db) {
 
                         try {
                             await dbo.collection("tokens1").insertOne(record, function (err, res) {
+                                if (err) console.log(err);
+                                console.log("Number of documents inserted: " + i);
+                                // db.close();
+                            });
+                        } catch (e) {
+                            console.log(e);
+                        }
+
+                        let lprecord = {}
+
+                        lprecord.token0 = token0;
+                        lprecord.token1 = token1;
+                        lprecord.type = "PancakeSwap";
+                        lprecord.lp_address = pairAddress;
+
+                        try {
+                            await dbo.collection("lpaddresses").insertOne(lprecord, function (err, res) {
                                 if (err) console.log(err);
                                 console.log("Number of documents inserted: " + i);
                                 // db.close();
