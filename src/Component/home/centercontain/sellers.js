@@ -156,7 +156,7 @@ function formatDate(dateVal) {
     if (dateVal === "current") {
         timeDate['day'] = sDay;
     } else if (dateVal === "previous") {
-        timeDate['day'] = new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24).getDate();
+        timeDate['day'] = padValue(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24).getDate());
         if (sDay == 1) {
             timeDate['month'] = new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24).getMonth() + 1;
             timeDate['fullmonth'] = padValue(timeDate['month']);

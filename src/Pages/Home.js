@@ -91,7 +91,7 @@ export default function Home() {
         </div>
         <div className={classes.bottomText}>
           Telegram public chat: &nbsp;
-          <a className={classes.tLink} target="_blank">
+          <a href="https://t.me/poocointokenchat" className={classes.tLink} target="_blank">
             http://t.me/poocointokenchat
           </a>
         </div>

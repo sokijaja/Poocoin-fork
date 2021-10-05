@@ -53,9 +53,15 @@ export default function TransitionAlerts({ tokenAddress, index }) {
   }, [tokenAddress])
 
   if (tokenAddress != null) {
-    chart = (
-      <Chart tokenAddress={tokenAddress} coinAddress={DefaultTokens.WBNB.address} height="280px" />
-    );
+    if (tokenAddress == DefaultTokens.WBNB.address) {
+      chart = (
+        <Chart tokenAddress={tokenAddress} coinAddress={DefaultTokens.BUSD.address} height="280px" />
+      );
+    } else {
+      chart = (
+        <Chart tokenAddress={tokenAddress} coinAddress={DefaultTokens.WBNB.address} height="280px" />
+      );
+    }
   }
 
   const onClickBtn = index => () => {
