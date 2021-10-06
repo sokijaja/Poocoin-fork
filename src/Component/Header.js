@@ -319,13 +319,13 @@ export default function Header(props) {
                       </span>
                       <span className={classes.amountColor}> ${priceData} </span>
                     </Link>
-                    <a href="telegram.com">
+                    <a href="https://t.me/poocointokenchat" target="_blank">
                       <img src={TelegramIcon} height='25' />
                     </a>
                   </Grid>
                   :
                   <Grid item>
-                    <a href="telegram.com">
+                    <a href="https://t.me/poocointokenchat" target="_blank">
                       <img src={TelegramIcon} height='25' />
                     </a>
                   </Grid>

@@ -95,7 +95,7 @@ export default function CustomizedTables() {
 
   const setWalletValues = (data) => {
     if (data.length === 0) {
-      setLoading(true)
+      setWalletData(null);
     } else {
       setLoading(false)
       setWalletData(data);
@@ -103,7 +103,7 @@ export default function CustomizedTables() {
   };
 
   useEffect(() => {
-    if (account === null) {
+    if (account == null) {
       setLoading(true)
       setWalletData(null)
     } else {
@@ -138,19 +138,19 @@ export default function CustomizedTables() {
                     component="th"
                     scope="row"
                   >
-                    {row.tokens}
+                    {(row.amount).toFixed(2)}
                   </StyledTableCell>
                   <StyledTableCell className={classes.th1}>
-                    ${(row.price).toFixed(2)}
+                    ${(row.usdAmount).toFixed(2)}
                   </StyledTableCell>
                   <StyledTableCell className={classes.th1}>
-                    {row.currentValue}
+                    {row.fromAmount}
                   </StyledTableCell>
                   <StyledTableCell className={classes.th1}>
-                    {row.date}
+                    {row.timestamp}
                   </StyledTableCell>
                   <StyledTableCell className={classes.th1}>
-                    {row.tx}
+                    {(row.transaction).substring(0, 6)}
                   </StyledTableCell>
                 </StyledTableRow>
               ))}

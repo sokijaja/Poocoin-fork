@@ -803,34 +803,55 @@ export const getWalletData = async (tokenAddress, account, setWalletValues) => {
   //   .then(res => res.json())
   //   .then(data => { setWalletValues(data) })
   //   .catch(err => console.log(err))
-  const data = await fetch(`https://api1.poocoin.app/wallet-tx?address=0x580dE58c1BD593A43DaDcF0A739d504621817c05&wallet=0x1660cd15544fdf176677079a0675c8c59f020e84`)
+  const data = await fetch(`/api1/wallet-tx?address=0x580dE58c1BD593A43DaDcF0A739d504621817c05&wallet=0x1660cd15544fdf176677079a0675c8c59f020e84`)
+    .then(res => res.json())
+    .then(data => { setWalletValues(data) })
+    .catch(err => console.log(err))
 }
 
 export const getOwnToken_wallet = async (accountAddress, setWalletTokenData) => {
-  const currencies = await getOwnToken(accountAddress);
-  for (let i = 0; i < currencies.length; i++) {
-    const currencyAddress = currencies[i].currency.address;
-    if (currencyAddress != '-') {
-      try {
+  let currencies = await getOwnToken(accountAddress);
+  if (currencies != null) {
+    for (let i = 0; i < currencies.length; i++) {
+      const currencyAddress = currencies[i].currency.address;
+      if (currencyAddress != '-') {
+        try {
+          //own token contract
+          const tokenIn_decimals = await getDecimals(currencyAddress)
+          //BUSD token contract
+          const tokenOut_decimals = await getDecimals(DefaultTokens.USDT.address)
+
+          const amount_in = toBigNum(1, tokenIn_decimals);
+          const amount_out = await pancakeswapRouterContract.methods
+            .getAmountsOut(amount_in, [currencyAddress, DefaultTokens.USDT.address])
+            .call();
+          const tokenRate = toHuman(amount_out[1], tokenOut_decimals)
+          currencies[i]['rate'] = tokenRate.toFixed(4);
+          currencies[i]['rateAmount'] = (tokenRate * currencies[i].value).toFixed(2);
+        } catch (err) {
+          const tokenRate = 0;
+          currencies[i]['rate'] = tokenRate.toFixed(4);
+          currencies[i]['rateAmount'] = tokenRate.toFixed(4);
+          continue;
+        }
+      } else {
         //own token contract
-        const tokenIn_decimals = await getDecimals(currencyAddress)
+        const tokenIn_decimals = await getDecimals(DefaultTokens.WBNB.address)
         //BUSD token contract
         const tokenOut_decimals = await getDecimals(DefaultTokens.USDT.address)
 
         const amount_in = toBigNum(1, tokenIn_decimals);
         const amount_out = await pancakeswapRouterContract.methods
-          .getAmountsOut(amount_in, [currencyAddress, DefaultTokens.USDT.address])
+          .getAmountsOut(amount_in, [DefaultTokens.WBNB.address, DefaultTokens.USDT.address])
           .call();
         const tokenRate = toHuman(amount_out[1], tokenOut_decimals)
+
         currencies[i]['rate'] = tokenRate.toFixed(4);
         currencies[i]['rateAmount'] = (tokenRate * currencies[i].value).toFixed(2);
-      } catch (err) {
-        const tokenRate = 0;
-        currencies[i]['rate'] = tokenRate.toFixed(4);
-        currencies[i]['rateAmount'] = tokenRate.toFixed(4);
-        continue;
+        currencies[i].currency['address'] = DefaultTokens.WBNB.address;
       }
-    } else {
+    }
+    if (currencies.length == 0) {
       //own token contract
       const tokenIn_decimals = await getDecimals(DefaultTokens.WBNB.address)
       //BUSD token contract
@@ -842,27 +863,13 @@ export const getOwnToken_wallet = async (accountAddress, setWalletTokenData) => 
         .call();
       const tokenRate = toHuman(amount_out[1], tokenOut_decimals)
 
-      currencies[i]['rate'] = tokenRate.toFixed(4);
-      currencies[i]['rateAmount'] = (tokenRate * currencies[i].value).toFixed(2);
-      currencies[i].currency['address'] = DefaultTokens.WBNB.address;
+      const tokenValue = 0;
+      const currencyData = { "address": DefaultTokens.WBNB.address, "symbol": "BNB" }
+      const tokenInfoArray = { "currency": currencyData, "rate": tokenRate.toFixed(4), "value": tokenValue.toFixed(2), "rateAmount": tokenValue.toFixed(2) }
+      currencies.push(tokenInfoArray)
     }
-  }
-  if (currencies.length == 0) {
-    //own token contract
-    const tokenIn_decimals = await getDecimals(DefaultTokens.WBNB.address)
-    //BUSD token contract
-    const tokenOut_decimals = await getDecimals(DefaultTokens.USDT.address)
-
-    const amount_in = toBigNum(1, tokenIn_decimals);
-    const amount_out = await pancakeswapRouterContract.methods
-      .getAmountsOut(amount_in, [DefaultTokens.WBNB.address, DefaultTokens.USDT.address])
-      .call();
-    const tokenRate = toHuman(amount_out[1], tokenOut_decimals)
-
-    const tokenValue = 0;
-    const currencyData = { "address": DefaultTokens.WBNB.address, "symbol": "BNB" }
-    const tokenInfoArray = { "currency": currencyData, "rate": tokenRate.toFixed(4), "value": tokenValue.toFixed(2), "rateAmount": tokenValue.toFixed(2) }
-    currencies.push(tokenInfoArray)
+  } else {
+    currencies = [];
   }
   setWalletTokenData(currencies);
 }

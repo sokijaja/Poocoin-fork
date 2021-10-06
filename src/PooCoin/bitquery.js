@@ -28,7 +28,11 @@ export const getOwnToken = async (accountAddress) => {
     body: JSON.stringify({
       query: QUERY
     })
-  });
+  }).catch(() => { return null });
+
+  if (response == null) {
+    return null;
+  }
 
   const data = await response.json();
   const currency = data.data.ethereum.address[0].balances;
