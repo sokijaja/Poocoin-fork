@@ -89,6 +89,11 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     width: '40%',
     position: 'relative',
+    [theme.breakpoints.down("xs")]: {
+      width: '100%',
+      padding: '10px',
+      margin: '10px',
+    }
   },
   presaleAd: {
     textAlign: 'left',
@@ -115,11 +120,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SimpleList = ({ lpdata, totalSupply, currentTokenInfo }) => {
+const SimpleList = ({ lpdata, totalSupply, currentTokenInfo, priceRateData }) => {
 
   // let marketCap = totalSupply * ratePrice;
   const [burnBalance, setBurnBalance] = useState(0);
-  const [priceRateData, setPriceRateData] = useState(0);
+  // const [priceRateData, setPriceRateData] = useState(0);
   const currentTokenAddress = useSelector((state) => state.tokenAddress);
   const classes = useStyles();
   const [open, setModalOpen] = useState(false);
@@ -136,7 +141,7 @@ const SimpleList = ({ lpdata, totalSupply, currentTokenInfo }) => {
   useEffect(() => {
     if (currentTokenAddress !== undefined) {
       tokenBalance(DefaultTokens.BURNADDRESS.address, currentTokenAddress, setBurnData)
-      getAmountsOut(1, currentTokenAddress, DefaultTokens.USDT.address, setPriceRateData)
+      // getAmountsOut(1, currentTokenAddress, DefaultTokens.USDT.address, setPriceRateData)
     }
   }, [currentTokenAddress])
 

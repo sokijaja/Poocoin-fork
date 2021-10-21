@@ -73,7 +73,7 @@ TabPanel.propTypes = {
 };
 
 export default function CenteredTabs(props) {
-  const { lpdata, currentTokenInfo } = props;
+  const { lpdata, currentTokenInfo, priceRateData } = props;
   const classes = useStyles();
   const [totalSupply, setTotal] = useState();
   const currentTokenAddress = useSelector((state) => state.tokenAddress)
@@ -113,7 +113,7 @@ export default function CenteredTabs(props) {
           Total Supply:
           <br />{numberWithCommas(totalSupply)}
         </div>
-        <List lpdata={lpdata} totalSupply={totalSupply} currentTokenInfo={currentTokenInfo} />
+        <List lpdata={lpdata} totalSupply={totalSupply} currentTokenInfo={currentTokenInfo} priceRateData={priceRateData} />
       </TabPanel>
       <TabPanel value={value} index={1} className={classes.tabpanel}>
         <div className={classes.item}>

@@ -93,6 +93,16 @@ const useStyles = makeStyles((theme) => ({
     width: 230,
     marginLeft: 7,
     zIndex: 999,
+    [theme.breakpoints.down("xs")]: {
+      width: '50%'
+    }
+  },
+  selecttool: {
+    marginTop: 15,
+    flexFlow: "row",
+    [theme.breakpoints.down("xs")]: {
+      flexFlow: 'wrap'
+    }
   },
   TokenSelect: {
     backgroundColor: "white",
@@ -116,6 +126,7 @@ export default function Tokens(props) {
   const classes = useStyles();
   const [showMode, setShowMode] = useState(1);
   const [priceRateData, setPriceRateData] = useState(0);
+  const [coinpriceRateData, setCoinpriceRateData] = useState(0);
   const history = useHistory();
   const [lpDatas, setLpDatas] = useState([]);
   const [currentTokenInfo, setCurrentTokenInfo] = useState({});
@@ -178,10 +189,10 @@ export default function Tokens(props) {
           setLpDatas(tokens);
           setSelectData(selectOptionData)
           setCurrentTokenInfo(data.tokenInfos)
+          //Get Lpaddress from current token address and BUSD token address
+          getAmountsOut(1, tokenAddress, tokens[0].value[0], setPriceRateData);
+          getAmountsOut(1, tokens[0].value[0], DefaultTokens.USDT.address, setCoinpriceRateData);
         })
-
-      //Get Lpaddress from current token address and BUSD token address
-      getAmountsOut(1, tokenAddress, DefaultTokens.USDT.address, setPriceRateData);
     }
   }, [tokenAddress])
   const handleChange = () => {
@@ -238,7 +249,7 @@ export default function Tokens(props) {
                   </span>
                   <span>
                     {currentTokenInfo == null ? null : currentTokenInfo.name} ({currentTokenInfo == null ? null : currentTokenInfo.name}/{firstCoinName})
-                    <br /><span className={'textSuccess'}>${parseFloat(priceRateData).toFixed(14)}</span>
+                    <br /><span className={'textSuccess'}>${parseFloat(priceRateData * coinpriceRateData).toFixed(14)}</span>
                   </span>
                 </p>
               </Grid>
@@ -273,7 +284,7 @@ export default function Tokens(props) {
           item
           container
           xs={12}
-          style={{ marginTop: 15, flexFlow: "row" }}
+          className={classes.selecttool}
         >
           <Button className={classes.button}>Reload</Button>
           <div className={classes.selectBox}>
@@ -298,7 +309,7 @@ export default function Tokens(props) {
         <br />
         {
           lpDatas != null &&
-          <TableTab tokenPrice={priceRateData} />
+          <TableTab tokenPrice={priceRateData * coinpriceRateData} />
         }
       </Grid>
     </div>
@@ -312,7 +323,7 @@ export default function Tokens(props) {
         <Grid item xs={12} sm={3} md={3} className={classes.leftSide}>
           {
             currentTokenInfo != null &&
-            <Lefttab lpdata={lpDatas} currentTokenInfo={currentTokenInfo} />
+            <Lefttab lpdata={lpDatas} currentTokenInfo={currentTokenInfo} priceRateData={priceRateData * coinpriceRateData} />
           }
         </Grid>
         <Grid item xs={12} sm={9} md={6} className={classes.centerContainer}>
@@ -331,7 +342,7 @@ export default function Tokens(props) {
         <Grid item xs={12} md={3} sm={3} xl={3} className={classes.leftSide}>
           {
             currentTokenInfo != null &&
-            <Lefttab lpdata={lpDatas} currentTokenInfo={currentTokenInfo} />
+            <Lefttab lpdata={lpDatas} currentTokenInfo={currentTokenInfo} priceRateData={priceRateData * coinpriceRateData} />
           }
         </Grid>
         <Grid item xs={12} md={9} sm={9} xl={9} className={classes.centerContainer}>
