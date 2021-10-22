@@ -14,6 +14,7 @@ import { connectWalletStatus } from '../constants';
 import Web3 from 'web3'
 import { switchNetwork } from '../PooCoin/util';
 import DefaultTokens from '../config/default_tokens.json'
+import { getAmountsOut } from "../PooCoin";
 import { useSelector, useDispatch } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
@@ -236,14 +237,15 @@ export default function Header(props) {
         console.log(err);
       }
     }
-    fetch('https://api.coingecko.com/api/v3/simple/price?ids=poocoin&vs_currencies=usd')
-      .then(res => res.json())
-      .then(data => {
-        setPriceData(data.poocoin.usd);
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    getAmountsOut(1, DefaultTokens.POOCOIN.address, DefaultTokens.USDT.address, setPriceData);
+    // fetch('https://api.coingecko.com/api/v3/simple/price?ids=poocoin&vs_currencies=usd')
+    //   .then(res => res.json())
+    //   .then(data => {
+    //     setPriceData(data.poocoin.usd);
+    //   })
+    //   .catch(err => {
+    //     console.log(err)
+    //   })
   }, [account, userDisconnected])
 
   let coinAmount = '';
@@ -317,7 +319,7 @@ export default function Header(props) {
                       <span style={{ borderRadius: '999px', backgroundColor: 'white', padding: '5px' }}>
                         <img src={PoocoinIcon} height="18" />
                       </span>
-                      <span className={classes.amountColor}> ${priceData} </span>
+                      <span className={classes.amountColor}> ${parseFloat(priceData).toFixed(2)} </span>
                     </Link>
                     <a href="https://t.me/poocointokenchat" target="_blank">
                       <img src={TelegramIcon} height='25' />

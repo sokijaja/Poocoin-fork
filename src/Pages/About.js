@@ -179,7 +179,6 @@ export default function About(props) {
   const [currentTokenInfo, setCurrentTokenInfo] = useState({});
   const [selectData, setSelectData] = useState([]);
   const [coinAddress, setCoinAddress] = useState(DefaultTokens.WBNB.address);
-  const [priceData, setPriceData] = useState([]);
 
   // const tokenAddress = useSelector((state) => state.tokenAddress)
   const dispatch = useDispatch();
@@ -325,7 +324,7 @@ export default function About(props) {
               <span style={{ borderRadius: '999px', backgroundColor: 'white', margin: '20px 10px 20px 10px' }}>
                 <img src={PoocoinIcon} height="70" className={classes.poocoinImg} />
               </span>
-              <span className={classes.value}> ${priceData}</span>
+              <span className={classes.value}> ${parseFloat(priceRateData).toFixed(4)}</span>
             </Grid>
           </div>
 
