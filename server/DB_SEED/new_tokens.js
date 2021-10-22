@@ -36,65 +36,69 @@ MongoClient.connect(url, async function (err, db) {
             factoryContract.allPairsLength().then(async (count) => {
                 if (count > count_temp) {
                     for (var i = count_temp; i < count; i++) {
-                        await factoryContract.allPairs(i).then(async (pairAddress) => {
-                            const pairContract = new ethers.Contract(pairAddress, abi, provider);
+                        try {
+                            await factoryContract.allPairs(i).then(async (pairAddress) => {
+                                const pairContract = new ethers.Contract(pairAddress, abi, provider);
 
-                            let token0 = await pairContract.token0();
-                            const token0Contract = new ethers.Contract(token0, abi, provider);
-                            let token0Symbol = await token0Contract.symbol();
-                            let token0name = await token0Contract.name();
-                            let record = {};
+                                let token0 = await pairContract.token0();
+                                const token0Contract = new ethers.Contract(token0, abi, provider);
+                                let token0Symbol = await token0Contract.symbol();
+                                let token0name = await token0Contract.name();
+                                let record = {};
 
-                            record.name = token0name;
-                            record.symbol = token0Symbol;
-                            record.token = token0;
+                                record.name = token0name;
+                                record.symbol = token0Symbol;
+                                record.token = token0;
 
-                            try {
-                                await dbo.collection("tokens").insertOne(record, function (err, res) {
-                                    if (err) console.log(err);
-                                    console.log("Number of documents inserted: " + i);
-                                    // db.close();
-                                });
-                            } catch (e) {
-                                console.log(e);
-                            }
-                            let token1 = await pairContract.token1();
+                                try {
+                                    await dbo.collection("tokens").insertOne(record, function (err, res) {
+                                        if (err) console.log(err);
+                                        console.log("Number of documents inserted: " + i);
+                                        // db.close();
+                                    });
+                                } catch (e) {
+                                    console.log(e);
+                                }
+                                let token1 = await pairContract.token1();
 
-                            const token1Contract = new ethers.Contract(token1, abi, provider);
-                            let token1Symbol = await token1Contract.symbol();
-                            let token1name = await token1Contract.name();
+                                const token1Contract = new ethers.Contract(token1, abi, provider);
+                                let token1Symbol = await token1Contract.symbol();
+                                let token1name = await token1Contract.name();
 
-                            record.name = token1name;
-                            record.symbol = token1Symbol;
-                            record.token = token1;
+                                record.name = token1name;
+                                record.symbol = token1Symbol;
+                                record.token = token1;
 
-                            try {
-                                await dbo.collection("tokens").insertOne(record, function (err, res) {
-                                    if (err) console.log(err);
-                                    console.log("Number of documents inserted: " + i);
-                                    // db.close();
-                                });
-                            } catch (e) {
-                                console.log(e);
-                            }
+                                try {
+                                    await dbo.collection("tokens").insertOne(record, function (err, res) {
+                                        if (err) console.log(err);
+                                        console.log("Number of documents inserted: " + i);
+                                        // db.close();
+                                    });
+                                } catch (e) {
+                                    console.log(e);
+                                }
 
-                            let lprecord = {}
+                                let lprecord = {}
 
-                            lprecord.token0 = token0;
-                            lprecord.token1 = token1;
-                            lprecord.type = "PancakeSwap";
-                            lprecord.lp_address = pairAddress;
+                                lprecord.token0 = token0;
+                                lprecord.token1 = token1;
+                                lprecord.type = "PancakeSwap";
+                                lprecord.lp_address = pairAddress;
 
-                            try {
-                                await dbo.collection("lpaddresses").insertOne(lprecord, function (err, res) {
-                                    if (err) console.log(err);
-                                    console.log("Number of documents inserted: " + i);
-                                    // db.close();
-                                });
-                            } catch (e) {
-                                console.log(e);
-                            }
-                        });
+                                try {
+                                    await dbo.collection("lpaddresses").insertOne(lprecord, function (err, res) {
+                                        if (err) console.log(err);
+                                        console.log("Number of documents inserted: " + i);
+                                        // db.close();
+                                    });
+                                } catch (e) {
+                                    console.log(e);
+                                }
+                            });
+                        } catch (error) {
+                            console.log('-----')
+                        }
                     }
                     count_temp = count;
                 } else {

@@ -79,6 +79,16 @@ const useStyles = makeStyles((theme) => ({
     width: 230,
     marginLeft: 7,
     zIndex: 999,
+    [theme.breakpoints.down("xs")]: {
+      width: '50%'
+    }
+  },
+  selecttool: {
+    marginTop: 15,
+    flexFlow: "row",
+    [theme.breakpoints.down("xs")]: {
+      flexFlow: 'wrap'
+    }
   },
   tokenSelect: {
     [theme.breakpoints.down("xs")]: {
@@ -213,14 +223,6 @@ export default function About(props) {
       })
     //Get Lpaddress from current token address and BUSD token address
     getAmountsOut(1, tokenAddress, DefaultTokens.USDT.address, setPriceRateData);
-    fetch('https://api.coingecko.com/api/v3/simple/price?ids=poocoin&vs_currencies=usd')
-      .then(res => res.json())
-      .then(data => {
-        setPriceData(data.poocoin.usd);
-      })
-      .catch(err => {
-        console.log(err)
-      })
   }, [tokenAddress])
 
   const handleTokenPropsChange = (tokenInfo) => {
@@ -284,7 +286,7 @@ export default function About(props) {
           container
           spacing={2}
           xs={12}
-          style={{ marginTop: 15, flexFlow: "row", marginLeft: 5 }}
+          className={classes.selecttool}
         >
           <Button className={classes.button}>Reload</Button>
           <div className={classes.selectBox}>
@@ -303,7 +305,7 @@ export default function About(props) {
           <Chart2 tokenAddress={tokenAddress} coinAddress={coinAddress} height="500px" />
         </div>
         <br />
-        <TableTab />
+        <TableTab tokenPrice={priceRateData} />
       </Grid>
     </div>
   );
@@ -340,7 +342,7 @@ export default function About(props) {
       <div className={classes.centerContainer}>
         <Grid container item xs={12}>
           <Grid item xs={12} md={4} sm={4} xl={4} className={classes.leftSide}>
-            <Lefttab lpdata={lpDatas} currentTokenInfo={currentTokenInfo} />
+            <Lefttab lpdata={lpDatas} currentTokenInfo={currentTokenInfo} priceRateData={priceRateData} />
           </Grid>
           <Grid item xs={12} md={8} sm={8} xl={8}>
             {centerContainer}

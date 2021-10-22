@@ -37,6 +37,11 @@ const useStyles = makeStyles((theme) => ({
         textAlign: 'center',
         width: '40%',
         position: 'relative',
+        [theme.breakpoints.down("xs")]: {
+            width: '100%',
+            padding: '10px',
+            margin: '10px',
+        }
     },
     presaleAd: {
         textAlign: 'left',

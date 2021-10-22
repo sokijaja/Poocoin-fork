@@ -16,30 +16,33 @@ const useStyles = makeStyles({
 });
 
 export default function LpInfoItem(props) {
+  const { lpInfo, currentTokenInfo } = props;
   const classes = useStyles();
-  const [lpInfo, setLpInfo] = useState({});
+  const [lpInfoData, setLpInfoData] = useState({});
   const [priceRate, setPriceRateData] = useState(0);
-
+  const [lpMarketcap, setLpMarketcap] = useState(0);
   const setPriceRate = (data) => {
     setPriceRateData(data)
   }
   useEffect(() => {
-    const lpdataInfo = props.lpInfo;
+    const lpdataInfo = lpInfo;
     getReserve(lpdataInfo.value[2], lpdataInfo.value[3]).then((reserveData) => {
-      setLpInfo({ label: lpdataInfo.label, symbol: lpdataInfo.value[1], tokenAddress: lpdataInfo.value[0], lpAddress: lpdataInfo.value[2], reserve: reserveData });
+      setLpInfoData({ label: lpdataInfo.label, symbol: lpdataInfo.value[1], tokenAddress: lpdataInfo.value[0], lpAddress: lpdataInfo.value[2], reserve: reserveData });
     });
     if (lpdataInfo.value[0] == DefaultToken.USDT.address) {
       setPriceRate(1);
     } else {
       getAmountsOut(1, lpdataInfo.value[0], DefaultToken.USDT.address, setPriceRate);
     }
-  }, []);
-  const lpMarketcap = numberWithCommas(parseInt(priceRate * lpInfo.reserve));
-
+  }, [lpInfo]);
+  // const lpMarketcap = numberWithCommas(parseInt(priceRate * lpInfo.reserve));
+  useEffect(() => {
+    setLpMarketcap(numberWithCommas(parseInt(priceRate * lpInfoData.reserve)))
+  }, [lpInfoData, priceRate])
   return (
     <div className={classes.root}>
-      <a target="_blank" className={classes.linkTag} href="https://pancakeswap.finance/swap">Pc v2</a> | {props.currentTokenInfo.name}/{lpInfo.label} LP Holdings:<br />
-      {(lpInfo.reserve === undefined) ? 0 : parseFloat(lpInfo.reserve).toFixed(2) + lpInfo.symbol}<span className={'textSuccess'}>{(lpInfo.reserve === undefined) ? '($0)' : `($${lpMarketcap})`}</span> |<a target="_blank" className={classes.linkTag} href={`https://bscscan.com/token/${lpInfo.tokenAddress}?a=${lpInfo.lpAddress}#tokenAnalytics`}> Chart</a> | <a target="_blank" className={classes.linkTag} href={`https://bscscan.com/token/${lpInfo.lpAddress}`}>Holders</a>
+      <a target="_blank" className={classes.linkTag} href="https://pancakeswap.finance/swap">Pc v2</a> | {currentTokenInfo.name}/{lpInfoData.label} LP Holdings:<br />
+      {(lpInfoData.reserve === undefined) ? 0 : parseFloat(lpInfoData.reserve).toFixed(2) + lpInfoData.symbol}<span className={'textSuccess'}>{(lpInfoData.reserve === undefined) ? '($0)' : `($${lpMarketcap})`}</span> |<a target="_blank" className={classes.linkTag} href={`https://bscscan.com/token/${lpInfoData.tokenAddress}?a=${lpInfoData.lpAddress}#tokenAnalytics`}> Chart</a> | <a target="_blank" className={classes.linkTag} href={`https://bscscan.com/token/${lpInfoData.lpAddress}`}>Holders</a>
     </div>
   );
 }
